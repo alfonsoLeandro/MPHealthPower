@@ -12,7 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.mariuszgromada.math.mxparser.Expression;
 
 import java.util.List;
 
@@ -27,24 +26,6 @@ public class InventoryEvents implements Listener {
         this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
         this.hpManager = plugin.getHpManager();
-    }
-
-
-    public double calculatePrice(String price, double HP){
-        if(price == null) return 999999999999999.0;
-        try{
-            return Double.parseDouble(price);
-        }catch (NumberFormatException ex){
-            if(price.contains("%formula_")){
-                List<String> formulas = this.plugin.getConfig().getStringList("config.GUI.formulas");
-                int index = Integer.parseInt(price.replace("%formula_", "").replace("%", ""));
-                String formula = formulas.get(index).replace("%HP%", String.valueOf(HP));
-                Expression e = new Expression(formula);
-                return e.calculate();
-            }else{
-                return 999999999999999.0;
-            }
-        }
     }
 
 
@@ -64,7 +45,7 @@ public class InventoryEvents implements Listener {
             double health = this.hpManager.getHealth(player);
             double amount = config.getDouble(path+".amount");
             double balance = econ.getBalance(player);
-            double price = calculatePrice(config.getString(path+".price"), health);
+            double price = this.plugin.calculatePrice(config.getString(path+".price"), health);
 
             if(price > 0 && price > balance){
                 this.messageSender.send(player, Message.NOT_ENOUGH_MONEY,

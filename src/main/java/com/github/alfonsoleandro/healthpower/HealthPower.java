@@ -30,11 +30,13 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
+import org.mariuszgromada.math.mxparser.Expression;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 
 public final class HealthPower extends ReloaderPlugin {
 
@@ -317,6 +319,26 @@ public final class HealthPower extends ReloaderPlugin {
 
     public AbstractHPManager getHpManager(){
         return this.hpManager;
+    }
+
+    public double calculatePrice(String price, double HP){
+        if(price == null) return 999999999999999.0;
+
+        if(price.contains("%formula_")){
+            List<String> formulas = this.getConfigYaml().getAccess().getStringList("config.GUI.formulas");
+            int index = Integer.parseInt(price.replace("%formula_", "").replace("%", ""));
+            String formula = formulas.get(index).replace("%HP%", String.valueOf(HP));
+            Expression e = new Expression(formula);
+            return e.calculate();
+
+        }else {
+            try {
+                return Double.parseDouble(price);
+            } catch (NumberFormatException ex) {
+                this.messageSender.send("&cThere was an error while calculating a price");
+                return 999999999999999.0;
+            }
+        }
     }
 
 

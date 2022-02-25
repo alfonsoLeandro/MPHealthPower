@@ -17,7 +17,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import org.mariuszgromada.math.mxparser.Expression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,26 +34,6 @@ public class MainCommand implements CommandExecutor {
         this.hpManager = plugin.getHpManager();
     }
 
-
-    private double calculatePrice(String price, double HP){
-        if(price == null) return 999999999999999.0;
-
-        if(price.contains("%formula_")){
-            List<String> formulas = this.plugin.getConfig().getStringList("config.GUI.formulas");
-            int index = Integer.parseInt(price.replace("%formula_", "").replace("%", ""));
-            String formula = formulas.get(index).replace("%HP%", String.valueOf(HP));
-            Expression e = new Expression(formula);
-            return e.calculate();
-
-        }else {
-            try {
-                return Double.parseDouble(price);
-            } catch (NumberFormatException ex) {
-                this.messageSender.send("&cThere was an error while calculating a price");
-                return 999999999999999.0;
-            }
-        }
-    }
 
     private void openGui(Player player){
         FileConfiguration config = this.plugin.getConfig();
@@ -88,7 +67,7 @@ public class MainCommand implements CommandExecutor {
                     double balance = this.plugin.getEconomy().getBalance(player);
                     ItemStack item = new ItemStack(Material.valueOf(config.getString("config.GUI.items."+i+".material")));
                     ItemMeta meta = item.getItemMeta();
-                    double price = calculatePrice(config.getString("config.GUI.items."+i+".price"), this.hpManager.getHealth(player));
+                    double price = this.plugin.calculatePrice(config.getString("config.GUI.items."+i+".price"), this.hpManager.getHealth(player));
                     List<String> lore = new ArrayList<>();
                     String affordable = this.messageSender.getString(price > balance ?
                             Message.NO : Message.YES);
