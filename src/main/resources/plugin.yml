@@ -1,0 +1,56 @@
+name: MPHealthPower
+version: ${project.version}
+main: com.github.alfonsoleandro.healthpower.HealthPower
+api-version: '1.13'
+softdepend: [Vault]
+depend: [MPUtils]
+authors: [lelesape]
+description: Modify players maximum health power
+website: http://bit.ly/2mwvHWN
+
+commands:
+  HealthPower:
+    description: Main command
+    aliases: [hp]
+    usage: "The command was not registered properly"
+
+permissions:
+  HealthPower.reload:
+    description: Allows a player to reload the plugin and its files.
+    default: op
+  HealthPower.version:
+    description: Allows a player to check the plugins current version.
+    default: op
+  HealthPower.set:
+    description: Allows a player to set some players maximum health.
+    default: op
+  HealthPower.add:
+    description: Allows a player to add hearts to a players maximum health.
+    default: op
+  HealthPower.gui:
+    description: Allows a player to open the buy health GUI.
+    default: op
+  HealthPower.cap.bypass:
+    description: Allows a player to bypass the "HP cap".
+    default: op
+  HelthPower.consumables:
+    description: Allows a player to manage consumables.
+    default: op
+  HelthPower.clear:
+    description: Allows a player to clear player's HP in hp file.
+    default: op
+  HelthPower.check:
+    description: Allows a player to check and correct players' HP.
+    default: op
+  HealthPower.*:
+    description: Gives every permission available.
+    children:
+      HealthPower.reload: true
+      HealthPower.version: true
+      HealthPower.set: true
+      HealthPower.add: true
+      HealthPower.gui: true
+      HealthPower.cap.bypass: true
+      HealthPower.consumables: true
+      HealthPower.clear: true
+      HealthPower.check: true

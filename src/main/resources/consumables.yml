@@ -1,0 +1,11 @@
+# MPHealthpower - List of consumables (must be enabled in config).
+#
+# None by default. You can add consumables in-game with the following command:
+# /healthpower consumable set (name) (set/add) (amount)
+# Ex: /healthpower consumable add consumable1 add 10
+# When consuming the item you are holding when executing this command, 10 HP will be ADDED to the player
+consumables:
+  example1:
+    options:
+      add: 4
+      message: '&fThat potion has given you 2 extra hearts for a total of &c%HP% &fHP!'

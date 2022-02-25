@@ -1,0 +1,137 @@
+config:
+  # Whether to enable metrics or not. Metrics are a way for the developer to know how many people/servers
+  # are using this plugin and other statistics, you will not see a change in performance in the slightest if you keep
+  # them enabled. That said, keeping them enabled is highly appreciated <3.
+  use metrics: true
+  # Prefix used for messages
+  prefix: '&f[&cHealthPower&f]'
+  # Should the plugin tell the console the group of a player when they join?
+  debug: false
+  # Maximum amount of HP a player can get. When adding or setting, if enabled and the resulting HP is
+  # higher than this cap and the player does not have the "HealthPower.cap.bypass" the HP will not be modified.
+  HP cap:
+    enabled: true
+    amount: 40
+  # If true will try to update the player's health bar in order to avoid client side render errors.
+  # This tends to happen when a player has more than 20HP, the client will show the player as if
+  # they only had 20, instead of the right amount, to avoid this inconvenience, even though it does not really affect
+  # their real max health, the plugin will remove hearts, and then it will give them back.
+  update HP on join: true
+  # Whether the plugin should check AND CORRECT a players HP based on HP.yml.
+  check HP on join: true
+  check HP on reload: true
+  # If the above options are true, and the player was not in the file, should the groups' system be used instead?
+  # Needs a permissions plugin AND vault
+  use groups system: true
+  # If enabled, when reloading the plugin or when a player joins, the plugin will check for players' permissions
+  # to look for permissions with a format similar to "healthpower.amount.X" where X is a given amount
+  # and will correct the player's HP to the highest X found in there. This overrides the group system
+  # and players' manually set HP.
+  use permissions system: true
+  # Should custom consumable items for adding/setting HP be enabled?
+  # If true, you can create your own consumable items and set them with a simple in-game command
+  # with the following format:
+  # /healthpower consumable add (name) (set/add) (amount)
+  consumables enabled: true
+  GUI:
+    # Should this feature be enabled?
+    enabled: true
+    # The title you want for the GUI
+    title: '&c&lBuy HP'
+    size: 27
+    # Price formulas. Equations for increasing health buy price on proportion to the player's health power.
+    # To use them, set the price to %formula_INDEX%, where INDEX is the index for the formula in formulas.
+    # For example, in order to get '500+(100*%HP%)', you should use %formula_0%, for '100*%HP%' use %formula_1% and so on.
+    # You can use %HP% for the player's current health power.
+    formulas:
+      - '500+(100*%HP%)'
+      - '-100*%HP%'
+      - '%HP%^2'
+      - '(6*100)-(%HP%*100)'
+    # Items go from 0 to the size you specified -1
+    # the format needed:
+    # items:
+    #  material: the type of item
+    #  name: the name the item will have
+    #  lore: lines of lore to add to the item
+    #  type: the hp modify type
+    #  (add = add hearts, set = set hearts, remove = remove hearts, info = player info only. Will not modify HP, any other options = add)
+    #  amount: the amount of hp to add or set to (2hp = 1 heart)
+    #  price: the amount of money to be taken from the player (negative numbers = give money)
+    items:
+      8:
+        material: BOOK
+        name: '&6%name%''s info'
+        lore:
+          - '&fBalance: &a%balance%'
+          - '&fHP: &c%HP%'
+        type: info
+        amount: 0.0
+        price: 0.0
+      12:
+        material: REDSTONE
+        name: '&cRemove 1 heart'
+        lore:
+          - '&6&lClick &fon this item'
+          - '&fto remove 1 heart from your HP'
+          - '&fPrice: &e%price%'
+          - '&fAffordable: %affordable%'
+        type: remove
+        amount: 2.0
+        price: '%formula_1%'
+      13:
+        material: DIAMOND
+        name: '&fSet HP to 3 hearts'
+        lore:
+          - '&6&lClick &fon this item'
+          - '&fto set your HP to 3 hearts'
+          - '&fPrice: &e%price%'
+          - '&fAffordable: %affordable%'
+        type: set
+        amount: 6.0
+        price: '%formula_3%'
+      14:
+        material: EMERALD
+        name: '&aAdd 1 heart'
+        lore:
+          - '&6&lClick &fon this item'
+          - '&fto add 1 heart to your HP'
+          - '&fPrice: &e%price%'
+          - '&fAffordable: %affordable%'
+        type: add
+        amount: 2.0
+        price: '%formula_0%'
+  messages:
+    list of commands: '&6List of commands'
+    no permission: '&cNo permission'
+    use: '&cUse: &f/%command% %what% (player) (HP)'
+    not online: '&cThat player is not online'
+    must be a number: '&cHP must be a double number (ie: 1.0)'
+    unknown command: '&cUnknown Command, try &e/%command% help'
+    set HP: '&9%player% &fjust set your HP to &c%HP%'
+    add HP: '&9%player% &fjust added you &c%HP% HP'
+    you set HP: '&fYou just set the HP of &6%player% &fto &c%HP% HP'
+    you add HP: '&fYou just added &6%player% &c%HP% HP'
+    gui set HP: '&fYour HP is now &c%HP%'
+    gui add HP: '&c%value% HP &fhave been &aadded &fto your total health (%HP%)'
+    gui remove HP: '&c%value% HP &fhave been &cremoved &ffrom your total health (%HP%)'
+    yourself: 'yourself'
+    hp automatic set: '&aYour &cHP &ahas been set to &c%HP%'
+    opening gui: '&fOpening buy hp menu!'
+    error opening gui: '&cThere was an error while trying to open de buy hp menu, talk to an admin or check console'
+    no money: '&cYou do not have enough money. You need &f%price%&c, and you have &f%balance%'
+    not enough hp: '&cYou do not have &f%hp% &cspare hp'
+    'yes': '&ayes'
+    'no': '&cNo'
+    player HP above cap: '&cThat player''s resulting HP would be above the HP cap. HP was not modified.'
+    HP above cap: '&cYour resulting HP would be above the HP cap. Your HP was not modified'
+    default consumable message: '&fYour HP is now %HP%'
+    consumable given: '&aA consumable has been given to you'
+    consumable not in hand: '&cYou must be holding the consumable'
+    consumables disabled: '&cConsumables are disabled in this server!'
+    hp cannot be 0: '&cHP cannot be 0 or lower than 0'
+    hp cleared: '&fHP of player %player% cleared!'
+    hp cleared all: '&fEvery player''s HP has been cleared from the file!'
+    hp checked: '&aChecked and corrected HP for &f%player%'
+    hp checked all: '&aChecked and corrected HP for every player online!'
+    inventory full: '&cYour inventory is full.'
