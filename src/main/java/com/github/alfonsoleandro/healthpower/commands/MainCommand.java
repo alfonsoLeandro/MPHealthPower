@@ -1,6 +1,7 @@
 package com.github.alfonsoleandro.healthpower.commands;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
+import com.github.alfonsoleandro.healthpower.commands.COR.*;
 import com.github.alfonsoleandro.healthpower.managers.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.PlayersOnGUIsManager;
@@ -27,11 +28,21 @@ public class MainCommand implements CommandExecutor {
     private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
     private final AbstractHPManager hpManager;
+    private final AbstractHandler COR;
 
     public MainCommand(HealthPower plugin) {
         this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
         this.hpManager = plugin.getHpManager();
+        this.COR = new ShopHandler(plugin, new HelpHandler(plugin,
+                new VersionHandler(plugin, new ReloadHandler(plugin,
+                        new HPModifyHandler(plugin, new ConsumablesHandler(plugin,
+                                new ClearHandler(plugin, new HPCheckHandler(plugin,
+                                        new GroupModifyHandler(plugin, null)
+                                ))
+                        ))
+                ))
+        ));
     }
 
 
@@ -121,6 +132,8 @@ public class MainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         FileConfiguration config = this.plugin.getConfig();
+        this.COR.handle(sender, label, args);
+//        return true;
 
         if((args.length == 0 || args[0].equalsIgnoreCase("gui")) &&
                 sender instanceof Player

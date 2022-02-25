@@ -9,6 +9,7 @@ import com.github.alfonsoleandro.healthpower.managers.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.managers.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.HPManagerLegacy;
 import com.github.alfonsoleandro.healthpower.utils.Message;
+import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.files.YamlFile;
 import com.github.alfonsoleandro.mputils.managers.MessageSender;
 import com.github.alfonsoleandro.mputils.metrics.Metrics;
@@ -47,16 +48,19 @@ public final class HealthPower extends ReloaderPlugin {
     private Permission perms = null;
     private MessageSender<Message> messageSender;
     private AbstractHPManager hpManager;
+    private Settings settings;
     private YamlFile configYaml;
+    private YamlFile messagesYaml;
     private YamlFile hpYaml;
     private YamlFile consumablesYaml;
 
     @Override
     public void onEnable() {
         registerFiles();
-        this.messageSender = new MessageSender<>(this, Message.values(), this.configYaml, "config.prefix");
+        this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
         this.hpManager = (Integer.parseInt(getServer().getBukkitVersion().split("-")[0].replace(".", "-").split("-")[1]) < 9) ?
                 new HPManagerLegacy(this) : new HPManager(this);
+        this.settings = new Settings(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
         this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().get(0));
         this.messageSender.send("&fJoin my discord server at &chttps://discordapp.com/invite/ZznhQud");
@@ -70,6 +74,10 @@ public final class HealthPower extends ReloaderPlugin {
             this.messageSender.send("&aPlugin Vault and a permissions plugin found, permissions hooked");
         }else {
             this.messageSender.send("&cPlugin Vault or a permissions plugin not found, disabling groups/permissions system");
+        }
+        if(this.configYaml.getAccess().contains("config.messages")){
+            this.messageSender.send("&c&lMessages have been moved from config to messages.yml. Make sure to re-personalize them!!!");
+            this.messageSender.send("&c&lKeep in mind there are new messages too!");
         }
         checkAndCorrectConfig();
         registerCommands();
@@ -181,6 +189,7 @@ public final class HealthPower extends ReloaderPlugin {
     public void registerFiles(){
         this.configYaml = new YamlFile(this, "config.yml");
         this.hpYaml = new YamlFile(this, "HP.yml");
+        this.messagesYaml = new YamlFile(this, "messages.yml");
         boolean consumablesFileExisted = new File(this.getDataFolder(), "consumables.yml").exists();
         this.consumablesYaml = new YamlFile(this, "consumables.yml");
         if(!consumablesFileExisted){
@@ -207,6 +216,7 @@ public final class HealthPower extends ReloaderPlugin {
     public void reloadFiles(){
         this.configYaml.loadFileConfiguration();
         this.hpYaml.loadFileConfiguration();
+        this.messagesYaml.loadFileConfiguration();
         this.consumablesYaml.loadFileConfiguration();
     }
 
@@ -319,6 +329,10 @@ public final class HealthPower extends ReloaderPlugin {
 
     public AbstractHPManager getHpManager(){
         return this.hpManager;
+    }
+
+    public Settings getSettings() {
+        return this.settings;
     }
 
     public double calculatePrice(String price, double HP){
