@@ -7,7 +7,6 @@ import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.PlayersOnGUIsManager;
 import com.github.alfonsoleandro.mputils.managers.MessageSender;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,11 +15,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainCommand implements CommandExecutor {
 
@@ -43,71 +40,6 @@ public class MainCommand implements CommandExecutor {
                         ))
                 ))
         ));
-    }
-
-
-    private void openGui(Player player){
-        FileConfiguration config = this.plugin.getConfig();
-
-        if(!this.plugin.setupEconomy()) {
-            this.messageSender.send(player, Message.GUI_OPENING);
-            this.messageSender.send("&c===========ATTENTION=============");
-            this.messageSender.send("&cEconomy plugin or vault not found");
-            this.messageSender.send("&cGUIs need both to work");
-            this.messageSender.send("&c=================================");
-            return;
-        }
-        final int size = config.getInt("config.GUI.size");
-        if(size % 9 != 0){
-            this.messageSender.send(player, Message.GUI_ERROR);
-            this.messageSender.send("&c===========ATTENTION=============");
-            this.messageSender.send("&cGUI size MUST be a multiple of 9");
-            this.messageSender.send("&cFix this as soon as possible");
-            this.messageSender.send("&cor the gui will not work");
-            this.messageSender.send("&c=================================");
-            return;
-        }
-        try {
-            this.messageSender.send(player, Message.GUI_OPENING);
-            Inventory gui = Bukkit.createInventory(player, size,
-                    ChatColor.translateAlternateColorCodes('&',
-                            config.getString("config.GUI.title")+""));
-
-            for (int i = 0; i < size; i++) {
-                if(config.contains("config.GUI.items." + i)) {
-                    double balance = this.plugin.getEconomy().getBalance(player);
-                    ItemStack item = new ItemStack(Material.valueOf(config.getString("config.GUI.items."+i+".material")));
-                    ItemMeta meta = item.getItemMeta();
-                    double price = this.plugin.calculatePrice(config.getString("config.GUI.items."+i+".price"), this.hpManager.getHealth(player));
-                    List<String> lore = new ArrayList<>();
-                    String affordable = this.messageSender.getString(price > balance ?
-                            Message.NO : Message.YES);
-
-                    if(meta == null) continue;
-
-
-                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                            config.getString("config.GUI.items."+i+".name").replace("%name%", player.getName())));
-                    config.getStringList("config.GUI.items."+i+".lore").forEach(k -> lore.add(ChatColor.translateAlternateColorCodes('&', k.
-                            replace("%price%", String.valueOf(price)).
-                            replace("%affordable%", affordable).
-                            replace("%name%", player.getName()).
-                            replace("%balance%", String.valueOf(balance)).
-                            replace("%HP%", String.valueOf(this.hpManager.getHealth(player))))
-                    ));
-                    meta.setLore(lore);
-                    item.setItemMeta(meta);
-
-                    gui.setItem(i, item);
-                }
-            }
-            this.playersOnGUIsManager.add(player.getName());
-            player.openInventory(gui);
-
-        }catch(Exception ex){
-            this.messageSender.send(player, Message.GUI_ERROR);
-            ex.printStackTrace();
-        }
     }
 
     private void addItem(Player player, ItemStack itemStack){
@@ -140,7 +72,7 @@ public class MainCommand implements CommandExecutor {
                 && config.getBoolean("config.GUI.enabled")){
             //Open GUI if the player has permission
             if(sender.hasPermission("HealthPower.gui")) {
-                openGui((Player) sender);
+//                openGui((Player) sender);
             }else{
                 this.messageSender.send(sender, Message.NO_PERMISSION);
                 return true;

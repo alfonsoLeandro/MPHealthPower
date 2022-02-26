@@ -335,26 +335,6 @@ public final class HealthPower extends ReloaderPlugin {
         return this.settings;
     }
 
-    public double calculatePrice(String price, double HP){
-        if(price == null) return 999999999999999.0;
-
-        if(price.contains("%formula_")){
-            List<String> formulas = this.getConfigYaml().getAccess().getStringList("config.GUI.formulas");
-            int index = Integer.parseInt(price.replace("%formula_", "").replace("%", ""));
-            String formula = formulas.get(index).replace("%HP%", String.valueOf(HP));
-            Expression e = new Expression(formula);
-            return e.calculate();
-
-        }else {
-            try {
-                return Double.parseDouble(price);
-            } catch (NumberFormatException ex) {
-                this.messageSender.send("&cThere was an error while calculating a price");
-                return 999999999999999.0;
-            }
-        }
-    }
-
 
     @NotNull
     @Override

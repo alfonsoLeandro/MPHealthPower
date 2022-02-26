@@ -38,11 +38,8 @@ public class ShopHandler extends AbstractHandler{
             this.messageSender.send(sender, Message.GUI_DISABLED);
             return;
         }
-        openGUI((Player) sender);
+        this.plugin.getSettings().openShopGUI((Player)sender);
 
     }
 
-    private void openGUI(Player player){
-        //TODO
-    }
 }
