@@ -67,72 +67,7 @@ public class MainCommand implements CommandExecutor {
         this.COR.handle(sender, label, args);
 //        return true;
 
-        if((args.length == 0 || args[0].equalsIgnoreCase("gui")) &&
-                sender instanceof Player
-                && config.getBoolean("config.GUI.enabled")){
-            //Open GUI if the player has permission
-            if(sender.hasPermission("HealthPower.gui")) {
-//                openGui((Player) sender);
-            }else{
-                this.messageSender.send(sender, Message.NO_PERMISSION);
-                return true;
-            }
-
-
-        }else if(args.length == 0 || args[0].equalsIgnoreCase("help")) {
-            this.messageSender.send(sender, "&6List of commands");
-            this.messageSender.send(sender, "&f/"+label+" help");
-            this.messageSender.send(sender, "&f/"+label+" version");
-            this.messageSender.send(sender, "&f/"+label+" reload");
-            this.messageSender.send(sender, "&f/"+label+" set (player) (HP)");
-            this.messageSender.send(sender, "&f/"+label+" add (player) (HP)");
-            this.messageSender.send(sender, "&f/"+label+" gui");
-            this.messageSender.send(sender, "&f/"+label+" consumable get (name)");
-            this.messageSender.send(sender, "&f/"+label+" consumable set (name) (add/set) (amount)");
-            this.messageSender.send(sender, "&f/"+label+" clear (name)");
-            this.messageSender.send(sender, "&f/"+label+" clearAll");
-            this.messageSender.send(sender, "&f/"+label+" check (name)");
-            this.messageSender.send(sender, "&f/"+label+" checkAll");
-
-
-
-
-        }else if(args[0].equalsIgnoreCase("reload")) {
-            if(!sender.hasPermission("HealthPower.reload")) {
-                this.messageSender.send(sender, Message.NO_PERMISSION);
-                return true;
-            }
-            this.plugin.reload(false);
-
-            if(this.plugin.getConfig().getBoolean("config.check HP on reload")){
-                for (Player p : Bukkit.getOnlinePlayers()){
-                    this.hpManager.checkAndCorrectHP(p);
-                }
-                this.messageSender.send(sender, Message.PLAYERS_CHECKED);
-            }
-
-            this.playersOnGUIsManager.removeAll();
-            this.messageSender.send(sender, "&aFiles reloaded");
-
-
-
-        }else if(args[0].equalsIgnoreCase("version")) {
-            if(!sender.hasPermission("HealthPower.version")) {
-                this.messageSender.send(sender, Message.NO_PERMISSION);
-                return true;
-            }
-
-            if(this.plugin.getVersion().equals(this.plugin.getLatestVersion())){
-                this.messageSender.send(sender, "&fVersion: &e"+this.plugin.getVersion()+" &f(&aLatest version!&f)");
-            }else{
-                this.messageSender.send(sender, "&fVersion: &e"+this.plugin.getVersion()+" &f(&cUpdate available!&f)");
-                this.messageSender.send(sender, "&cDownload: &fhttps://bit.ly/3fqzRpR");
-            }
-
-
-
-
-        }else if(args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add")) {
+       if(args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add")) {
             if(!sender.hasPermission("healthPower." + args[0])) {
                 this.messageSender.send(sender, Message.NO_PERMISSION);
                 return true;
