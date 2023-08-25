@@ -6,7 +6,7 @@ messages:
   cannot send console: '&cThat command can only be sent by a player.'
   use: '&cUse: &f/%command% %what% (player) (HP)'
   not online: '&cThat player is not online'
-  must be a number: '&cHP must be a double number (ie: 1.0)'
+  must be a number: '&cHP must be a decimal number (ie: 1.0)'
   unknown command: '&cUnknown Command, try &e/%command% help'
   set HP: '&9%player% &fjust set your HP to &c%HP%'
   add HP: '&9%player% &fjust added you &c%HP% HP'

@@ -14,7 +14,7 @@ public enum Message implements MessageEnum {
     CANNOT_SEND_CONSOLE("&cThat command can only be sent by a player."),
     PLAYER_NOT_ONLINE("messages.not online", "&cThat player is not online"),
     COMMAND_USE("messages.use", "&cUse: &f/%command% %what% (player) (HP)"),
-    HP_MUST_BE_NUMBER("messages.must be a number", "&cHP must be a double number (ie: 1.0)"),
+    HP_MUST_BE_NUMBER("messages.must be a number", "&cHP must be a decimal number (ie: 1.0)"),
     UNKNOWN_COMMAND("messages.unknown command", "&cUnknown Command, try &e/%command% help"),
     CONSUMABLE_GIVEN("messages.consumable given", "&aA consumable has been given to you"),
     IN_HAND_NOT_CONSUMABLE("messages.consumable not in hand", "&cYou must be holding the consumable"),
