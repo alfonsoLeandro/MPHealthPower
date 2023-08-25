@@ -11,13 +11,13 @@ import com.github.alfonsoleandro.healthpower.managers.HPManagerLegacy;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.files.YamlFile;
+import com.github.alfonsoleandro.mputils.itemstacks.MPItemStacks;
 import com.github.alfonsoleandro.mputils.managers.MessageSender;
 import com.github.alfonsoleandro.mputils.metrics.Metrics;
 import com.github.alfonsoleandro.mputils.reloadable.ReloaderPlugin;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,28 +31,28 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
-import org.mariuszgromada.math.mxparser.Expression;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class HealthPower extends ReloaderPlugin {
 
     private final PluginDescriptionFile pdfFile = getDescription();
     private final String version = this.pdfFile.getVersion();
-    private String latestVersion;
-    private Economy econ = null;
-    private Permission perms = null;
-    private MessageSender<Message> messageSender;
-    private AbstractHPManager hpManager;
-    private Settings settings;
     private YamlFile configYaml;
-    private YamlFile messagesYaml;
-    private YamlFile hpYaml;
     private YamlFile consumablesYaml;
+    private Economy econ = null;
+    private AbstractHPManager hpManager;
+    private YamlFile hpYaml;
+    private String latestVersion;
+    private MessageSender<Message> messageSender;
+    private YamlFile messagesYaml;
+    private Permission perms = null;
+    private Settings settings;
 
     @Override
     public void onEnable() {
@@ -65,17 +65,17 @@ public final class HealthPower extends ReloaderPlugin {
         this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().get(0));
         this.messageSender.send("&fJoin my discord server at &chttps://discordapp.com/invite/ZznhQud");
         this.messageSender.send("Please consider subscribing to my yt channel: &c" + this.pdfFile.getWebsite());
-        if(setupEconomy()){
+        if (setupEconomy()) {
             this.messageSender.send("&aPlugin Vault and economy found, economy hooked");
-        }else {
+        } else {
             this.messageSender.send("&cPlugin Vault or an economy plugin not found, disabling economy");
         }
-        if(setupPermissions()){
+        if (setupPermissions()) {
             this.messageSender.send("&aPlugin Vault and a permissions plugin found, permissions hooked");
-        }else {
+        } else {
             this.messageSender.send("&cPlugin Vault or a permissions plugin not found, disabling groups/permissions system");
         }
-        if(this.configYaml.getAccess().contains("config.messages")){
+        if (this.configYaml.getAccess().contains("config.messages")) {
             this.messageSender.send("&c&lMessages have been moved from config to messages.yml. Make sure to re-personalize them!!!");
             this.messageSender.send("&c&lKeep in mind there are new messages too!");
         }
@@ -95,25 +95,22 @@ public final class HealthPower extends ReloaderPlugin {
     }
 
 
-
-
-    private void startMetrics(){
-        if(getConfig().getBoolean("config.use metrics")){
+    private void startMetrics() {
+        if (this.configYaml.getAccess().getBoolean("config.use metrics")) {
             new Metrics(this, 9480);
             this.messageSender.send("&aMetrics enabled! Thank you for keeping them enabled!");
-        }else{
+        } else {
             this.messageSender.send("&cMetrics disabled :(. Please consider enabling metrics in config.");
         }
     }
 
 
-
     public boolean setupEconomy() {
-        if(!Bukkit.getPluginManager().isPluginEnabled("Vault")) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             return false;
         }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if(rsp==null) {
+        if (rsp == null) {
             return false;
         }
         this.econ = rsp.getProvider();
@@ -121,15 +118,14 @@ public final class HealthPower extends ReloaderPlugin {
     }
 
     public boolean setupPermissions() {
-        if(!Bukkit.getPluginManager().isPluginEnabled("Vault")) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             return false;
         }
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        if(rsp == null) return false;
+        if (rsp == null) return false;
         this.perms = rsp.getProvider();
         return true;
     }
-
 
 
     public Economy getEconomy() {
@@ -144,7 +140,7 @@ public final class HealthPower extends ReloaderPlugin {
     /**
      * Checks for updates in spigot.
      */
-    private void updateChecker(){
+    private void updateChecker() {
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(
                     "https://api.spigotmc.org/legacy/update.php?resource=78260").openConnection();
@@ -153,10 +149,10 @@ public final class HealthPower extends ReloaderPlugin {
             con.setReadTimeout(timed_out);
             this.latestVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
             if (this.latestVersion.length() <= 7) {
-                if(!this.version.equals(this.latestVersion)){
+                if (!this.version.equals(this.latestVersion)) {
                     String exclamation = "&e&l(&4&l!&e&l)";
-                    this.messageSender.send(exclamation +" &cThere is a new version available &e(&7"+ this.latestVersion +"&e)");
-                    this.messageSender.send(exclamation +" &cDownload it here: &fhttps://bit.ly/3fqzRpR");
+                    this.messageSender.send(exclamation + " &cThere is a new version available &e(&7" + this.latestVersion + "&e)");
+                    this.messageSender.send(exclamation + " &cDownload it here: &fhttps://bit.ly/3fqzRpR");
                 }
             }
         } catch (Exception ex) {
@@ -167,6 +163,7 @@ public final class HealthPower extends ReloaderPlugin {
 
     /**
      * Gets the plugin's current version.
+     *
      * @return The current version.
      */
     public String getVersion() {
@@ -175,6 +172,7 @@ public final class HealthPower extends ReloaderPlugin {
 
     /**
      * Gets the plugin's latest available version on spigot.
+     *
      * @return The latest available version.
      */
     public String getLatestVersion() {
@@ -185,23 +183,22 @@ public final class HealthPower extends ReloaderPlugin {
     /**
      * Registers plugin files.
      */
-    @SuppressWarnings("deprecation") //legacy versions support
-    public void registerFiles(){
+    public void registerFiles() {
         this.configYaml = new YamlFile(this, "config.yml");
         this.hpYaml = new YamlFile(this, "HP.yml");
         this.messagesYaml = new YamlFile(this, "messages.yml");
         boolean consumablesFileExisted = new File(this.getDataFolder(), "consumables.yml").exists();
         this.consumablesYaml = new YamlFile(this, "consumables.yml");
-        if(!consumablesFileExisted){
-            ItemStack specialPotion = new ItemStack(Material.POTION);
+
+        if (!consumablesFileExisted) {
+            ItemStack specialPotion = MPItemStacks.newItemStack(Material.POTION, 1, "&aMax health modifier!", Arrays.asList("&cDrink this potion, to gain 2 extra hearts".split(",")));
             PotionMeta meta = (PotionMeta) specialPotion.getItemMeta();
             assert meta != null;
 
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aMax health modifier!"));
-            meta.setLore(Arrays.asList(ChatColor.translateAlternateColorCodes('&', "&cDrink this potion, to gain 2 extra hearts").split(",")));
-            if(Integer.parseInt(getServer().getBukkitVersion().split("-")[0].replace(".", "-").split("-")[1]) > 8) {
+            if (Integer.parseInt(getServer().getBukkitVersion().split("-")[0].replace(".", "-").split("-")[1]) > 8) {
                 meta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
-            }else{
+            } else {
+                //noinspection deprecation (This is the only way to do it in 1.8)
                 meta.setMainEffect(PotionEffectType.HEAL);
             }
 
@@ -213,7 +210,7 @@ public final class HealthPower extends ReloaderPlugin {
     /**
      * Reloads plugin files.
      */
-    public void reloadFiles(){
+    public void reloadFiles() {
         this.configYaml.loadFileConfiguration();
         this.hpYaml.loadFileConfiguration();
         this.messagesYaml.loadFileConfiguration();
@@ -221,7 +218,7 @@ public final class HealthPower extends ReloaderPlugin {
     }
 
     @Override
-    public void reload(boolean deep){
+    public void reload(boolean deep) {
         reloadFiles();
         super.reload(deep);
     }
@@ -233,61 +230,24 @@ public final class HealthPower extends ReloaderPlugin {
         FileConfiguration configEndFile = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
         FileConfiguration config = this.configYaml.getAccess();
 
+        Map<String, Object> fields = new HashMap<>();
 
-        if(!configEndFile.contains("config.use permissions system")){
-            config.set("config.use permissions system", true);
-            this.configYaml.save(false);
+        fields.put("config.use permissions system", true);
+        fields.put("config.consumables enabled", true);
+        fields.put("config.use metrics", true);
+        fields.put("config.HP cap.enabled", true);
+        fields.put("config.HP cap.amount", 40);
+        fields.put("config.update HP on join", true);
+
+        boolean shouldSave = false;
+        for (String field : fields.keySet()) {
+            if (!configEndFile.contains(field)) {
+                shouldSave = true;
+                config.set(field, fields.get(field));
+            }
         }
-        if(!configEndFile.contains("config.consumables enabled")){
-            config.set("config.consumables enabled", true);
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.use metrics")){
-            config.set("config.use metrics", true);
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.messages.default consumable message")){
-            config.set("config.messages.default consumable message", "&fYou HP is now %HP%");
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.messages.consumable given")){
-            config.set("config.messages.consumable given", "&aA consumable has been given to yo");
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.messages.consumable not in hand")){
-            config.set("config.messages.consumable not in hand", "&cYou must be holding the consumable");
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.messages.consumables disabled")){
-            config.set("config.messages.consumables disabled", "&cConsumables are disabled in this server!");
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.HP cap.enabled")){
-            config.set("config.HP cap.enabled", true);
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.HP cap.amount")){
-            config.set("config.HP cap.amount", 40);
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.update HP on join")){
-            config.set("config.update HP on join", true);
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.messages.hp cannot be 0")) {
-            config.set("config.messages.hp cannot be 0", "&cHP cannot be 0 or lower than 0");
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.messages.hp cleared")){
-            config.set("config.messages.hp cleared", "&fHP of player %player% cleared!");
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.messages.hp cleared all")){
-            config.set("config.messages.hp cleared all", "&fEvery player's HP has been cleared!");
-            this.configYaml.save(false);
-        }
-        if(!configEndFile.contains("config.messages.inventory full")){
-            config.set("config.messages.inventory full", "&cYour inventory is full.");
+
+        if (shouldSave) {
             this.configYaml.save(false);
         }
 
@@ -310,7 +270,7 @@ public final class HealthPower extends ReloaderPlugin {
     private void registerCommands() {
         PluginCommand mainCommand = getCommand("HealthPower");
 
-        if(mainCommand == null){
+        if (mainCommand == null) {
             this.messageSender.send("&cThe main command has not been registered properly. Disabling HealthPower");
             this.setEnabled(false);
             return;
@@ -321,13 +281,11 @@ public final class HealthPower extends ReloaderPlugin {
     }
 
 
-
-
-    public MessageSender<Message> getMessageSender(){
+    public MessageSender<Message> getMessageSender() {
         return this.messageSender;
     }
 
-    public AbstractHPManager getHpManager(){
+    public AbstractHPManager getHpManager() {
         return this.hpManager;
     }
 
@@ -338,19 +296,19 @@ public final class HealthPower extends ReloaderPlugin {
 
     @NotNull
     @Override
-    public FileConfiguration getConfig(){
+    public FileConfiguration getConfig() {
         return this.getConfigYaml().getAccess();
     }
 
-    public YamlFile getConfigYaml(){
+    public YamlFile getConfigYaml() {
         return this.configYaml;
     }
 
-    public YamlFile getHpYaml(){
+    public YamlFile getHpYaml() {
         return this.hpYaml;
     }
 
-    public YamlFile getConsumablesYaml(){
+    public YamlFile getConsumablesYaml() {
         return this.consumablesYaml;
     }
 }
