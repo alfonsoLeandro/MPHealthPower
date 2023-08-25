@@ -33,15 +33,23 @@ permissions:
   HealthPower.cap.bypass:
     description: Allows a player to bypass the "HP cap".
     default: op
-  HelthPower.consumables:
+  HealthPower.consumable.give:
     description: Allows a player to manage consumables.
     default: op
-  HelthPower.clear:
+  HealthPower.consumable.set:
+    description: Allows a player to manage consumables.
+    default: op
+  HealthPower.clear:
     description: Allows a player to clear player's HP in hp file.
     default: op
-  HelthPower.check:
+  HealthPower.check:
     description: Allows a player to check and correct players' HP.
     default: op
+  HealthPower.consumable.*:
+    description: Gives every consumable permission available.
+    children:
+      HealthPower.consumable.give: true
+      HealthPower.consumable.set: true
   HealthPower.*:
     description: Gives every permission available.
     children:
@@ -51,6 +59,6 @@ permissions:
       HealthPower.add: true
       HealthPower.gui: true
       HealthPower.cap.bypass: true
-      HealthPower.consumables: true
+      HealthPower.consumable.*: true
       HealthPower.clear: true
       HealthPower.check: true
