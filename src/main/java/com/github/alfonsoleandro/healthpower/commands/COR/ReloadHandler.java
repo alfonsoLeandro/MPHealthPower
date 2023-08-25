@@ -37,7 +37,7 @@ public class ReloadHandler extends AbstractHandler{
             this.messageSender.send(sender, Message.PLAYERS_CHECKED);
         }
 
-//        this.playersOnGUIsManager.removeAll(); GUI close?
+//        this.playersOnGUIsManager.removeAll(); GUI close? //TODO
         this.messageSender.send(sender, "&aFiles reloaded");
     }
 }

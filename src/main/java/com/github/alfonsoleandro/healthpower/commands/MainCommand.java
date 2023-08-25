@@ -63,42 +63,10 @@ public class MainCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
-        FileConfiguration config = this.plugin.getConfig();
         this.COR.handle(sender, label, args);
 //        return true;
 
-       if(args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add")) {
-            if(!sender.hasPermission("healthPower." + args[0])) {
-                this.messageSender.send(sender, Message.NO_PERMISSION);
-                return true;
-            }
-            if(args.length > 2) {
-                try {
-                    double hp = Double.parseDouble(args[2]);
-                    Player toAdd = Bukkit.getPlayer(args[1]);
-                    if(toAdd != null) {
-                        if(args[0].equalsIgnoreCase("set")){
-                            this.hpManager.setHPCommand(sender, toAdd, hp);
-                        }else{
-                            this.hpManager.addHP(sender, toAdd, hp);
-                        }
-                    } else {
-                        this.messageSender.send(sender, Message.PLAYER_NOT_ONLINE);
-                    }
-
-                } catch (Exception e) {
-                    this.messageSender.send(sender, Message.HP_MUST_BE_NUMBER);
-                }
-
-
-            } else {
-                this.messageSender.send(sender, Message.COMMAND_USE,
-                        "%what%", args[0],
-                        "%command%", label);
-            }
-
-
-        }else if(args[0].equalsIgnoreCase("consumable")) {
+        if(args[0].equalsIgnoreCase("consumable")) {
             if(sender instanceof Player) {
                 if(!sender.hasPermission("healthPower.consumables")) {
                     this.messageSender.send(sender, Message.NO_PERMISSION);
