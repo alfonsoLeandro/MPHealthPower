@@ -11,7 +11,7 @@ public class ConsumablesHandler extends AbstractHandler{
 
     @Override
     protected boolean meetsCondition(CommandSender sender, String label, String[] args) {
-        return false;
+        return args.length > 0 && args[0].equalsIgnoreCase("consumable");
     }
 
     @Override

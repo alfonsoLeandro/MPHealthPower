@@ -15,8 +15,7 @@ public class VersionHandler extends AbstractHandler{
 
     @Override
     protected boolean meetsCondition(CommandSender sender, String label, String[] args) {
-        assert args.length > 0;
-        return args[0].equalsIgnoreCase("version");
+        return args.length > 0 && args[0].equalsIgnoreCase("version");
     }
 
     @Override

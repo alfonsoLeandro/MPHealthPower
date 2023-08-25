@@ -19,7 +19,7 @@ public class ReloadHandler extends AbstractHandler{
 
     @Override
     protected boolean meetsCondition(CommandSender sender, String label, String[] args) {
-        return args[0].equalsIgnoreCase("reload");
+        return args.length > 0 && args[0].equalsIgnoreCase("reload");
     }
 
     @Override
