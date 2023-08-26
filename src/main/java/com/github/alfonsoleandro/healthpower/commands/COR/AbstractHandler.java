@@ -2,7 +2,7 @@ package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.utils.Message;
-import com.github.alfonsoleandro.mputils.managers.MessageSender;
+import com.github.alfonsoleandro.mputils.message.MessageSender;
 import org.bukkit.command.CommandSender;
 
 public abstract class AbstractHandler {

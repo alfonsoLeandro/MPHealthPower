@@ -1,6 +1,6 @@
 package com.github.alfonsoleandro.healthpower.utils;
 
-import com.github.alfonsoleandro.mputils.misc.MessageEnum;
+import com.github.alfonsoleandro.mputils.message.MessageEnum;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;

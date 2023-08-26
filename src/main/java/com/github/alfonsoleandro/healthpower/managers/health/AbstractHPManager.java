@@ -3,7 +3,7 @@ package com.github.alfonsoleandro.healthpower.managers.health;
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.mputils.files.YamlFile;
-import com.github.alfonsoleandro.mputils.managers.MessageSender;
+import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.reloadable.Reloadable;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.command.CommandSender;

@@ -1,7 +1,7 @@
 package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.AbstractHPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

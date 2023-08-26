@@ -1,7 +1,7 @@
 package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.AbstractHPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -29,14 +29,14 @@ public class HPModifyHandler extends AbstractHandler {
         }
 
         if (args.length <= 2) {
-            this.messageSender.send(sender, Message.COMMAND_USE,
+            this.messageSender.send(sender, Message.COMMAND_USE_HP_MODIFY,
                     "%what%", args[0],
                     "%command%", label);
             return;
         }
 
         Player toAdd = Bukkit.getPlayer(args[1]);
-        if (toAdd == null) {
+        if (toAdd == null || !toAdd.isOnline()) {
             this.messageSender.send(sender, Message.PLAYER_NOT_ONLINE);
             return;
         }

@@ -1,10 +1,10 @@
 package com.github.alfonsoleandro.healthpower.listeners;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.AbstractHPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.PlayersOnGUIsManager;
-import com.github.alfonsoleandro.mputils.managers.MessageSender;
+import com.github.alfonsoleandro.mputils.message.MessageSender;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-
-import java.util.List;
 
 public class InventoryEvents implements Listener {
 
@@ -45,7 +43,7 @@ public class InventoryEvents implements Listener {
             double health = this.hpManager.getHealth(player);
             double amount = config.getDouble(path+".amount");
             double balance = econ.getBalance(player);
-            double price = this.plugin.calculatePrice(config.getString(path+".price"), health);
+//            double price = this.plugin.calculatePrice(config.getString(path+".price"), health);
 
             if(price > 0 && price > balance){
                 this.messageSender.send(player, Message.NOT_ENOUGH_MONEY,
