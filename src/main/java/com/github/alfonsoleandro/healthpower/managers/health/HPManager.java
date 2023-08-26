@@ -1,4 +1,4 @@
-package com.github.alfonsoleandro.healthpower.managers;
+package com.github.alfonsoleandro.healthpower.managers.health;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import org.bukkit.attribute.Attribute;
