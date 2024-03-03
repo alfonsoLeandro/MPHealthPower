@@ -1,8 +1,14 @@
 package com.github.alfonsoleandro.healthpower.utils;
 
-//TODO
+import org.bukkit.inventory.ItemStack;
+
 /**
  * @author alfonsoLeandro
  */
-public class Consumable {
+public record Consumable(String name, ConsumableMode mode, double amount, String message, ItemStack item) {
+
+    public enum ConsumableMode {
+        ADD,
+        SET
+    }
 }

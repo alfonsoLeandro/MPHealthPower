@@ -4,7 +4,6 @@ import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.commands.COR.*;
 import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
-import com.github.alfonsoleandro.healthpower.utils.PlayersOnGUIsManager;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 
 public class MainCommand implements CommandExecutor {
 
-    private final PlayersOnGUIsManager playersOnGUIsManager = PlayersOnGUIsManager.getInstance();
     private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
     private final AbstractHPManager hpManager;

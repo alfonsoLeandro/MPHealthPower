@@ -4,6 +4,7 @@ import com.github.alfonsoleandro.healthpower.commands.MainCommand;
 import com.github.alfonsoleandro.healthpower.listeners.ConsumablesEvents;
 import com.github.alfonsoleandro.healthpower.listeners.InventoryEvents;
 import com.github.alfonsoleandro.healthpower.listeners.PlayerJoin;
+import com.github.alfonsoleandro.healthpower.managers.ConsumableManager;
 import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManagerLegacy;
@@ -43,16 +44,17 @@ public final class HealthPower extends ReloaderPlugin {
 
     private final PluginDescriptionFile pdfFile = getDescription();
     private final String version = this.pdfFile.getVersion();
+    private String latestVersion;
+    private AbstractHPManager hpManager;
+    private ConsumableManager consumableManager;
+    private MessageSender<Message> messageSender;
+    private Settings settings;
     private YamlFile configYaml;
     private YamlFile consumablesYaml;
-    private Economy econ = null;
-    private AbstractHPManager hpManager;
     private YamlFile hpYaml;
-    private String latestVersion;
-    private MessageSender<Message> messageSender;
     private YamlFile messagesYaml;
+    private Economy econ = null;
     private Permission perms = null;
-    private Settings settings;
 
     @Override
     public void onEnable() {
@@ -60,6 +62,7 @@ public final class HealthPower extends ReloaderPlugin {
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
         this.hpManager = (Integer.parseInt(getServer().getBukkitVersion().split("-")[0].replace(".", "-").split("-")[1]) < 9) ?
                 new HPManagerLegacy(this) : new HPManager(this);
+        this.consumableManager = new ConsumableManager(this);
         this.settings = new Settings(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
         this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().get(0));
@@ -191,7 +194,7 @@ public final class HealthPower extends ReloaderPlugin {
         this.consumablesYaml = new YamlFile(this, "consumables.yml");
 
         if (!consumablesFileExisted) {
-            ItemStack specialPotion = MPItemStacks.newItemStack(Material.POTION, 1, "&aMax health modifier!", Arrays.asList("&cDrink this potion, to gain 2 extra hearts".split(",")));
+            ItemStack specialPotion = MPItemStacks.newItemStack(Material.POTION, 1, "&aMax health modifier!", Arrays.asList("&cDrink this potion","&cto gain 2 extra hearts"));
             PotionMeta meta = (PotionMeta) specialPotion.getItemMeta();
             assert meta != null;
 
@@ -202,6 +205,7 @@ public final class HealthPower extends ReloaderPlugin {
                 meta.setMainEffect(PotionEffectType.HEAL);
             }
 
+            this.consumablesYaml.getAccess().set("consumables.example1.options.add", 2.0);
             this.consumablesYaml.getAccess().set("consumables.example1.item", specialPotion);
             this.consumablesYaml.save(false);
         }
@@ -296,12 +300,16 @@ public final class HealthPower extends ReloaderPlugin {
     }
 
 
-    public MessageSender<Message> getMessageSender() {
-        return this.messageSender;
-    }
-
     public AbstractHPManager getHpManager() {
         return this.hpManager;
+    }
+
+    public ConsumableManager getConsumableManager() {
+        return this.consumableManager;
+    }
+
+    public MessageSender<Message> getMessageSender() {
+        return this.messageSender;
     }
 
     public Settings getSettings() {
