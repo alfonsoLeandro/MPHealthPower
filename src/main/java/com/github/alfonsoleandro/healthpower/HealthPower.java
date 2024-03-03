@@ -276,6 +276,7 @@ public final class HealthPower extends ReloaderPlugin {
             return;
         }
 
+        //TODO: add consumables names list to tab completer, realod them on reload
         mainCommand.setExecutor(new MainCommand(this));
         mainCommand.setTabCompleter(new MPTabCompleter(Arrays.asList(
                 "help",
