@@ -42,35 +42,7 @@ public class MainCommand implements CommandExecutor {
         this.COR.handle(sender, label, args);
 //        return true;
 
-        if (args[0].equalsIgnoreCase("clear")) {
-            if (!sender.hasPermission("HealthPower.clear")) {
-                this.messageSender.send(sender, Message.NO_PERMISSION);
-                return true;
-            }
-            if (args.length < 2) {
-                this.messageSender.send(sender, "&cUse: &f/" + label + " clear (player)");
-                return true;
-            }
-            FileConfiguration hp = this.plugin.getHpYaml().getAccess();
-            hp.set("HP.players." + args[1], null);
-            this.plugin.getHpYaml().save(true);
-
-            this.messageSender.send(sender, Message.PLAYER_CLEARED,
-                    "%player%", args[1]);
-
-        } else if (args[0].equalsIgnoreCase("clearAll")) {
-            if (!sender.hasPermission("HealthPower.clear")) {
-                this.messageSender.send(sender, Message.NO_PERMISSION);
-                return true;
-            }
-            FileConfiguration hp = this.plugin.getHpYaml().getAccess();
-            hp.set("HP.players", new ArrayList<>());
-            this.plugin.getHpYaml().save(true);
-
-            this.messageSender.send(sender, Message.PLAYERS_CLEARED);
-
-
-        } else if (args[0].equalsIgnoreCase("check")) {
+        if (args[0].equalsIgnoreCase("check")) {
             if (!sender.hasPermission("HealthPower.check")) {
                 this.messageSender.send(sender, Message.NO_PERMISSION);
                 return true;
