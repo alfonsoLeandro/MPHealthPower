@@ -71,7 +71,7 @@ public class ConsumableManager extends Reloadable {
     }
 
     public boolean addConsumable(String name, Consumable.ConsumableMode mode, double amount, String message, ItemStack item) {
-        if (!isValidConsumable(item)) {
+        if (invalidConsumable(item)) {
             return false;
         }
 
@@ -84,8 +84,8 @@ public class ConsumableManager extends Reloadable {
         return true;
     }
 
-    public boolean isValidConsumable(ItemStack item) {
-        return item != null && !item.getType().equals(Material.AIR) && (item.getType().isEdible() || item.getType().equals(Material.POTION));
+    public boolean invalidConsumable(ItemStack item) {
+        return item == null || item.getType().equals(Material.AIR) || (!item.getType().isEdible() && !item.getType().equals(Material.POTION));
     }
 
     public Consumable getConsumable(String name) {

@@ -17,10 +17,13 @@ public enum Message implements MessageEnum {
     COMMAND_USE_CONSUMABLE("messages.consumable use", "&cUse: &f/%command% consumable (give) (player) (consumable_name) &cOR &f/%command% consumable (set) (consumable_name) (add/set) (amount)"),
     INVALID_CONSUMABLE("messages.invalid consumable", "&cInvalid consumable %name%. No \"set\" or \"add\" value found."),
     INVALID_CONSUMABLE_ITEM("messages.invalid consumable item", "&cInvalid consumable item for %name%. Must be edible or a potion."),
+    CONSUMABLE_NOT_EXIST("messages.consumable not exist", "&cA consumable with that name does not exist."),
     HP_MUST_BE_NUMBER("messages.must be a number", "&cHP must be a decimal number (ie: 1.0)"),
     UNKNOWN_COMMAND("messages.unknown command", "&cUnknown Command, try &e/%command% help"),
-    CONSUMABLE_GIVEN("messages.consumable given", "&aA consumable has been given to you"),
-    IN_HAND_NOT_CONSUMABLE("messages.consumable not in hand", "&cYou must be holding the consumable"),
+    CONSUMABLE_GIVEN("messages.consumable given", "&a%player% has been given a consumable"),
+    CONSUMABLE_RECEIVED("messages.consumable received", "&aA consumable has been given to you"),
+    IN_HAND_NOT_CONSUMABLE("messages.consumable not in hand", "&cYou must be holding a valid consumable"),
+    CONSUMABLE_CREATED("messages.consumable created", "&aSaved consumable with name &f%name%&a, mode &f%mode%&a and value &f%value%&a!"),
     GUI_DISABLED("&cThe HP shop GUI is disabled in this server"),
     GUI_ERROR("messages.error opening gui", "&cThere was an error while trying to open de buy hp menu, talk to an admin or check console"),
     GUI_OPENING("messages.opening gui", "&fOpening buy hp menu!"),
@@ -43,6 +46,7 @@ public enum Message implements MessageEnum {
     PLAYER_CHECKED("messages.hp checked", "&aChecked and corrected HP for &f%player%"),
     PLAYERS_CHECKED("messages.hp checked all", "&aChecked and corrected HP for every player online!"),
     INV_FULL("messages.your inventory is full", "&cYour inventory is full."),
+    PLAYER_INV_FULL("messages.player inventory is full", "&c%player%'s inventory is full."),
     DEFAULT_CONSUMABLE_MSG("messages.default consumable message", "&fYour HP is now %HP%");
 
     private final String path;
