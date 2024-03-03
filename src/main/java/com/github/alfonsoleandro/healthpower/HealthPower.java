@@ -1,7 +1,6 @@
 package com.github.alfonsoleandro.healthpower;
 
 import com.github.alfonsoleandro.healthpower.commands.MainCommand;
-import com.github.alfonsoleandro.healthpower.commands.MainCommandTabCompleter;
 import com.github.alfonsoleandro.healthpower.listeners.ConsumablesEvents;
 import com.github.alfonsoleandro.healthpower.listeners.InventoryEvents;
 import com.github.alfonsoleandro.healthpower.listeners.PlayerJoin;
@@ -10,6 +9,7 @@ import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManagerLegacy;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
+import com.github.alfonsoleandro.mputils.commands.MPTabCompleter;
 import com.github.alfonsoleandro.mputils.files.YamlFile;
 import com.github.alfonsoleandro.mputils.itemstacks.MPItemStacks;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
@@ -277,7 +277,21 @@ public final class HealthPower extends ReloaderPlugin {
         }
 
         mainCommand.setExecutor(new MainCommand(this));
-        mainCommand.setTabCompleter(new MainCommandTabCompleter(this));
+        mainCommand.setTabCompleter(new MPTabCompleter(Arrays.asList(
+                "help",
+                "version",
+                "reload",
+                "set {PLAYER} 20",
+                "add {PLAYER} 20",
+                "gui",
+                "consumable give {PLAYER} {consumable_name}",
+                "consumable set {consumable_name} add 20",
+                "consumable set {consumable_name} set 20",
+                "clear {PLAYER}",
+                "clearAll",
+                "check {PLAYER}",
+                "checkAll"
+        )));
     }
 
 
