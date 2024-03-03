@@ -29,7 +29,8 @@ public class ClearHandler extends AbstractHandler {
             return;
         }
         if (args.length < 2) {
-            this.messageSender.send(sender, "&cUse: &f/" + label + " clear (player)");
+            this.messageSender.send(sender, Message.CLEAR_USE,
+                    "%command%", label);
             return;
         }
         Player player = Bukkit.getPlayer(args[1]);

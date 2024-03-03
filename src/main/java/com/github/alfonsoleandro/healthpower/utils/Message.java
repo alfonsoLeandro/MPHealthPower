@@ -15,6 +15,7 @@ public enum Message implements MessageEnum {
     PLAYER_NOT_ONLINE("messages.not online", "&cThat player is not online"),
     COMMAND_USE_HP_MODIFY("messages.modify use", "&cUse: &f/%command% %what% (player) (HP)"),
     COMMAND_USE_CONSUMABLE("messages.consumable use", "&cUse: &f/%command% consumable (give) (player) (consumable_name) &cOR &f/%command% consumable (set) (consumable_name) (add/set) (amount)"),
+    COMMAND_USE_CLEAR("messages.clear use", "&cUse: &f/%command% clear (player)"),
     INVALID_CONSUMABLE("messages.invalid consumable", "&cInvalid consumable %name%. No \"set\" or \"add\" value found."),
     INVALID_CONSUMABLE_ITEM("messages.invalid consumable item", "&cInvalid consumable item for %name%. Must be edible or a potion."),
     CONSUMABLE_NOT_EXIST("messages.consumable not exist", "&cA consumable with that name does not exist."),

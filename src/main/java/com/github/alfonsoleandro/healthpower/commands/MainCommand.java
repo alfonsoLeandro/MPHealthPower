@@ -9,28 +9,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-
 public class MainCommand implements CommandExecutor {
 
-    private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
     private final AbstractHPManager hpManager;
     private final AbstractHandler COR;
 
     public MainCommand(HealthPower plugin) {
-        this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
         this.hpManager = plugin.getHpManager();
         this.COR = new ShopHandler(plugin, new HelpHandler(plugin,
                 new VersionHandler(plugin, new ReloadHandler(plugin,
                         new HPModifyHandler(plugin, new ConsumablesHandler(plugin,
                                 new ClearHandler(plugin, new HPCheckHandler(plugin,
-                                        new GroupModifyHandler(plugin, null)
+                                        new GroupModifyHandler(plugin, new ClearAllHandler(plugin,
+                                                null))
                                 ))
                         ))
                 ))

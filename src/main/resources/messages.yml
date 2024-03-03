@@ -6,6 +6,7 @@ messages:
   cannot send console: '&cThat command can only be sent by a player.'
   modify use: '&cUse: &f/%command% %what% (player) (HP)'
   consumable use: '&cUse: &f/%command% consumable (give) (player) (consumable_name) &cOR &f/%command% consumable (set) (consumable_name) (add/set) (amount)'
+  clear use: '&cUse: &f/%command% clear (player)'
   invalid consumable: '&cInvalid consumable %name%. No "set" or "add" value found.'
   invalid consumable item: '&cInvalid consumable %name%. No "set" or "add" value found.'
   consumable not exist: '&cA consumable with that name does not exist.'
