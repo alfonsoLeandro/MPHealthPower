@@ -38,6 +38,7 @@ public class Settings extends Reloadable {
         super(plugin);
         this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
+        loadFields();
     }
 
     private void loadFields() {
