@@ -18,14 +18,14 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Objects;
 
-public class ConsumablesEvents implements Listener {
+public class ConsumablesListener implements Listener {
 
     private final AbstractHPManager hpManager;
     private final ConsumableManager consumableManager;
     private final MessageSender<Message> messageSender;
     private final Settings settings;
 
-    public ConsumablesEvents(HealthPower plugin) {
+    public ConsumablesListener(HealthPower plugin) {
         this.consumableManager = plugin.getConsumableManager();
         this.hpManager = plugin.getHpManager();
         this.messageSender = plugin.getMessageSender();
