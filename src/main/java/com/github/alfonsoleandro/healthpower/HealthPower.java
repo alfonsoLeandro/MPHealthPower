@@ -228,25 +228,25 @@ public final class HealthPower extends ReloaderPlugin {
 
     private void setTabCompleter() {
         Set<String> consumablesNames = this.consumableManager.getConsumablesNames();
-        List<String> possibilities = Arrays.asList(
+        List<String> possibilities = new ArrayList<>(Arrays.asList(
                 "help",
                 "version",
                 "reload",
-                "set {PLAYER} 20",
-                "add {PLAYER} 20",
+                "set {PLAYERS} 20",
+                "add {PLAYERS} 20",
                 "gui",
-                "clear {PLAYER}",
+                "clear {PLAYERS}",
                 "clearAll",
-                "check {PLAYER}",
+                "check {PLAYERS}",
                 "checkAll"
-        );
+        ));
         if (consumablesNames.isEmpty()) {
-            possibilities.add("consumable give {PLAYER} {consumable_name}");
+            possibilities.add("consumable give {PLAYERS} {consumable_name}");
             possibilities.add("consumable set {consumable_name} add 20");
             possibilities.add("consumable set {consumable_name} set 20");
         } else {
             for (String consumableName : consumablesNames) {
-                possibilities.add("consumable give {PLAYER} " + consumableName);
+                possibilities.add("consumable give {PLAYERS} " + consumableName);
                 possibilities.add("consumable set " + consumableName + " add 20");
                 possibilities.add("consumable set " + consumableName + " set 20");
             }
