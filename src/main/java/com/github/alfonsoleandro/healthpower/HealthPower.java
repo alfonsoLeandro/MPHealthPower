@@ -36,9 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public final class HealthPower extends ReloaderPlugin {
 
@@ -194,7 +192,7 @@ public final class HealthPower extends ReloaderPlugin {
         this.consumablesYaml = new YamlFile(this, "consumables.yml");
 
         if (!consumablesFileExisted) {
-            ItemStack specialPotion = MPItemStacks.newItemStack(Material.POTION, 1, "&aMax health modifier!", Arrays.asList("&cDrink this potion","&cto gain 2 extra hearts"));
+            ItemStack specialPotion = MPItemStacks.newItemStack(Material.POTION, 1, "&aMax health modifier!", Arrays.asList("&cDrink this potion", "&cto gain 2 extra hearts"));
             PotionMeta meta = (PotionMeta) specialPotion.getItemMeta();
             assert meta != null;
 
@@ -225,6 +223,37 @@ public final class HealthPower extends ReloaderPlugin {
     public void reload(boolean deep) {
         reloadFiles();
         super.reload(deep);
+        setTabCompleter();
+    }
+
+    private void setTabCompleter() {
+        Set<String> consumablesNames = this.consumableManager.getConsumablesNames();
+        List<String> possibilities = Arrays.asList(
+                "help",
+                "version",
+                "reload",
+                "set {PLAYER} 20",
+                "add {PLAYER} 20",
+                "gui",
+                "clear {PLAYER}",
+                "clearAll",
+                "check {PLAYER}",
+                "checkAll"
+        );
+        if (consumablesNames.isEmpty()) {
+            possibilities.add("consumable give {PLAYER} {consumable_name}");
+            possibilities.add("consumable set {consumable_name} add 20");
+            possibilities.add("consumable set {consumable_name} set 20");
+        } else {
+            for (String consumableName : consumablesNames) {
+                possibilities.add("consumable give {PLAYER} " + consumableName);
+                possibilities.add("consumable set " + consumableName + " add 20");
+                possibilities.add("consumable set " + consumableName + " set 20");
+            }
+        }
+
+        Objects.requireNonNull(getCommand("HealthPower"))
+                .setTabCompleter(new MPTabCompleter(possibilities));
     }
 
     /**
@@ -279,24 +308,8 @@ public final class HealthPower extends ReloaderPlugin {
             this.setEnabled(false);
             return;
         }
-
-        //TODO: add consumables names list to tab completer, realod them on reload
         mainCommand.setExecutor(new MainCommand(this));
-        mainCommand.setTabCompleter(new MPTabCompleter(Arrays.asList(
-                "help",
-                "version",
-                "reload",
-                "set {PLAYER} 20",
-                "add {PLAYER} 20",
-                "gui",
-                "consumable give {PLAYER} {consumable_name}",
-                "consumable set {consumable_name} add 20",
-                "consumable set {consumable_name} set 20",
-                "clear {PLAYER}",
-                "clearAll",
-                "check {PLAYER}",
-                "checkAll"
-        )));
+        setTabCompleter();
     }
 
 
