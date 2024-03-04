@@ -78,7 +78,7 @@ public class ConsumableManager extends Reloadable {
 
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer persistentDataContainer = Objects.requireNonNull(itemMeta).getPersistentDataContainer();
-        persistentDataContainer.set(this.namespacedKey, PersistentDataType.BYTE, (byte) 1);
+        persistentDataContainer.set(this.namespacedKey, PersistentDataType.STRING, name);
         item.setItemMeta(itemMeta);
 
         Consumable consumable = new Consumable(name, mode, amount, message, item);
