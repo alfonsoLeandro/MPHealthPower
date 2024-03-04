@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -75,9 +76,10 @@ public class ConsumableManager extends Reloadable {
             return false;
         }
 
-        PersistentDataContainer persistentDataContainer = Objects.requireNonNull(item.getItemMeta()).getPersistentDataContainer();
+        ItemMeta itemMeta = item.getItemMeta();
+        PersistentDataContainer persistentDataContainer = Objects.requireNonNull(itemMeta).getPersistentDataContainer();
         persistentDataContainer.set(this.namespacedKey, PersistentDataType.BYTE, (byte) 1);
-
+        item.setItemMeta(itemMeta);
 
         Consumable consumable = new Consumable(name, mode, amount, message, item);
         this.consumablesByName.put(name, consumable);
