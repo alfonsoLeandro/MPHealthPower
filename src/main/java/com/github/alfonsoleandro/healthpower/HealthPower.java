@@ -29,19 +29,28 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public final class HealthPower extends ReloaderPlugin {
 
     private final PluginDescriptionFile pdfFile = getDescription();
     private final String version = this.pdfFile.getVersion();
+    private Integer serverMajorVersion;
+    private Integer serverMinorVersion;
     private String latestVersion;
     private AbstractHPManager hpManager;
     private ConsumableManager consumableManager;
@@ -56,6 +65,7 @@ public final class HealthPower extends ReloaderPlugin {
 
     @Override
     public void onEnable() {
+        findVersion();
         registerFiles();
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
         this.hpManager = (Integer.parseInt(getServer().getBukkitVersion().split("-")[0].replace(".", "-").split("-")[1]) < 9) ?
@@ -95,6 +105,20 @@ public final class HealthPower extends ReloaderPlugin {
         this.messageSender.send("Please consider subscribing to my yt channel: &c" + this.pdfFile.getWebsite());
     }
 
+
+    private void findVersion() {
+        String[] version = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+        try {
+            this.serverMajorVersion = Integer.parseInt(version[1]);
+            if (version.length > 2) {
+                this.serverMinorVersion = Integer.parseInt(version[2]);
+            } else {
+                this.serverMinorVersion = 0;
+            }
+        } catch (Exception ex) {
+            Bukkit.getConsoleSender().sendMessage("There's been an error while trying to check the server's version.");
+        }
+    }
 
     private void startMetrics() {
         if (this.configYaml.getAccess().getBoolean("config.use metrics")) {
@@ -196,11 +220,11 @@ public final class HealthPower extends ReloaderPlugin {
             PotionMeta meta = (PotionMeta) specialPotion.getItemMeta();
             assert meta != null;
 
-            if (Integer.parseInt(getServer().getBukkitVersion().split("-")[0].replace(".", "-").split("-")[1]) > 8) {
-                meta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
+            if (this.serverMajorVersion >= 20 && this.serverMinorVersion >= 2) {
+                meta.setBasePotionType(PotionType.INSTANT_HEAL);
             } else {
-                //noinspection deprecation (This is the only way to do it in 1.8)
-                meta.setMainEffect(PotionEffectType.HEAL);
+                //noinspection deprecation (deprecated in 1.20.2, still used since 1.9)
+                meta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
             }
 
             this.consumablesYaml.getAccess().set("consumables.example1.options.add", 2.0);
@@ -312,6 +336,13 @@ public final class HealthPower extends ReloaderPlugin {
         setTabCompleter();
     }
 
+    public Integer getServerMajorVersion() {
+        return this.serverMajorVersion;
+    }
+
+    public Integer getServerMinorVersion() {
+        return this.serverMinorVersion;
+    }
 
     public AbstractHPManager getHpManager() {
         return this.hpManager;
