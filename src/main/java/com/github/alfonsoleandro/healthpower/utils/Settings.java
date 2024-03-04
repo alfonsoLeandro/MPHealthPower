@@ -25,6 +25,7 @@ public class Settings extends Reloadable {
     private final MessageSender<Message> messageSender;
     // Fields
     private boolean shopGUIEnabled;
+    private boolean consumablesEnabled;
 
     private int shopGuiSize;
 
@@ -43,6 +44,7 @@ public class Settings extends Reloadable {
         FileConfiguration config = this.plugin.getConfigYaml().getAccess();
 
         this.shopGUIEnabled = config.getBoolean("config.GUI.enabled");
+        this.consumablesEnabled = config.getBoolean("config.consumables enabled");
 
         this.shopGuiSize = Math.min(54, Math.max(9, config.getInt("config.GUI.size")));
 
@@ -124,5 +126,9 @@ public class Settings extends Reloadable {
 
     public boolean isShopGUIEnabled() {
         return this.shopGUIEnabled;
+    }
+
+    public boolean isConsumablesEnabled() {
+        return this.consumablesEnabled;
     }
 }
