@@ -50,8 +50,8 @@ public class PlayerJoin implements Listener {
     private void checkForUpdates(Player player) {
         if (player.isOp()) {
             if (!this.plugin.getVersion().equals(this.plugin.getLatestVersion())) {
-                this.messageSender.send(player, " &4New version available &7(&e" + this.plugin.getLatestVersion() + "&7)");
-                this.messageSender.send(player, " &fhttps://bit.ly/3fqzRpR");
+                this.messageSender.send(player, "&4New version available &7(&e" + this.plugin.getLatestVersion() + "&7)");
+                this.messageSender.send(player, "&fhttps://bit.ly/hpUpdate");
             }
         }
     }

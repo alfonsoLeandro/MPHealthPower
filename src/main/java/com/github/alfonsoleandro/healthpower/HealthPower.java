@@ -77,7 +77,7 @@ public final class HealthPower extends ReloaderPlugin {
         this.settings = new Settings(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
         this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().get(0));
-        this.messageSender.send("&fJoin my discord server at &chttps://discordapp.com/invite/ZznhQud");
+        this.messageSender.send("&fJoin my discord server at &chttps://bit.ly/MPDiscordSv");
         this.messageSender.send("Please consider subscribing to my yt channel: &c" + this.pdfFile.getWebsite());
         if (setupEconomy()) {
             this.messageSender.send("&aPlugin Vault and economy found, economy hooked");
@@ -105,7 +105,7 @@ public final class HealthPower extends ReloaderPlugin {
     public void onDisable() {
         this.messageSender.send("&cDisabled&f. Version: &e" + this.version);
         this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().get(0));
-        this.messageSender.send("&fJoin my discord server at &chttps://discordapp.com/invite/ZznhQud");
+        this.messageSender.send("&fJoin my discord server at &chttps://bit.ly/MPDiscordSv");
         this.messageSender.send("Please consider subscribing to my yt channel: &c" + this.pdfFile.getWebsite());
     }
 
@@ -181,7 +181,7 @@ public final class HealthPower extends ReloaderPlugin {
                 if (!this.version.equals(this.latestVersion)) {
                     String exclamation = "&e&l(&4&l!&e&l)";
                     this.messageSender.send(exclamation + " &cThere is a new version available &e(&7" + this.latestVersion + "&e)");
-                    this.messageSender.send(exclamation + " &cDownload it here: &fhttps://bit.ly/3fqzRpR");
+                    this.messageSender.send(exclamation + " &cDownload it here: &fhttps://bit.ly/hpUpdate");
                 }
             }
         } catch (Exception ex) {
