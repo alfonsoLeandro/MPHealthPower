@@ -1,7 +1,6 @@
-package com.github.alfonsoleandro.healthpower.managers;
+package com.github.alfonsoleandro.healthpower.managers.consumable;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.utils.Consumable;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.reloadable.Reloadable;

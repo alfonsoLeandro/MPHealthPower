@@ -1,8 +1,8 @@
 package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.ConsumableManager;
-import com.github.alfonsoleandro.healthpower.utils.Consumable;
+import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
+import com.github.alfonsoleandro.healthpower.managers.consumable.Consumable;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.mputils.itemstacks.InventoryUtils;
 import org.bukkit.Bukkit;

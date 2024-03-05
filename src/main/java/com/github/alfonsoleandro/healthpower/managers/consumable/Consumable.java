@@ -1,4 +1,4 @@
-package com.github.alfonsoleandro.healthpower.utils;
+package com.github.alfonsoleandro.healthpower.managers.consumable;
 
 import org.bukkit.inventory.ItemStack;
 

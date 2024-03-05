@@ -4,7 +4,7 @@ import com.github.alfonsoleandro.healthpower.commands.MainCommand;
 import com.github.alfonsoleandro.healthpower.listeners.ConsumablesListener;
 import com.github.alfonsoleandro.healthpower.listeners.InventoryEvents;
 import com.github.alfonsoleandro.healthpower.listeners.PlayerJoin;
-import com.github.alfonsoleandro.healthpower.managers.ConsumableManager;
+import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
