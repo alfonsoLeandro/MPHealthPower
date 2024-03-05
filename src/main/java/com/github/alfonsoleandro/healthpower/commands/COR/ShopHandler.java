@@ -6,7 +6,7 @@ import com.github.alfonsoleandro.healthpower.utils.Settings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ShopHandler extends AbstractHandler{
+public class ShopHandler extends AbstractHandler {
 
     private final Settings settings;
 
@@ -26,19 +26,24 @@ public class ShopHandler extends AbstractHandler{
 
     @Override
     protected void internalHandle(CommandSender sender, String label, String[] args) {
-        if(!(sender instanceof Player)){
+        if (!(sender instanceof Player player)) {
             this.messageSender.send(sender, Message.CANNOT_SEND_CONSOLE);
             return;
         }
-        if(!sender.hasPermission("HealthPower.gui")) {
+        if (!sender.hasPermission("HealthPower.gui")) {
             this.messageSender.send(sender, Message.NO_PERMISSION);
             return;
         }
-        if(!this.settings.isShopGUIEnabled()){
+        if (!this.settings.isShopGUIEnabled()) {
             this.messageSender.send(sender, Message.GUI_DISABLED);
             return;
         }
-        this.plugin.getSettings().openShopGUI((Player)sender);
+        if (this.plugin.getEconomy() == null) {
+            this.messageSender.send(sender, Message.ECONOMY_DISABLED);
+            return;
+        }
+
+        this.plugin.getSettings().openShopGUI(player);
 
     }
 
