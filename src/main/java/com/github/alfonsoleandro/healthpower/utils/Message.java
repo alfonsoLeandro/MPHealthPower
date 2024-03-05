@@ -52,7 +52,8 @@ public enum Message implements MessageEnum {
     PLAYERS_CHECKED("messages.hp checked all", "&aChecked and corrected HP for every player online!"),
     INV_FULL("messages.your inventory is full", "&cYour inventory is full."),
     PLAYER_INV_FULL("messages.player inventory is full", "&c%player%'s inventory is full."),
-    DEFAULT_CONSUMABLE_MSG("messages.default consumable message", "&fYour HP is now %HP%");
+    DEFAULT_CONSUMABLE_MSG("messages.default consumable message", "&fYour HP is now %HP%"),
+    INVALID_GUI_ITEM( "&cInvalid item for GUI in slot %slot%. Please check your configuration file."),;
 
     private final String path;
     private final String dflt;

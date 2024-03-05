@@ -48,3 +48,4 @@ messages:
   hp checked all: '&aChecked and corrected HP for every player online!'
   inventory full: '&cYour inventory is full.'
   player inventory full: '&c%player%''s inventory is full'
+  invalid gui item: '&cInvalid item for GUI in slot %slot%. Please check your configuration file.'
