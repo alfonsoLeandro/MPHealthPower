@@ -5,6 +5,7 @@ import com.github.alfonsoleandro.healthpower.listeners.ConsumablesListener;
 import com.github.alfonsoleandro.healthpower.listeners.InventoryEvents;
 import com.github.alfonsoleandro.healthpower.listeners.PlayerJoin;
 import com.github.alfonsoleandro.healthpower.managers.ConsumableManager;
+import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManagerLegacy;
@@ -31,6 +32,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
+import org.mariuszgromada.math.mxparser.License;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -54,6 +56,7 @@ public final class HealthPower extends ReloaderPlugin {
     private String latestVersion;
     private AbstractHPManager hpManager;
     private ConsumableManager consumableManager;
+    private HPGUIManager hpGUIManager;
     private MessageSender<Message> messageSender;
     private Settings settings;
     private YamlFile configYaml;
@@ -65,6 +68,7 @@ public final class HealthPower extends ReloaderPlugin {
 
     @Override
     public void onEnable() {
+        License.iConfirmNonCommercialUse("Leandro Alfonso");
         findVersion();
         registerFiles();
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
@@ -90,6 +94,7 @@ public final class HealthPower extends ReloaderPlugin {
             this.messageSender.send("&c&lMessages have been moved from config to messages.yml. Make sure to re-personalize them!!!");
             this.messageSender.send("&c&lKeep in mind there are new messages too!");
         }
+        this.hpGUIManager = new HPGUIManager(this);
         checkAndCorrectConfig();
         registerCommands();
         registerEvents();
@@ -350,6 +355,10 @@ public final class HealthPower extends ReloaderPlugin {
 
     public ConsumableManager getConsumableManager() {
         return this.consumableManager;
+    }
+
+    public HPGUIManager getHpGUIManager() {
+        return this.hpGUIManager;
     }
 
     public MessageSender<Message> getMessageSender() {
