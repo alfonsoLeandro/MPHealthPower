@@ -12,14 +12,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class PlayerJoin implements Listener {
+public class PlayerJoinListener implements Listener {
 
     private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
     private final AbstractHPManager hpManager;
     private final Settings settings;
 
-    public PlayerJoin(HealthPower plugin) {
+    public PlayerJoinListener(HealthPower plugin) {
         this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
         this.hpManager = plugin.getHpManager();
@@ -71,7 +71,7 @@ public class PlayerJoin implements Listener {
             this.hpManager.setHP(player, 1);
             new BukkitRunnable() {
                 public void run() {
-                    PlayerJoin.this.hpManager.setHP(player, actualHealth);
+                    PlayerJoinListener.this.hpManager.setHP(player, actualHealth);
                 }
             }.runTaskLater(this.plugin, 2);
 
