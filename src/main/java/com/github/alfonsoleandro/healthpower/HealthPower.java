@@ -72,8 +72,7 @@ public final class HealthPower extends ReloaderPlugin {
         findVersion();
         registerFiles();
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
-        this.hpManager = (Integer.parseInt(getServer().getBukkitVersion().split("-")[0].replace(".", "-").split("-")[1]) < 9) ?
-                new HPManagerLegacy(this) : new HPManager(this);
+        this.hpManager = (this.serverMajorVersion < 9) ? new HPManagerLegacy(this) : new HPManager(this);
         this.consumableManager = new ConsumableManager(this);
         this.settings = new Settings(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
