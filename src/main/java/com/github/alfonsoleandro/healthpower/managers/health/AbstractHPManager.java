@@ -281,6 +281,13 @@ public abstract class AbstractHPManager extends Reloadable {
         return true;
     }
 
+    public boolean canSetHP(Player player, double amount) {
+        return player.hasPermission("HealthPower.cap.bypass") || amount <= this.hpCap;
+    }
+    public boolean canAddHP(Player player, double amount) {
+        return player.hasPermission("HealthPower.cap.bypass") || (amount + getHealth(player)) <= this.hpCap;
+    }
+
     public abstract double getHealth(Player player);
 
     public abstract void setHP(Player player, double value);
