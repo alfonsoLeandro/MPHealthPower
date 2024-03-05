@@ -23,6 +23,7 @@ messages:
   gui remove HP: '&c%value% HP &fhave been &cremoved &ffrom your total health (%HP%)'
   yourself: 'yourself'
   hp automatic set: '&aYour &cHP &ahas been set to &c%HP%'
+  economy not enabled: '&cEconomy is not enabled in this server'
   gui disabled: '&cThe HP shop GUI is disabled in this server'
   opening gui: '&fOpening buy hp menu!'
   error opening gui: '&cThere was an error while trying to open de buy hp menu, talk to an admin or check console'
