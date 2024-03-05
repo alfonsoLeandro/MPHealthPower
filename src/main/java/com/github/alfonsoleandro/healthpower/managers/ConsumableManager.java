@@ -24,10 +24,10 @@ import java.util.Set;
  */
 public class ConsumableManager extends Reloadable {
 
+    private final Map<String, Consumable> consumablesByName = new HashMap<>();
     private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
     private final NamespacedKey namespacedKey;
-    private final Map<String, Consumable> consumablesByName = new HashMap<>();
 
     public ConsumableManager(HealthPower plugin) {
         super(plugin);
