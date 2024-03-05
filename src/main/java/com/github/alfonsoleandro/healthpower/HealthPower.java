@@ -2,7 +2,7 @@ package com.github.alfonsoleandro.healthpower;
 
 import com.github.alfonsoleandro.healthpower.commands.MainCommand;
 import com.github.alfonsoleandro.healthpower.listeners.ConsumablesListener;
-import com.github.alfonsoleandro.healthpower.listeners.InventoryEvents;
+import com.github.alfonsoleandro.healthpower.listeners.GUIClickListener;
 import com.github.alfonsoleandro.healthpower.listeners.PlayerJoin;
 import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
@@ -321,7 +321,7 @@ public final class HealthPower extends ReloaderPlugin {
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerJoin(this), this);
-        pm.registerEvents(new InventoryEvents(this), this);
+        pm.registerEvents(new GUIClickListener(this), this);
         pm.registerEvents(new ConsumablesListener(this), this);
     }
 
