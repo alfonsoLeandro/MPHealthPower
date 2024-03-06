@@ -70,9 +70,9 @@ public final class HealthPower extends ReloaderPlugin {
         findVersion();
         registerFiles();
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
+        this.settings = new Settings(this);
         this.hpManager = new HPManager(this);
         this.consumableManager = new ConsumableManager(this);
-        this.settings = new Settings(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
         this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().get(0));
         this.messageSender.send("&fJoin my discord server at &chttps://bit.ly/MPDiscordSv");

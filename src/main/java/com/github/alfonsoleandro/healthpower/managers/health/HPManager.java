@@ -56,9 +56,9 @@ public class HPManager extends Reloadable {
      * @param newValue The value to set the player's hp to.
      */
     public void automaticSetHP(Player player, double newValue) {
-        if (this.settings.isDebug())
-            this.messageSender.send("&fHP of " + player.getName() + " set to " + newValue);
-
+        if (this.settings.isDebug()) {
+            this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set to " + newValue);
+        }
         setHP(player, newValue);
 
         this.messageSender.send(player, Message.HP_AUTOMATIC_SET,
@@ -77,20 +77,21 @@ public class HPManager extends Reloadable {
             if (this.plugin.setupPermissions() && this.plugin.getPermissions().hasGroupSupport()) {
                 Permission perms = this.plugin.getPermissions();
                 this.messageSender.send(
-                        "&fGroup of " + player.getName() + ": " + perms.getPrimaryGroup(player));
+                        "&cDEBUG: &fGroup of " + player.getName() + ": " + perms.getPrimaryGroup(player));
             } else {
-                this.messageSender.send("&fPermissions system not found for checking " + player.getName() + "'s permission group");
+                this.messageSender.send("&cDEBUG: &fPermissions system not found for checking " + player.getName() + "'s permission group");
             }
         }
 
 
         if (hp.contains("HP.players." + player.getName())) {
-            if (this.settings.isDebug())
-                this.messageSender.send("&fHP file contains " + player.getName());
+            if (this.settings.isDebug()) {
+                this.messageSender.send("&cDEBUG &fHP file contains " + player.getName());
+            }
             double value = hp.getDouble("HP.players." + player.getName());
             if (value != getHealth(player)) {
                 if (this.settings.isDebug())
-                    this.messageSender.send("&fHP of " + player.getName() + " set by name (overrides groups and permissions based HP)");
+                    this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set by name (overrides groups and permissions based HP)");
                 automaticSetHP(player, value);
             }
             return;
@@ -104,8 +105,9 @@ public class HPManager extends Reloadable {
                     .filter(p -> p.getPermission().contains("healthpower.amount."))
                     .collect(Collectors.toSet())) {
 
-                if (this.settings.isDebug())
-                    this.messageSender.send("&fFound permission \"&c" + perm.getPermission() + "&f\" for player " + player.getName());
+                if (this.settings.isDebug()) {
+                    this.messageSender.send("&cDEBUG: &fFound permission \"&c" + perm.getPermission() + "&f\" for player " + player.getName());
+                }
 
                 String newValueString = perm.getPermission().replace("healthpower.amount.", "");
                 try {
@@ -124,8 +126,9 @@ public class HPManager extends Reloadable {
             //Finally, set the value
             if (value > 0) {
                 if (value != getHealth(player)) {
-                    if (this.settings.isDebug())
-                        this.messageSender.send("&fHP of " + player.getName() + " set by permission (overrides groups based HP)");
+                    if (this.settings.isDebug()) {
+                        this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set by permission (overrides groups based HP)");
+                    }
                     automaticSetHP(player, value);
                 }
                 return;
@@ -141,8 +144,9 @@ public class HPManager extends Reloadable {
 
                     if (value > 0) {
                         if (value != getHealth(player)) {
-                            if (this.settings.isDebug())
-                                this.messageSender.send("&fHP of " + player.getName() + " set by group (group: " + group + ")");
+                            if (this.settings.isDebug()) {
+                                this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set by group (group: " + group + ")");
+                            }
                             automaticSetHP(player, value);
                         }
                         return;
@@ -153,14 +157,16 @@ public class HPManager extends Reloadable {
         }
 
         if (this.defaultHP < 1) {
-            if (this.settings.isDebug())
-                this.messageSender.send("&fHP of " + player.getName() + " would have been set to the default value," +
+            if (this.settings.isDebug()) {
+                this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " would have been set to the default value," +
                         " but the default value is currently disabled.");
+            }
             return;
         }
 
-        if (this.settings.isDebug())
-            this.messageSender.send("&fHP of " + player.getName() + " set to default value (" + defaultHP + ")");
+        if (this.settings.isDebug()) {
+            this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set to default value (" + this.defaultHP + ")");
+        }
         if (getHealth(player) != this.defaultHP) automaticSetHP(player, this.defaultHP);
 
 
