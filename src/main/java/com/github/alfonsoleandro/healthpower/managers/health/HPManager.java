@@ -6,14 +6,16 @@ import com.github.alfonsoleandro.mputils.files.YamlFile;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.reloadable.Reloadable;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractHPManager extends Reloadable {
+public class HPManager extends Reloadable {
 
     protected final HealthPower plugin;
     protected final MessageSender<Message> messageSender;
@@ -22,7 +24,7 @@ public abstract class AbstractHPManager extends Reloadable {
     protected boolean useGroupsSystem;
     protected double hpCap;
 
-    protected AbstractHPManager(HealthPower plugin) {
+    public HPManager(HealthPower plugin) {
         super(plugin);
         this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
@@ -284,13 +286,18 @@ public abstract class AbstractHPManager extends Reloadable {
     public boolean canSetHP(Player player, double amount) {
         return player.hasPermission("HealthPower.cap.bypass") || amount <= this.hpCap;
     }
+
     public boolean canAddHP(Player player, double amount) {
         return player.hasPermission("HealthPower.cap.bypass") || (amount + getHealth(player)) <= this.hpCap;
     }
 
-    public abstract double getHealth(Player player);
+    public double getHealth(Player player) {
+        return Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getBaseValue();
+    }
 
-    public abstract void setHP(Player player, double value);
+    public void setHP(Player player, double value) {
+        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(value);
+    }
 
 
     protected void loadSettings() {

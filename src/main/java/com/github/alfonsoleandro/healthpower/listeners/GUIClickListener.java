@@ -3,7 +3,7 @@ package com.github.alfonsoleandro.healthpower.listeners;
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIItem;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
-import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.mputils.guis.events.GUIClickEvent;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
@@ -15,7 +15,7 @@ import org.bukkit.event.Listener;
 public class GUIClickListener implements Listener {
 
     private final MessageSender<Message> messageSender;
-    private final AbstractHPManager hpManager;
+    private final HPManager hpManager;
     private final HPGUIManager hpGUIManager;
     private final Economy economy;
 

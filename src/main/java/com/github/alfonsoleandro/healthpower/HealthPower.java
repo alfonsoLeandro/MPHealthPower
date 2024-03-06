@@ -6,9 +6,7 @@ import com.github.alfonsoleandro.healthpower.listeners.GUIClickListener;
 import com.github.alfonsoleandro.healthpower.listeners.PlayerJoinListener;
 import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
-import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
-import com.github.alfonsoleandro.healthpower.managers.health.HPManagerLegacy;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.commands.MPTabCompleter;
@@ -54,7 +52,7 @@ public final class HealthPower extends ReloaderPlugin {
     private Integer serverMajorVersion;
     private Integer serverMinorVersion;
     private String latestVersion;
-    private AbstractHPManager hpManager;
+    private HPManager hpManager;
     private ConsumableManager consumableManager;
     private HPGUIManager hpGUIManager;
     private MessageSender<Message> messageSender;
@@ -72,7 +70,7 @@ public final class HealthPower extends ReloaderPlugin {
         findVersion();
         registerFiles();
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
-        this.hpManager = (this.serverMajorVersion < 9) ? new HPManagerLegacy(this) : new HPManager(this);
+        this.hpManager = new HPManager(this);
         this.consumableManager = new ConsumableManager(this);
         this.settings = new Settings(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
@@ -348,7 +346,7 @@ public final class HealthPower extends ReloaderPlugin {
         return this.serverMinorVersion;
     }
 
-    public AbstractHPManager getHpManager() {
+    public HPManager getHpManager() {
         return this.hpManager;
     }
 

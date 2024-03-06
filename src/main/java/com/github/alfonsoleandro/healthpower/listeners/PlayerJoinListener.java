@@ -1,7 +1,7 @@
 package com.github.alfonsoleandro.healthpower.listeners;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
@@ -16,7 +16,7 @@ public class PlayerJoinListener implements Listener {
 
     private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
-    private final AbstractHPManager hpManager;
+    private final HPManager hpManager;
     private final Settings settings;
 
     public PlayerJoinListener(HealthPower plugin) {

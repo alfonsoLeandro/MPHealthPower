@@ -1,7 +1,7 @@
 package com.github.alfonsoleandro.healthpower.managers.gui;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.guis.GUI;
@@ -31,7 +31,7 @@ public class HPGUIManager extends Reloadable {
     private final Map<String, String> formulas = new HashMap<>();
     private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
-    private final AbstractHPManager hpManager;
+    private final HPManager hpManager;
     private final Settings settings;
     private final Economy economy;
     private String shopGUITitle;

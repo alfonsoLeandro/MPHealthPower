@@ -1,7 +1,7 @@
 package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.health.AbstractHPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 //TODO
 public class ReloadHandler extends AbstractHandler{
 
-    private final AbstractHPManager hpManager;
+    private final HPManager hpManager;
 
     public ReloadHandler(HealthPower plugin, AbstractHandler successor) {
         super(plugin, successor);
