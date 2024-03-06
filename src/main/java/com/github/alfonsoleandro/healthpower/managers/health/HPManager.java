@@ -2,6 +2,7 @@ package com.github.alfonsoleandro.healthpower.managers.health;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.utils.Message;
+import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.files.YamlFile;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.reloadable.Reloadable;
@@ -20,17 +21,30 @@ public class HPManager extends Reloadable {
     private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
     private final YamlFile hpYaml;
-    private boolean isDebug;
+    private final Settings settings;
     private boolean usePermissionsSystem;
     private boolean useGroupsSystem;
     private double hpCap;
+    private double defaultHP;
 
     public HPManager(HealthPower plugin) {
         super(plugin);
         this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
         this.hpYaml = plugin.getHpYaml();
+        this.settings = plugin.getSettings();
         loadSettings();
+    }
+
+    protected void loadSettings() {
+        FileConfiguration config = this.plugin.getConfigYaml().getAccess();
+        this.usePermissionsSystem = config.getBoolean("config.use permissions system");
+        this.useGroupsSystem = config.getBoolean("config.use groups system");
+        this.hpCap = config.getBoolean("config.HP cap.enabled") ?
+                config.getDouble("config.HP cap.amount")
+                :
+                -1;
+        this.defaultHP = this.hpYaml.getAccess().getDouble("HP.default");
     }
 
 
@@ -42,7 +56,7 @@ public class HPManager extends Reloadable {
      * @param newValue The value to set the player's hp to.
      */
     public void automaticSetHP(Player player, double newValue) {
-        if (this.isDebug)
+        if (this.settings.isDebug())
             this.messageSender.send("&fHP of " + player.getName() + " set to " + newValue);
 
         setHP(player, newValue);
@@ -59,7 +73,7 @@ public class HPManager extends Reloadable {
     public void checkAndCorrectHP(Player player) {
         FileConfiguration hp = this.plugin.getHpYaml().getAccess();
 
-        if (this.isDebug) {
+        if (this.settings.isDebug()) {
             if (this.plugin.setupPermissions() && this.plugin.getPermissions().hasGroupSupport()) {
                 Permission perms = this.plugin.getPermissions();
                 this.messageSender.send(
@@ -71,11 +85,11 @@ public class HPManager extends Reloadable {
 
 
         if (hp.contains("HP.players." + player.getName())) {
-            if (this.isDebug)
+            if (this.settings.isDebug())
                 this.messageSender.send("&fHP file contains " + player.getName());
             double value = hp.getDouble("HP.players." + player.getName());
             if (value != getHealth(player)) {
-                if (this.isDebug)
+                if (this.settings.isDebug())
                     this.messageSender.send("&fHP of " + player.getName() + " set by name (overrides groups and permissions based HP)");
                 automaticSetHP(player, value);
             }
@@ -90,7 +104,7 @@ public class HPManager extends Reloadable {
                     .filter(p -> p.getPermission().contains("healthpower.amount."))
                     .collect(Collectors.toSet())) {
 
-                if (this.isDebug)
+                if (this.settings.isDebug())
                     this.messageSender.send("&fFound permission \"&c" + perm.getPermission() + "&f\" for player " + player.getName());
 
                 String newValueString = perm.getPermission().replace("healthpower.amount.", "");
@@ -110,7 +124,7 @@ public class HPManager extends Reloadable {
             //Finally, set the value
             if (value > 0) {
                 if (value != getHealth(player)) {
-                    if (this.isDebug)
+                    if (this.settings.isDebug())
                         this.messageSender.send("&fHP of " + player.getName() + " set by permission (overrides groups based HP)");
                     automaticSetHP(player, value);
                 }
@@ -127,7 +141,7 @@ public class HPManager extends Reloadable {
 
                     if (value > 0) {
                         if (value != getHealth(player)) {
-                            if (this.isDebug)
+                            if (this.settings.isDebug())
                                 this.messageSender.send("&fHP of " + player.getName() + " set by group (group: " + group + ")");
                             automaticSetHP(player, value);
                         }
@@ -138,17 +152,16 @@ public class HPManager extends Reloadable {
             }
         }
 
-        double defaultValue = hp.getDouble("HP.default");
-        if (defaultValue < 1) {
-            if (this.isDebug)
+        if (this.defaultHP < 1) {
+            if (this.settings.isDebug())
                 this.messageSender.send("&fHP of " + player.getName() + " would have been set to the default value," +
                         " but the default value is currently disabled.");
             return;
         }
 
-        if (this.isDebug)
-            this.messageSender.send("&fHP of " + player.getName() + " set to default value (" + defaultValue + ")");
-        if (getHealth(player) != defaultValue) automaticSetHP(player, defaultValue);
+        if (this.settings.isDebug())
+            this.messageSender.send("&fHP of " + player.getName() + " set to default value (" + defaultHP + ")");
+        if (getHealth(player) != this.defaultHP) automaticSetHP(player, this.defaultHP);
 
 
     }
@@ -175,7 +188,6 @@ public class HPManager extends Reloadable {
         }
 
         setHP(player, newValue);
-
         saveToFile(player);
     }
 
@@ -200,7 +212,6 @@ public class HPManager extends Reloadable {
         }
 
         setHP(player, newValue + getHealth(player));
-
         saveToFile(player);
     }
 
@@ -211,9 +222,7 @@ public class HPManager extends Reloadable {
         }
 
         setHP(player, amount + getHealth(player));
-
         saveToFile(player);
-
     }
 
     public void consumableSetHP(Player player, double amount) {
@@ -257,9 +266,8 @@ public class HPManager extends Reloadable {
     }
 
     private void saveToFile(Player player) {
-        YamlFile hpYaml = this.plugin.getHpYaml();
-        hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
-        hpYaml.save(true);
+        this.hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
+        this.hpYaml.save(true);
     }
 
     public boolean cannotSetHP(Player player, double amount) {
@@ -278,17 +286,6 @@ public class HPManager extends Reloadable {
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(value);
     }
 
-
-    protected void loadSettings() {
-        FileConfiguration config = this.plugin.getConfigYaml().getAccess();
-        this.isDebug = config.getBoolean("config.debug");
-        this.usePermissionsSystem = config.getBoolean("config.use permissions system");
-        this.useGroupsSystem = config.getBoolean("config.use groups system");
-        this.hpCap = config.getBoolean("config.HP cap.enabled") ?
-                config.getDouble("config.HP cap.amount")
-                :
-                -1;
-    }
 
 
     @Override
