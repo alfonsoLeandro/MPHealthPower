@@ -17,17 +17,19 @@ import java.util.stream.Collectors;
 
 public class HPManager extends Reloadable {
 
-    protected final HealthPower plugin;
-    protected final MessageSender<Message> messageSender;
-    protected boolean isDebug;
-    protected boolean usePermissionsSystem;
-    protected boolean useGroupsSystem;
-    protected double hpCap;
+    private final HealthPower plugin;
+    private final MessageSender<Message> messageSender;
+    private final YamlFile hpYaml;
+    private boolean isDebug;
+    private boolean usePermissionsSystem;
+    private boolean useGroupsSystem;
+    private double hpCap;
 
     public HPManager(HealthPower plugin) {
         super(plugin);
         this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
+        this.hpYaml = plugin.getHpYaml();
         loadSettings();
     }
 
@@ -166,8 +168,7 @@ public class HPManager extends Reloadable {
         }
 
         //Check if HP would be above cap
-        if (!player.hasPermission("HealthPower.cap.bypass")
-                && (this.hpCap > 0 && newValue > this.hpCap)) {
+        if (cannotSetHP(player, newValue)) {
             this.messageSender.send(setter, Message.PLAYER_HP_ABOVE_CAP);
             this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
             return;
@@ -194,33 +195,26 @@ public class HPManager extends Reloadable {
                     "%HP%", String.valueOf(newValue));
         }
 
-        newValue += getHealth(player);
-
-        //Check if HP would be above cap
-        if (!player.hasPermission("HealthPower.cap.bypass")
-                && (this.hpCap > 0 && newValue > this.hpCap)) {
+        if (cannotAddHP(player, newValue)) {
             this.messageSender.send(setter, Message.PLAYER_HP_ABOVE_CAP);
             this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
             return;
         }
 
-        setHP(player, newValue);
+        setHP(player, newValue + getHealth(player));
 
         YamlFile hpYaml = this.plugin.getHpYaml();
         hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
         hpYaml.save(true);
     }
 
-    public boolean consumableAddHP(Player player, double amount) {
-        amount += getHealth(player);
-        //Check if HP would be above cap
-        if (!player.hasPermission("HealthPower.cap.bypass")
-                && (this.hpCap > 0 && amount > this.hpCap)) {
+    public void consumableAddHP(Player player, double amount) {
+        if (cannotAddHP(player, amount)) {
             this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
-            return false;
+            return;
         }
 
-        setHP(player, amount);
+        setHP(player, amount + getHealth(player));
 
         YamlFile hpYaml = this.plugin.getHpYaml();
         hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
@@ -230,12 +224,10 @@ public class HPManager extends Reloadable {
 
     }
 
-    public boolean consumableSetHP(Player player, double amount) {
-        //Check if HP would be above cap
-        if (!player.hasPermission("HealthPower.cap.bypass")
-                && (this.hpCap > 0 && amount > this.hpCap)) {
+    public void consumableSetHP(Player player, double amount) {
+        if (cannotSetHP(player, amount)) {
             this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
-            return false;
+            return;
         }
 
         setHP(player, amount);
@@ -260,12 +252,10 @@ public class HPManager extends Reloadable {
         return true;
     }
 
-    public boolean guiSetHP(Player player, double amount) {
-        //Check if HP would be above cap
-        if (!player.hasPermission("HealthPower.cap.bypass")
-                && (this.hpCap > 0 && amount > this.hpCap)) {
+    public void guiSetHP(Player player, double amount) {
+        if (cannotSetHP(player, amount)) {
             this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
-            return false;
+            return;
         }
 
         setHP(player, amount);
@@ -275,12 +265,23 @@ public class HPManager extends Reloadable {
         return true;
     }
 
-    public boolean guiRemoveHP(Player player, double amount) {
+    public void guiRemoveHP(Player player, double amount) {
+        if (getHealth(player) - amount <= 0) {
+            this.messageSender.send(player, Message.CANNOT_SET_HP_UNDER_0);
+            return;
+        }
+
         setHP(player, getHealth(player) - amount);
         YamlFile hpYaml = this.plugin.getHpYaml();
         hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
         hpYaml.save(true);
         return true;
+    }
+
+    private void saveToFile(Player player) {
+        YamlFile hpYaml = this.plugin.getHpYaml();
+        hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
+        hpYaml.save(true);
     }
 
     public boolean cannotSetHP(Player player, double amount) {
