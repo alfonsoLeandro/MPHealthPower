@@ -57,8 +57,18 @@ public class HPManager extends Reloadable {
      */
     public void automaticSetHP(Player player, double newValue) {
         if (this.settings.isDebug()) {
-            this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set to " + newValue);
+            if (cannotSetHP(player, newValue)) {
+                this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " would have been set to " + newValue + ", but would exceed the cap.");
+                this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set to cap (" + this.hpCap + ").");
+            } else {
+                this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set to " + newValue);
+            }
         }
+
+        if (cannotSetHP(player, newValue)) {
+            newValue = this.hpCap;
+        }
+
         setHP(player, newValue);
 
         this.messageSender.send(player, Message.HP_AUTOMATIC_SET,
@@ -167,7 +177,9 @@ public class HPManager extends Reloadable {
         if (this.settings.isDebug()) {
             this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set to default value (" + this.defaultHP + ")");
         }
-        if (getHealth(player) != this.defaultHP) automaticSetHP(player, this.defaultHP);
+        if (getHealth(player) != this.defaultHP) {
+            automaticSetHP(player, this.defaultHP);
+        }
 
 
     }
@@ -271,7 +283,6 @@ public class HPManager extends Reloadable {
     public void setHP(Player player, double value) {
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(value);
     }
-
 
 
     @Override
