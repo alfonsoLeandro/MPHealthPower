@@ -283,12 +283,12 @@ public class HPManager extends Reloadable {
         return true;
     }
 
-    public boolean canSetHP(Player player, double amount) {
-        return player.hasPermission("HealthPower.cap.bypass") || amount <= this.hpCap;
+    public boolean cannotSetHP(Player player, double amount) {
+        return !player.hasPermission("HealthPower.cap.bypass") && amount > this.hpCap;
     }
 
-    public boolean canAddHP(Player player, double amount) {
-        return player.hasPermission("HealthPower.cap.bypass") || (amount + getHealth(player)) <= this.hpCap;
+    public boolean cannotAddHP(Player player, double amount) {
+        return !player.hasPermission("HealthPower.cap.bypass") && (amount + getHealth(player)) > this.hpCap;
     }
 
     public double getHealth(Player player) {

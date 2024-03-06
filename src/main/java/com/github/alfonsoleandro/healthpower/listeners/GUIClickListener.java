@@ -78,13 +78,13 @@ public class GUIClickListener implements Listener {
             // finally add/set/remove hp
             switch (item.type()) {
                 case ADD:
-                    if (!this.hpManager.canAddHP(player, item.amount())) {
+                    if (this.hpManager.cannotAddHP(player, item.amount())) {
                         this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
                         return;
                     }
                     this.hpManager.guiAddHP(player, item.amount());
                 case SET:
-                    if (!this.hpManager.canSetHP(player, item.amount())) {
+                    if (this.hpManager.cannotSetHP(player, item.amount())) {
                         this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
                         return;
                     }
