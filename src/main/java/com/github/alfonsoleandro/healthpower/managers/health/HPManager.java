@@ -81,7 +81,8 @@ public class HPManager extends Reloadable {
      * @param player The player to check and correct.
      */
     public void checkAndCorrectHP(Player player) {
-        FileConfiguration hp = this.plugin.getHpYaml().getAccess();
+        FileConfiguration hp = this.hpYaml.getAccess();
+        double currentHealth = getHealth(player);
 
         if (this.settings.isDebug()) {
             if (this.plugin.setupPermissions() && this.plugin.getPermissions().hasGroupSupport()) {
@@ -99,20 +100,31 @@ public class HPManager extends Reloadable {
                 this.messageSender.send("&cDEBUG &fHP file contains " + player.getName());
             }
             double value = hp.getDouble("HP.players." + player.getName());
-            if (value != getHealth(player)) {
-                if (this.settings.isDebug())
+            if (value != currentHealth) {
+                if (this.settings.isDebug()) {
                     this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set by name (overrides groups and permissions based HP)");
+                }
+                if (value <= 0){
+                    this.messageSender.send("&cIncorrect HP for player " + player.getName() + " in the HP file.");
+                    return;
+                }
                 automaticSetHP(player, value);
+            } else if(cannotSetHP(player, currentHealth)) {
+                if (this.settings.isDebug()) {
+                    this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " was above cap, it has now been set to cap (" + this.hpCap + ")");
+                }
+                automaticSetHP(player, this.hpCap);
             }
             return;
         }
+
         if (this.usePermissionsSystem) {
             double value = 0;
 
             //Check for every permission if a permission is similar to an amount permission
             for (PermissionAttachmentInfo perm : player.getEffectivePermissions()
                     .stream()
-                    .filter(p -> p.getPermission().contains("healthpower.amount."))
+                    .filter(p -> p.getPermission().startsWith("healthpower.amount."))
                     .collect(Collectors.toSet())) {
 
                 if (this.settings.isDebug()) {
@@ -135,7 +147,7 @@ public class HPManager extends Reloadable {
 
             //Finally, set the value
             if (value > 0) {
-                if (value != getHealth(player)) {
+                if (value != currentHealth) {
                     if (this.settings.isDebug()) {
                         this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set by permission (overrides groups based HP)");
                     }
@@ -145,6 +157,7 @@ public class HPManager extends Reloadable {
             }
 
         }
+
         if (this.useGroupsSystem && this.plugin.getPermissions() != null) {
             Permission perms = this.plugin.getPermissions();
             if (perms.hasGroupSupport()) {
@@ -153,7 +166,7 @@ public class HPManager extends Reloadable {
                     double value = hp.getDouble("HP.groups." + group);
 
                     if (value > 0) {
-                        if (value != getHealth(player)) {
+                        if (value != currentHealth) {
                             if (this.settings.isDebug()) {
                                 this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set by group (group: " + group + ")");
                             }
@@ -177,7 +190,7 @@ public class HPManager extends Reloadable {
         if (this.settings.isDebug()) {
             this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " set to default value (" + this.defaultHP + ")");
         }
-        if (getHealth(player) != this.defaultHP) {
+        if (currentHealth != this.defaultHP) {
             automaticSetHP(player, this.defaultHP);
         }
 
