@@ -176,9 +176,7 @@ public class HPManager extends Reloadable {
 
         setHP(player, newValue);
 
-        YamlFile hpYaml = this.plugin.getHpYaml();
-        hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
-        hpYaml.save(true);
+        saveToFile(player);
     }
 
     public void addHP(CommandSender setter, Player player, double newValue) {
@@ -203,9 +201,7 @@ public class HPManager extends Reloadable {
 
         setHP(player, newValue + getHealth(player));
 
-        YamlFile hpYaml = this.plugin.getHpYaml();
-        hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
-        hpYaml.save(true);
+        saveToFile(player);
     }
 
     public void consumableAddHP(Player player, double amount) {
@@ -216,11 +212,7 @@ public class HPManager extends Reloadable {
 
         setHP(player, amount + getHealth(player));
 
-        YamlFile hpYaml = this.plugin.getHpYaml();
-        hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
-        hpYaml.save(true);
-
-        return true;
+        saveToFile(player);
 
     }
 
@@ -231,25 +223,17 @@ public class HPManager extends Reloadable {
         }
 
         setHP(player, amount);
-        YamlFile hpYaml = this.plugin.getHpYaml();
-        hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
-        hpYaml.save(true);
-        return true;
+        saveToFile(player);
     }
 
-    public boolean guiAddHP(Player player, double amount) {
-        //Check if HP would be above cap
-        if (!player.hasPermission("HealthPower.cap.bypass")
-                && (this.hpCap > 0 && amount > this.hpCap)) {
+    public void guiAddHP(Player player, double amount) {
+        if (cannotAddHP(player, amount)) {
             this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
-            return false;
+            return;
         }
 
         setHP(player, amount + getHealth(player));
-        YamlFile hpYaml = this.plugin.getHpYaml();
-        hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
-        hpYaml.save(true);
-        return true;
+        saveToFile(player);
     }
 
     public void guiSetHP(Player player, double amount) {
@@ -259,10 +243,7 @@ public class HPManager extends Reloadable {
         }
 
         setHP(player, amount);
-        YamlFile hpYaml = this.plugin.getHpYaml();
-        hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
-        hpYaml.save(true);
-        return true;
+        saveToFile(player);
     }
 
     public void guiRemoveHP(Player player, double amount) {
@@ -272,10 +253,7 @@ public class HPManager extends Reloadable {
         }
 
         setHP(player, getHealth(player) - amount);
-        YamlFile hpYaml = this.plugin.getHpYaml();
-        hpYaml.getAccess().set("HP.players." + player.getName(), getHealth(player));
-        hpYaml.save(true);
-        return true;
+        saveToFile(player);
     }
 
     private void saveToFile(Player player) {
