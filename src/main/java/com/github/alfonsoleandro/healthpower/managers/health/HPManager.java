@@ -191,7 +191,7 @@ public class HPManager extends Reloadable {
         saveToFile(player);
     }
 
-    public void addHP(CommandSender setter, Player player, double newValue) {
+    public void addHPCommand(CommandSender setter, Player player, double newValue) {
         if (setter.equals(player)) {
             this.messageSender.send(setter, Message.YOU_ADD_HP,
                     "%player%", this.messageSender.getString(Message.YOURSELF),

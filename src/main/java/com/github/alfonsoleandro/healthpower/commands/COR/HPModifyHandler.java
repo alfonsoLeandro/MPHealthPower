@@ -52,7 +52,7 @@ public class HPModifyHandler extends AbstractHandler {
         if (args[0].equalsIgnoreCase("set")) {
             this.hpManager.setHPCommand(sender, toAdd, hp);
         } else {
-            this.hpManager.addHP(sender, toAdd, hp);
+            this.hpManager.addHPCommand(sender, toAdd, hp);
         }
 
 
