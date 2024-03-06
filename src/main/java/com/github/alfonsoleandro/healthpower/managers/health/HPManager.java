@@ -215,7 +215,7 @@ public class HPManager extends Reloadable {
         saveToFile(player);
     }
 
-    public void consumableAddHP(Player player, double amount) {
+    public void consumableOrGUIAddHP(Player player, double amount) {
         if (cannotAddHP(player, amount)) {
             this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
             return;
@@ -225,27 +225,7 @@ public class HPManager extends Reloadable {
         saveToFile(player);
     }
 
-    public void consumableSetHP(Player player, double amount) {
-        if (cannotSetHP(player, amount)) {
-            this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
-            return;
-        }
-
-        setHP(player, amount);
-        saveToFile(player);
-    }
-
-    public void guiAddHP(Player player, double amount) {
-        if (cannotAddHP(player, amount)) {
-            this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
-            return;
-        }
-
-        setHP(player, amount + getHealth(player));
-        saveToFile(player);
-    }
-
-    public void guiSetHP(Player player, double amount) {
+    public void consumableOrGUISetHP(Player player, double amount) {
         if (cannotSetHP(player, amount)) {
             this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
             return;

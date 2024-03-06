@@ -82,13 +82,13 @@ public class GUIClickListener implements Listener {
                         this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
                         return;
                     }
-                    this.hpManager.guiAddHP(player, item.amount());
+                    this.hpManager.consumableOrGUIAddHP(player, item.amount());
                 case SET:
                     if (this.hpManager.cannotSetHP(player, item.amount())) {
                         this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
                         return;
                     }
-                    this.hpManager.guiSetHP(player, item.amount());
+                    this.hpManager.consumableOrGUISetHP(player, item.amount());
                 case REMOVE:
                     if (this.hpManager.getHealth(player) < item.amount()) {
                         this.messageSender.send(player, Message.NOT_ENOUGH_HP,
