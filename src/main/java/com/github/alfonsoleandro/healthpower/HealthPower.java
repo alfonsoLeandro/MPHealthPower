@@ -3,6 +3,7 @@ package com.github.alfonsoleandro.healthpower;
 import com.github.alfonsoleandro.healthpower.commands.MainCommand;
 import com.github.alfonsoleandro.healthpower.listeners.ConsumablesListener;
 import com.github.alfonsoleandro.healthpower.listeners.GUIClickListener;
+import com.github.alfonsoleandro.healthpower.listeners.LuckPermsListener;
 import com.github.alfonsoleandro.healthpower.listeners.PlayerJoinListener;
 import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
@@ -15,6 +16,8 @@ import com.github.alfonsoleandro.mputils.itemstacks.MPItemStacks;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.metrics.bukkit.Metrics;
 import com.github.alfonsoleandro.mputils.reloadable.ReloaderPlugin;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -96,6 +99,7 @@ public final class HealthPower extends ReloaderPlugin {
         checkAndCorrectMessages();
         registerCommands();
         registerEvents();
+        registerLuckPermsEvents();
         updateChecker();
         startMetrics();
     }
@@ -354,6 +358,17 @@ public final class HealthPower extends ReloaderPlugin {
         pm.registerEvents(new PlayerJoinListener(this), this);
         pm.registerEvents(new GUIClickListener(this), this);
         pm.registerEvents(new ConsumablesListener(this), this);
+    }
+
+    /**
+     * Registers the LuckPerms event listeners for this plugin.
+     */
+    private void registerLuckPermsEvents() {
+        if(Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
+            LuckPerms api = LuckPermsProvider.get();
+            new LuckPermsListener(this, api);
+            this.messageSender.send("&aPlugin LuckPerms found, events hooked");
+        }
     }
 
     /**
