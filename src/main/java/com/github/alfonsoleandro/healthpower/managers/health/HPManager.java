@@ -202,7 +202,7 @@ public class HPManager extends Reloadable {
                     "%player%", this.messageSender.getString(Message.YOURSELF),
                     "%HP%", String.valueOf(newValue));
         } else {
-            this.messageSender.send(player, Message.YOU_SET_HP,
+            this.messageSender.send(setter, Message.YOU_SET_HP,
                     "%player%", player.getName(),
                     "%HP%", String.valueOf(newValue));
             this.messageSender.send(player, Message.SET_HP,
