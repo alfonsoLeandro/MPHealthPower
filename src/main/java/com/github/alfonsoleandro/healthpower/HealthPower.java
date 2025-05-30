@@ -93,6 +93,7 @@ public final class HealthPower extends ReloaderPlugin {
         }
         this.hpGUIManager = new HPGUIManager(this);
         checkAndCorrectConfig();
+        checkAndCorrectMessages();
         registerCommands();
         registerEvents();
         updateChecker();
@@ -310,6 +311,26 @@ public final class HealthPower extends ReloaderPlugin {
             this.configYaml.save(false);
         }
 
+    }
+
+    /**
+     * Checks the messages file for missing messages.
+     */
+    private void checkAndCorrectMessages() {
+        FileConfiguration messagesEndFile = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "messages.yml"));
+        FileConfiguration messages = this.messagesYaml.getAccess();
+
+        boolean shouldSave = false;
+        for (Message message : Message.values()) {
+            if (!messagesEndFile.contains(message.getPath())) {
+                shouldSave = true;
+                messages.set(message.getPath(), message.getDefault());
+            }
+        }
+
+        if (shouldSave) {
+            this.messagesYaml.save(false);
+        }
     }
 
 
