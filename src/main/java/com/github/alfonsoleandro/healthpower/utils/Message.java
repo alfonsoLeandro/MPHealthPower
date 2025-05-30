@@ -17,6 +17,7 @@ public enum Message implements MessageEnum {
     COMMAND_USE_CONSUMABLE("messages.consumable use", "&cUse: &f/%command% consumable (give) (player) (consumable_name) &cOR &f/%command% consumable (set) (consumable_name) (add/set) (amount)"),
     COMMAND_USE_CLEAR("messages.clear use", "&cUse: &f/%command% clear (player)"),
     COMMAND_USE_CHECK("messages.check use", "&cUse: &f/%command% check (player)"),
+    COMMAND_USE_GROUP_SET("messages.group set use", "&cUse: &f/%command% group set (group) (HP)" ),
     INVALID_CONSUMABLE("&cInvalid consumable %name%. No \"set\" or \"add\" value found."),
     INVALID_CONSUMABLE_ITEM("&cInvalid consumable item for %name%. Must be edible or a potion."),
     CONSUMABLE_NOT_EXIST("&cA consumable with that name does not exist."),
@@ -53,7 +54,13 @@ public enum Message implements MessageEnum {
     INV_FULL("messages.your inventory is full", "&cYour inventory is full."),
     PLAYER_INV_FULL("messages.player inventory is full", "&c%player%'s inventory is full."),
     DEFAULT_CONSUMABLE_MSG("messages.default consumable message", "&fYour HP is now %HP%"),
-    INVALID_GUI_ITEM( "&cInvalid item for GUI in slot %slot%. Please check your configuration file."),;
+    INVALID_GUI_ITEM( "&cInvalid item for GUI in slot %slot%. Please check your configuration file."),
+    PERMISSIONS_SYSTEM_DISABLED("&cThe permissions system is disabled in config. Enable \"&ause permissions system&c\" in config to enable this feature."),
+    GROUP_NOT_FOUND("&cNo group with the name \"&f%group%&c\" found."),
+    GROUP_HP_SET("&aGroup HP set to &c%HP% &afor group &f%group%. HP reload recommended."),
+    GROUP_HP_UNDER_MINIMUM("&e&lWARNING:&c Group \"%group%\"'s HP (%HP%) is below the minimum (%minimum%)"),
+    CANNOT_SET_GROUP_HP_UNDER_MINIMUM("&cA group's HP (%HP%) cannot be under the minimum (%minimum%)"),
+    ;
 
     private final String path;
     private final String dflt;
