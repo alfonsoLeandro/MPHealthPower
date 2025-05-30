@@ -30,6 +30,12 @@ permissions:
   HealthPower.gui:
     description: Allows a player to open the buy health GUI.
     default: op
+  HealthPower.group.set:
+    description: Allows a player to modify a groups HP directly to the HP file.
+    default: op
+  HealthPower.tabcomplete:
+    description: Allows a player to see autocomplete suggestions for all of this plugin's commands.
+    default: op
   HealthPower.cap.bypass:
     description: Allows a player to bypass the "HP cap".
     default: op
@@ -58,6 +64,8 @@ permissions:
       HealthPower.set: true
       HealthPower.add: true
       HealthPower.gui: true
+      HealthPower.group.set: true
+      HealthPower.tabcomplete: true
       HealthPower.cap.bypass: true
       HealthPower.consumable.*: true
       HealthPower.clear: true
