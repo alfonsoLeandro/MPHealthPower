@@ -2,6 +2,7 @@ package com.github.alfonsoleandro.healthpower.utils;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.mputils.reloadable.Reloadable;
+import com.github.alfonsoleandro.mputils.time.TimeUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Settings extends Reloadable {
@@ -12,6 +13,8 @@ public class Settings extends Reloadable {
     private boolean consumablesEnabled;
     private boolean debug;
     private double minimumHP;
+    private boolean periodicCheckerEnabled;
+    private long periodicCheckerPeriod;
     private boolean shopGUIEnabled;
     private boolean updateHPOnJoin;
     private boolean useGroupsSystem;
@@ -31,6 +34,9 @@ public class Settings extends Reloadable {
         this.consumablesEnabled = config.getBoolean("config.consumables enabled");
         this.debug = config.getBoolean("config.debug");
         this.minimumHP = Math.max(1, hp.getDouble("HP.minimum"));
+        this.periodicCheckerEnabled = config.getBoolean("config.periodic checker.enabled");
+        String timeString = config.getString("config.periodic checker.period");
+        this.periodicCheckerPeriod = TimeUtils.getTicks(timeString != null ? timeString : "5m");
         this.shopGUIEnabled = config.getBoolean("config.GUI.enabled");
         this.updateHPOnJoin = config.getBoolean("config.update HP on join");
         this.useGroupsSystem = config.getBoolean("config.use groups system");
@@ -57,6 +63,14 @@ public class Settings extends Reloadable {
 
     public double getMinimumHP() {
         return this.minimumHP;
+    }
+
+    public boolean isPeriodicCheckerEnabled() {
+        return this.periodicCheckerEnabled;
+    }
+
+    public long getPeriodicCheckerPeriod() {
+        return this.periodicCheckerPeriod;
     }
 
     public boolean isShopGUIEnabled() {

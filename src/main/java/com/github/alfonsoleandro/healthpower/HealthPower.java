@@ -5,6 +5,7 @@ import com.github.alfonsoleandro.healthpower.listeners.ConsumablesListener;
 import com.github.alfonsoleandro.healthpower.listeners.GUIClickListener;
 import com.github.alfonsoleandro.healthpower.listeners.LuckPermsListener;
 import com.github.alfonsoleandro.healthpower.listeners.PlayerJoinListener;
+import com.github.alfonsoleandro.healthpower.managers.checking.PeriodicHPChecker;
 import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
@@ -75,6 +76,7 @@ public final class HealthPower extends ReloaderPlugin {
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
         this.settings = new Settings(this);
         this.hpManager = new HPManager(this);
+        new PeriodicHPChecker(this);
         this.consumableManager = new ConsumableManager(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
         this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().get(0));
