@@ -26,6 +26,7 @@ public class HPManager extends Reloadable {
     private boolean useGroupsSystem;
     private double hpCap;
     private double defaultHP;
+    private double minimumHP;
 
     public HPManager(HealthPower plugin) {
         super(plugin);
@@ -44,7 +45,9 @@ public class HPManager extends Reloadable {
                 config.getDouble("config.HP cap.amount")
                 :
                 -1;
-        this.defaultHP = this.hpYaml.getAccess().getDouble("HP.default");
+        FileConfiguration hp = this.hpYaml.getAccess();
+        this.defaultHP = hp.getDouble("HP.default");
+        this.minimumHP = Math.max(1, hp.getDouble("HP.minimum"));
     }
 
 
@@ -294,7 +297,8 @@ public class HPManager extends Reloadable {
     }
 
     public void setHP(Player player, double value) {
-        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(value);
+        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH))
+                .setBaseValue(Math.max(this.minimumHP, value));
     }
 
 

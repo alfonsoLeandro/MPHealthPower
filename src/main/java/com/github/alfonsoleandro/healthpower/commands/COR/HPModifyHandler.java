@@ -23,14 +23,15 @@ public class HPModifyHandler extends AbstractHandler {
 
     @Override
     protected void internalHandle(CommandSender sender, String label, String[] args) {
-        if (!sender.hasPermission("healthPower." + args[0])) {
+        String mode = args[0];
+        if (!sender.hasPermission("healthPower." + mode)) {
             this.messageSender.send(sender, Message.NO_PERMISSION);
             return;
         }
 
         if (args.length <= 2) {
             this.messageSender.send(sender, Message.COMMAND_USE_HP_MODIFY,
-                    "%what%", args[0],
+                    "%what%", mode,
                     "%command%", label);
             return;
         }
@@ -49,7 +50,7 @@ public class HPModifyHandler extends AbstractHandler {
             return;
         }
 
-        if (args[0].equalsIgnoreCase("set")) {
+        if (mode.equalsIgnoreCase("set")) {
             this.hpManager.setHPCommand(sender, toAdd, hp);
         } else {
             this.hpManager.addHPCommand(sender, toAdd, hp);
