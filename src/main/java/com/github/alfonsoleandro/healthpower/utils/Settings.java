@@ -18,7 +18,7 @@ public class Settings extends Reloadable {
 
 
     public Settings(HealthPower plugin) {
-        super(plugin);
+        super(plugin, Priority.HIGHEST);
         this.plugin = plugin;
         loadFields();
     }
