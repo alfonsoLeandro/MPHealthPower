@@ -23,10 +23,8 @@ public class HPManager extends Reloadable {
     private final YamlFile hpYaml;
     private final Settings settings;
     private boolean usePermissionsSystem;
-    private boolean useGroupsSystem;
     private double hpCap;
     private double defaultHP;
-    private double minimumHP;
 
     public HPManager(HealthPower plugin) {
         super(plugin);
@@ -40,14 +38,12 @@ public class HPManager extends Reloadable {
     protected void loadSettings() {
         FileConfiguration config = this.plugin.getConfigYaml().getAccess();
         this.usePermissionsSystem = config.getBoolean("config.use permissions system");
-        this.useGroupsSystem = config.getBoolean("config.use groups system");
         this.hpCap = config.getBoolean("config.HP cap.enabled") ?
                 config.getDouble("config.HP cap.amount")
                 :
                 -1;
         FileConfiguration hp = this.hpYaml.getAccess();
         this.defaultHP = hp.getDouble("HP.default");
-        this.minimumHP = Math.max(1, hp.getDouble("HP.minimum"));
     }
 
 
@@ -161,7 +157,7 @@ public class HPManager extends Reloadable {
 
         }
 
-        if (this.useGroupsSystem && this.plugin.getPermissions() != null) {
+        if (this.settings.isUseGroupsSystem() && this.plugin.getPermissions() != null) {
             Permission perms = this.plugin.getPermissions();
             if (perms.hasGroupSupport()) {
                 String group = perms.getPrimaryGroup(player);
@@ -298,7 +294,7 @@ public class HPManager extends Reloadable {
 
     public void setHP(Player player, double value) {
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH))
-                .setBaseValue(Math.max(this.minimumHP, value));
+                .setBaseValue(Math.max(this.settings.getMinimumHP(), value));
     }
 
 
