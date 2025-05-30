@@ -2,7 +2,7 @@ name: MPHealthPower
 version: ${project.version}
 main: com.github.alfonsoleandro.healthpower.HealthPower
 api-version: '1.13'
-softdepend: [Vault]
+softdepend: [Vault, LuckPerms]
 depend: [MPUtils]
 authors: [lelesape]
 description: Modify players maximum health power
