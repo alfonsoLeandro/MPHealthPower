@@ -278,9 +278,21 @@ public final class HealthPower extends ReloaderPlugin {
                 possibilities.add("consumable set " + consumableName + " set 20");
             }
         }
+        if (this.perms == null) {
+            possibilities.add("group set {group_name} 1");
+            possibilities.add("group set {group_name} 5");
+            possibilities.add("group set {group_name} 10");
+            possibilities.add("group set {group_name} 20");
+        } else {
+            for (String group : this.perms.getGroups()) {
+                possibilities.add("group set " + group + " 1");
+                possibilities.add("group set " + group + " 5");
+                possibilities.add("group set " + group + " 10");
+                possibilities.add("group set " + group + " 20");            }
+        }
 
         Objects.requireNonNull(getCommand("HealthPower"))
-                .setTabCompleter(new MPTabCompleter(possibilities));
+                .setTabCompleter(new MPTabCompleter(possibilities, "HealthPower.tabcomplete"));
     }
 
     /**
