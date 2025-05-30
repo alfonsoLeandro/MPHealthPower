@@ -70,26 +70,21 @@ public class GUIClickListener implements Listener {
             return;
         }
 
-        // charge first, do stuff after
-        if (price < 0) {
-            this.economy.depositPlayer(player, price * (-1.0));
-        } else {
-            this.economy.withdrawPlayer(player, price);
-        }
-
-        // finally add/set/remove hp
+        // finally, add/set/remove hp
         switch (item.type()) {
             case ADD:
                 if (this.hpManager.cannotAddHP(player, item.amount())) {
                     this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
                     return;
                 }
+                chargeOrPay(price, player);
                 this.hpManager.consumableOrGUIAddHP(player, item.amount());
             case SET:
                 if (this.hpManager.cannotSetHP(player, item.amount())) {
                     this.messageSender.send(player, Message.YOUR_HP_ABOVE_CAP);
                     return;
                 }
+                chargeOrPay(price, player);
                 this.hpManager.consumableOrGUISetHP(player, item.amount());
             case REMOVE:
                 if (this.hpManager.getHealth(player) < item.amount()) {
@@ -98,12 +93,21 @@ public class GUIClickListener implements Listener {
                     player.closeInventory();
                     return;
                 }
+                chargeOrPay(price, player);
                 this.hpManager.guiRemoveHP(player, item.amount());
         }
 
         // Re-open the GUI if everything went correctly, to update descriptions
         this.hpGUIManager.openGUI(player);
 
+    }
+
+    private void chargeOrPay(double price, Player player) {
+        if (price < 0) {
+            this.economy.depositPlayer(player, price * (-1.0));
+        } else {
+            this.economy.withdrawPlayer(player, price);
+        }
     }
 
 }

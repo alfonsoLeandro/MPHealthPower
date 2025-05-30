@@ -9,7 +9,7 @@ public abstract class AbstractHandler {
 
     protected final HealthPower plugin;
     protected final MessageSender<Message> messageSender;
-    protected AbstractHandler successor;
+    protected final AbstractHandler successor;
 
     public AbstractHandler(HealthPower plugin, AbstractHandler successor){
         this.plugin = plugin;
