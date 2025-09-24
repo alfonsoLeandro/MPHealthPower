@@ -1,25 +1,30 @@
 # This file contains the base of how HP is calculated
-# The default value to use for a health variable if the value is not present
+# The default value to use for a health *variable* if the value is not present, and only if it is the last case available.
 # (i.e: player has no specific health permissions, then the %permission% variable is set to this value)
-default if not present: 0
+default if not present:
+  world: 1
+# in the rest of the worlds, not specified above
+default for all worlds: 0
 # Default formula to use if player is in a world that is not specified in the section below
-default formula: '%base%+%permission%+%group%+%shop%'
+default formula: 'base+permission+group+shop'
 # Formulas are made up of a list of cases that are to be executed in order
 # each case is a formula composed of base HP (%base%), permission given HP (%permission%),
 # group based HP (%group%) and bought/sold HP (%shop%)
 formulas per world:
   world:
-    - '%permission%'
-    - '%base%'
+    - 'permission+shop'
+    - 'base+shop'
   # Infinite cases are allowed.
   # If a case is composed of 2 optional variables, each count for the variable validity.
   # In this case for the 2nd case (%permission%+%shop%) if either permission or shops
   # is not present, the 3rd case (%base%+%shop%) will be used. If shop is the variable that is not present,
   # the "default if not present" value will be used for the shop variable
   world_nether:
-    - '%group%+%base%'
-    - '%permission%+%shop%'
-    - '%base%+%shop%'
+    - 'group+base'
+    - 'This formula should be invalid'
+    - 'permission+shop'
+    - 'base+shop'
+    - '5'
   # You can use a long list of mathematical expressions, not just addition and substraction
   world_the_end:
-    - '%base%/2'
+    - 'base/2'
