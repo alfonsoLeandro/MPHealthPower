@@ -28,6 +28,8 @@ public enum Message implements MessageEnum {
     IN_HAND_NOT_CONSUMABLE("messages.consumable not in hand", "&cYou must be holding a valid consumable"),
     CONSUMABLE_CREATED("&aSaved consumable with name &f%name%&a, mode &f%mode%&a and value &f%value%&a!"),
     ECONOMY_DISABLED("&cEconomy is not enabled in this server"),
+    FORMULA_VALID("&cDebug:&a Formula \"&7%formula%&a\" for world \"&7%world%&a\" is valid"),
+    FORMULA_INVALID("&cFormula \"&7%formula%&c\" for world \"&7%world%&c\" is invalid! Please check your config"),
     GUI_DISABLED("&cThe HP shop GUI is disabled in this server"),
     GUI_ERROR("messages.error opening gui", "&cThere was an error while trying to open de buy hp menu, talk to an admin or check console"),
     GUI_OPENING("messages.opening gui", "&fOpening buy hp menu!"),
