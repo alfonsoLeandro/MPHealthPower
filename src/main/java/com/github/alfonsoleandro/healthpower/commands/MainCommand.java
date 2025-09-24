@@ -17,8 +17,8 @@ public class MainCommand implements CommandExecutor {
                         new HPModifyHandler(plugin, new ConsumablesHandler(plugin,
                                 new ClearHandler(plugin, new ClearAllHandler(plugin,
                                         new HPCheckHandler(plugin, new HPCheckAllHandler(plugin,
-                                                new GroupModifyHandler(plugin,
-                                                        null)
+                                                new GroupModifyHandler(plugin, new HPInfoHandler(plugin,
+                                                        null))
                                         ))
                                 ))
                         ))
