@@ -12,14 +12,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class GUIClickListener implements Listener {
+public class ShopGUIClickListener implements Listener {
 
     private final MessageSender<Message> messageSender;
     private final HPManager hpManager;
     private final HPGUIManager hpGUIManager;
     private final Economy economy;
 
-    public GUIClickListener(HealthPower plugin) {
+    public ShopGUIClickListener(HealthPower plugin) {
         this.messageSender = plugin.getMessageSender();
         this.hpManager = plugin.getHpManager();
         this.hpGUIManager = plugin.getHpGUIManager();
