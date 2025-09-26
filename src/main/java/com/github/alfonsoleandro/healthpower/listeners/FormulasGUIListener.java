@@ -7,16 +7,12 @@ import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
 import com.github.alfonsoleandro.mputils.guis.events.GUIClickEvent;
-import com.github.alfonsoleandro.mputils.itemstacks.MPItemStacks;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
-import com.github.alfonsoleandro.mputils.string.StringUtils;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -73,7 +69,7 @@ public class FormulasGUIListener implements Listener {
                     Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
             String worldName = persistentDataContainer.get(this.settings.getWorldNameNamespacedKey(), PersistentDataType.STRING);
 
-            DynamicGUI gui = createFormulasGUIForWorld(worldName);
+            DynamicGUI gui = this.formulaManager.createFormulasGUIForWorld(worldName);
             gui.openGUI(player);
 
         } else if (guiTags.startsWith("MPHealthPower:formulas:items:")) {
@@ -192,7 +188,7 @@ public class FormulasGUIListener implements Listener {
             this.cooldowns.remove(player);
 
             //Re-open GUI
-            DynamicGUI gui = createFormulasGUIForWorld(formulaClickedData.worldName);
+            DynamicGUI gui = this.formulaManager.createFormulasGUIForWorld(formulaClickedData.worldName);
             // Open GUI synchronously
             new BukkitRunnable() {
                 @Override
@@ -206,33 +202,6 @@ public class FormulasGUIListener implements Listener {
         //TODO: if going to create formulas with chat, add all available worlds to GUI, not only those that already have formulas
     }
 
-    private DynamicGUI createFormulasGUIForWorld(String worldName) {
-        DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(this.settings.getFormulasForWorldTitle().replace("%world%", worldName)),
-                "MPHealthPower:formulas:items:" + worldName,
-                false,
-                this.settings.getNavigationBar());
-        NamespacedKey formulaOrderNamespacedKey = this.settings.getFormulaOrderNamespacedKey();
-        List<Formula> formulas = this.formulaManager.getFormulas(worldName);
-
-        for (int i = 0; i < formulas.size(); i++) {
-            Formula formula = formulas.get(i);
-            ItemStack formulaWorldItem = this.settings.getFormulasForWorldItem();
-            int order = i + 1;
-            MPItemStacks.replacePlaceholders(formulaWorldItem, new HashMap<>() {{
-                put("%world%", worldName);
-                put("%order%", String.valueOf(order));
-                put("%formula%", formula.getRawFormulaString());
-            }});
-            ItemMeta itemMeta = formulaWorldItem.getItemMeta();
-            PersistentDataContainer persistentDataContainer = Objects.requireNonNull(itemMeta).getPersistentDataContainer();
-            persistentDataContainer.set(formulaOrderNamespacedKey, PersistentDataType.INTEGER, i + 1);
-            formulaWorldItem.setItemMeta(itemMeta);
-
-            gui.addItem(formulaWorldItem);
-        }
-
-        return gui;
-    }
 
     private void startCooldown(Player player, String worldName, int formulaOrder, GUIAction action) {
         this.cooldowns.put(player, new FormulaClickedData(worldName, formulaOrder, action));

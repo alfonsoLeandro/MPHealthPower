@@ -51,7 +51,7 @@ public class FormulasHandler extends AbstractHandler {
                 return;
             }
             // Open GUI
-            DynamicGUI formulas = createFormulasGUI();
+            DynamicGUI formulas = this.formulaManager.createFormulasGUI();
             formulas.openGUI((Player) sender);
 
         } else {
@@ -76,29 +76,4 @@ public class FormulasHandler extends AbstractHandler {
 
     }
 
-    private DynamicGUI createFormulasGUI() {
-        DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(this.settings.getFormulasWorldsTitle()),
-                "MPHealthPower:formulas:worlds",
-                false,
-                this.settings.getNavigationBar());
-        NamespacedKey worldNameNamespacedKey = this.settings.getWorldNameNamespacedKey();
-        Set<String> worldNames = this.formulaManager.getFormulaWorldsNames();
-
-        for (String worldName : worldNames) {
-            ItemStack formulaWorldItem = this.settings.getFormulasWorldsItem();
-            int formulasCount = this.formulaManager.getFormulas(worldName).size();
-            MPItemStacks.replacePlaceholders(formulaWorldItem, new HashMap<>() {{
-                put("%world%", worldName);
-                put("%formulas%", String.valueOf(formulasCount));
-            }});
-            ItemMeta itemMeta = formulaWorldItem.getItemMeta();
-            PersistentDataContainer persistentDataContainer = Objects.requireNonNull(itemMeta).getPersistentDataContainer();
-            persistentDataContainer.set(worldNameNamespacedKey, PersistentDataType.STRING, worldName);
-            formulaWorldItem.setItemMeta(itemMeta);
-
-            gui.addItem(formulaWorldItem);
-        }
-
-        return gui;
-    }
 }

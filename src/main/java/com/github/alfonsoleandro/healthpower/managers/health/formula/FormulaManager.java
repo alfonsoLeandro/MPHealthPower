@@ -4,14 +4,22 @@ import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.files.YamlFile;
+import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
+import com.github.alfonsoleandro.mputils.itemstacks.MPItemStacks;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.reloadable.Reloadable;
+import com.github.alfonsoleandro.mputils.string.StringUtils;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -266,6 +274,60 @@ public class FormulaManager extends Reloadable {
 
         formulasYaml.getAccess().set("formulas per world."+worldName, formulasForWorldInFile);
         formulasYaml.save(true);
+    }
+
+    public DynamicGUI createFormulasGUI() {
+        DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(this.settings.getFormulasWorldsTitle()),
+                "MPHealthPower:formulas:worlds",
+                false,
+                this.settings.getNavigationBar());
+        NamespacedKey worldNameNamespacedKey = this.settings.getWorldNameNamespacedKey();
+        Set<String> worldNames = getFormulaWorldsNames();
+
+        for (String worldName : worldNames) {
+            ItemStack formulaWorldItem = this.settings.getFormulasWorldsItem();
+            int formulasCount = getFormulas(worldName).size();
+            MPItemStacks.replacePlaceholders(formulaWorldItem, new HashMap<>() {{
+                put("%world%", worldName);
+                put("%formulas%", String.valueOf(formulasCount));
+            }});
+            ItemMeta itemMeta = formulaWorldItem.getItemMeta();
+            PersistentDataContainer persistentDataContainer = Objects.requireNonNull(itemMeta).getPersistentDataContainer();
+            persistentDataContainer.set(worldNameNamespacedKey, PersistentDataType.STRING, worldName);
+            formulaWorldItem.setItemMeta(itemMeta);
+
+            gui.addItem(formulaWorldItem);
+        }
+
+        return gui;
+    }
+
+    public DynamicGUI createFormulasGUIForWorld(String worldName) {
+        DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(this.settings.getFormulasForWorldTitle().replace("%world%", worldName)),
+                "MPHealthPower:formulas:items:" + worldName,
+                false,
+                this.settings.getNavigationBar());
+        NamespacedKey formulaOrderNamespacedKey = this.settings.getFormulaOrderNamespacedKey();
+        List<Formula> formulas = getFormulas(worldName);
+
+        for (int i = 0; i < formulas.size(); i++) {
+            Formula formula = formulas.get(i);
+            ItemStack formulaWorldItem = this.settings.getFormulasForWorldItem();
+            int order = i + 1;
+            MPItemStacks.replacePlaceholders(formulaWorldItem, new HashMap<>() {{
+                put("%world%", worldName);
+                put("%order%", String.valueOf(order));
+                put("%formula%", formula.getRawFormulaString());
+            }});
+            ItemMeta itemMeta = formulaWorldItem.getItemMeta();
+            PersistentDataContainer persistentDataContainer = Objects.requireNonNull(itemMeta).getPersistentDataContainer();
+            persistentDataContainer.set(formulaOrderNamespacedKey, PersistentDataType.INTEGER, i + 1);
+            formulaWorldItem.setItemMeta(itemMeta);
+
+            gui.addItem(formulaWorldItem);
+        }
+
+        return gui;
     }
 
     @Override
