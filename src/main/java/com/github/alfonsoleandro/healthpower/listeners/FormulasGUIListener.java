@@ -1,6 +1,9 @@
 package com.github.alfonsoleandro.healthpower.listeners;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
+import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaClickedData;
+import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaGUIAction;
+import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaModifyCooldown;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
@@ -17,33 +20,23 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class FormulasGUIListener implements Listener {
-
-    private enum GUIAction {
-        CREATE,
-        DELETE,
-        EDIT
-    }
-
-    private record FormulaClickedData(String worldName, int formulaOrder, GUIAction action) {
-    }
 
     private final HealthPower plugin;
     private final Settings settings;
     private final MessageSender<Message> messageSender;
     private final FormulaManager formulaManager;
-    private final Map<Player, FormulaClickedData> cooldowns = new HashMap<>();
+    private final FormulaModifyCooldown formulaModifyCooldown;
 
     public FormulasGUIListener(HealthPower plugin) {
         this.plugin = plugin;
         this.settings = plugin.getSettings();
         this.messageSender = this.plugin.getMessageSender();
         this.formulaManager = plugin.getFormulaManager();
+        this.formulaModifyCooldown = plugin.getFormulaModifyCooldown();
     }
 
     @EventHandler
@@ -102,7 +95,7 @@ public class FormulasGUIListener implements Listener {
 
                 player.closeInventory();
 
-                startCooldown(player, worldName, order, GUIAction.DELETE);
+                this.formulaModifyCooldown.startCooldown(player, worldName, order, FormulaGUIAction.DELETE);
 
             } else if (event.getClick().isLeftClick()) {
                 this.messageSender.send(event.getWhoClicked(), Message.FORMULA_ENTER_NEW_ORDER,
@@ -111,7 +104,7 @@ public class FormulasGUIListener implements Listener {
 
                 player.closeInventory();
 
-                startCooldown(player, worldName, order, GUIAction.EDIT);
+                this.formulaModifyCooldown.startCooldown(player, worldName, order, FormulaGUIAction.EDIT);
 
             }
 
@@ -122,14 +115,14 @@ public class FormulasGUIListener implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (!this.cooldowns.containsKey(player)) {
+        if (!this.formulaModifyCooldown.isInCooldown(player)) {
             return;
         }
         event.setCancelled(true);
         String message = event.getMessage();
 
         if (message.equalsIgnoreCase("cancel")) {
-            this.cooldowns.remove(player);
+            this.formulaModifyCooldown.removeCooldown(player);
             this.messageSender.send(player, Message.FORMULA_ACTION_CANCELED);
             return;
         }
@@ -139,10 +132,10 @@ public class FormulasGUIListener implements Listener {
             return;
         }
 
-        FormulaClickedData formulaClickedData = this.cooldowns.get(player);
-        List<Formula> formulas = this.formulaManager.getFormulas(formulaClickedData.worldName);
+        FormulaClickedData formulaClickedData = this.formulaModifyCooldown.getData(player);
+        List<Formula> formulas = this.formulaManager.getFormulas(formulaClickedData.worldName());
 
-        if (formulaClickedData.action.equals(GUIAction.DELETE)) {
+        if (formulaClickedData.action().equals(FormulaGUIAction.DELETE)) {
             if (!message.equalsIgnoreCase("yes")) {
                 this.messageSender.send(player, Message.FORMULA_DELETE_UNKNOWN_MESSAGE);
                 return;
@@ -150,17 +143,17 @@ public class FormulasGUIListener implements Listener {
 
             //CONFIRM DELETE, DELETE FORMULA
 
-            if (formulas == null || formulas.size() <= formulaClickedData.formulaOrder) {
+            if (formulas == null || formulas.size() <= formulaClickedData.formulaOrder()) {
                 this.messageSender.send(player, Message.FORMULA_DELETE_ERROR);
                 return;
             }
-            Formula formula = this.formulaManager.deleteFormula(formulaClickedData.worldName, formulaClickedData.formulaOrder);
+            Formula formula = this.formulaManager.deleteFormula(formulaClickedData.worldName(), formulaClickedData.formulaOrder());
             this.messageSender.send(player, Message.FORMULA_DELETED,
-                    "%world%", formulaClickedData.worldName,
+                    "%world%", formulaClickedData.worldName(),
                     "%formula%", formula.getRawFormulaString());
-            this.cooldowns.remove(player);
+            this.formulaModifyCooldown.removeCooldown(player);
 
-        } else if (formulaClickedData.action.equals(GUIAction.EDIT)) {
+        } else if (formulaClickedData.action().equals(FormulaGUIAction.EDIT)) {
             // Validate order is number and between range
             int newOrder;
             try {
@@ -180,15 +173,15 @@ public class FormulasGUIListener implements Listener {
             }
 
             //finally, change order
-            if (formulaClickedData.formulaOrder != newOrder) {
-                this.formulaManager.changeFormulaOrder(formulaClickedData.worldName, formulaClickedData.formulaOrder, newOrder);
+            if (formulaClickedData.formulaOrder() != newOrder) {
+                this.formulaManager.changeFormulaOrder(formulaClickedData.worldName(), formulaClickedData.formulaOrder(), newOrder);
             }
             this.messageSender.send(player, Message.FORMULA_ORDER_CHANGED,
                     "%order%", String.valueOf(newOrder));
-            this.cooldowns.remove(player);
+            this.formulaModifyCooldown.removeCooldown(player);
 
             //Re-open GUI
-            DynamicGUI gui = this.formulaManager.createFormulasGUIForWorld(formulaClickedData.worldName);
+            DynamicGUI gui = this.formulaManager.createFormulasGUIForWorld(formulaClickedData.worldName());
             // Open GUI synchronously
             new BukkitRunnable() {
                 @Override
@@ -202,21 +195,6 @@ public class FormulasGUIListener implements Listener {
         //TODO: if going to create formulas with chat, add all available worlds to GUI, not only those that already have formulas
     }
 
-
-    private void startCooldown(Player player, String worldName, int formulaOrder, GUIAction action) {
-        this.cooldowns.put(player, new FormulaClickedData(worldName, formulaOrder, action));
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                if (FormulasGUIListener.this.cooldowns.containsKey(player)) {
-                    FormulasGUIListener.this.cooldowns.remove(player);
-                    FormulasGUIListener.this.messageSender.send(player, Message.FORMULA_ACTION_TIMER_RAN_OUT);
-                }
-            }
-        }.runTaskLater(this.plugin, 200);
-
-    }
 
 
 }

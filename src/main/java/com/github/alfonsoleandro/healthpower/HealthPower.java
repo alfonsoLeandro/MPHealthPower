@@ -4,6 +4,7 @@ import com.github.alfonsoleandro.healthpower.commands.MainCommand;
 import com.github.alfonsoleandro.healthpower.listeners.*;
 import com.github.alfonsoleandro.healthpower.managers.checking.PeriodicHPChecker;
 import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
+import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaModifyCooldown;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
@@ -56,6 +57,7 @@ public final class HealthPower extends ReloaderPlugin {
     private String latestVersion;
     private HPManager hpManager;
     private FormulaManager formulaManager;
+    private FormulaModifyCooldown formulaModifyCooldown;
     private ConsumableManager consumableManager;
     private HPGUIManager hpGUIManager;
     private MessageSender<Message> messageSender;
@@ -77,7 +79,8 @@ public final class HealthPower extends ReloaderPlugin {
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
         this.settings = new Settings(this);
         this.hpManager = new HPManager(this);
-        this.formulaManager = new  FormulaManager(this);
+        this.formulaManager = new FormulaManager(this);
+        this.formulaModifyCooldown = new FormulaModifyCooldown(this);
         new PeriodicHPChecker(this);
         this.consumableManager = new ConsumableManager(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
@@ -302,7 +305,8 @@ public final class HealthPower extends ReloaderPlugin {
                 possibilities.add("group set " + group + " 1");
                 possibilities.add("group set " + group + " 5");
                 possibilities.add("group set " + group + " 10");
-                possibilities.add("group set " + group + " 20");            }
+                possibilities.add("group set " + group + " 20");
+            }
         }
 
         Objects.requireNonNull(getCommand("HealthPower"))
@@ -377,7 +381,7 @@ public final class HealthPower extends ReloaderPlugin {
      * Registers the LuckPerms event listeners for this plugin.
      */
     private void registerLuckPermsEvents() {
-        if(Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
+        if (Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
             LuckPerms api = LuckPermsProvider.get();
             new LuckPermsListener(this, api);
             this.messageSender.send("&aPlugin LuckPerms found, events hooked");
@@ -413,6 +417,10 @@ public final class HealthPower extends ReloaderPlugin {
 
     public FormulaManager getFormulaManager() {
         return this.formulaManager;
+    }
+
+    public FormulaModifyCooldown getFormulaModifyCooldown() {
+        return this.formulaModifyCooldown;
     }
 
     public ConsumableManager getConsumableManager() {
