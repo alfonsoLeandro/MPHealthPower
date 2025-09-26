@@ -36,6 +36,12 @@ permissions:
   HealthPower.info:
     description: Allows a player to check another player's HP data.
     default: op
+  HealthPower.formulas:
+    description: Allows a player to see the formulas specified per world.
+    default: op
+  HealthPower.formulas.edit:
+    description: Allows a player to edit the formulas specified per world.
+    default: op
   HealthPower.tabcomplete:
     description: Allows a player to see autocomplete suggestions for all of this plugin's commands.
     default: op
@@ -69,6 +75,8 @@ permissions:
       HealthPower.gui: true
       HealthPower.group.set: true
       HealthPower.info: true
+      HealthPower.formulas: true
+      HealthPower.formulas.edit: true
       HealthPower.tabcomplete: true
       HealthPower.cap.bypass: true
       HealthPower.consumable.*: true

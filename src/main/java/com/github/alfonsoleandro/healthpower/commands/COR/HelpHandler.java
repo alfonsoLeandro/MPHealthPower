@@ -25,6 +25,7 @@ public class HelpHandler extends AbstractHandler{
         this.messageSender.send(sender, "&f/"+label+" clear (name)");
         this.messageSender.send(sender, "&f/"+label+" consumable give (player) (name)");
         this.messageSender.send(sender, "&f/"+label+" consumable set (name) (add/set) (amount)");
+        this.messageSender.send(sender, "&f/"+label+" formulas <world>");
         this.messageSender.send(sender, "&f/"+label+" group set (group) (HP)");
         this.messageSender.send(sender, "&f/"+label+" gui");
         this.messageSender.send(sender, "&f/"+label+" info (player) <world>");

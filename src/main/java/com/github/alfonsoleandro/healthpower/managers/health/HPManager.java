@@ -485,5 +485,9 @@ public class HPManager extends Reloadable {
         loadSettings();
     }
 
+    public Set<String> getFormulaWorldsNames() {
+        return this.formulasPerWorld.keySet();
+    }
+
 
 }

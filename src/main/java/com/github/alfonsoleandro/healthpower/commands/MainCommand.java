@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 public class MainCommand implements CommandExecutor {
 
     private final AbstractHandler COR;
+    //TODO: add command to check formulas for world
+    //TODO: modify set command to allow to set each type of HP
 
     public MainCommand(HealthPower plugin) {
         this.COR = new ShopHandler(plugin, new HelpHandler(plugin,
@@ -18,7 +20,9 @@ public class MainCommand implements CommandExecutor {
                                 new ClearHandler(plugin, new ClearAllHandler(plugin,
                                         new HPCheckHandler(plugin, new HPCheckAllHandler(plugin,
                                                 new GroupModifyHandler(plugin, new HPInfoHandler(plugin,
-                                                        null))
+                                                        new FormulasHandler(plugin,
+                                                        null)
+                                                        ))
                                         ))
                                 ))
                         ))

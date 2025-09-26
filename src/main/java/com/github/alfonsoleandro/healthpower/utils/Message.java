@@ -20,6 +20,7 @@ public enum Message implements MessageEnum {
     COMMAND_USE_CHECK("messages.check use", "&cUse: &f/%command% check (player)"),
     COMMAND_USE_GROUP_SET("messages.group set use", "&cUse: &f/%command% group set (group) (HP)" ),
     COMMAND_USE_INFO("messages.info use", "&cUse: &f/%command% info (player) <world>"),
+    COMMAND_USE_FORMULAS("messages.formulas use", "&cUse: &f/%command% formulas <world>"),
     INVALID_CONSUMABLE("&cInvalid consumable %name%. No \"set\" or \"add\" value found."),
     INVALID_CONSUMABLE_ITEM("&cInvalid consumable item for %name%. Must be edible or a potion."),
     CONSUMABLE_NOT_EXIST("&cA consumable with that name does not exist."),
@@ -32,6 +33,8 @@ public enum Message implements MessageEnum {
     ECONOMY_DISABLED("&cEconomy is not enabled in this server"),
     FORMULA_VALID("&cDebug:&a Formula \"&7%formula%&a\" for world \"&7%world%&a\" is valid"),
     FORMULA_INVALID("&cFormula \"&7%formula%&c\" for world \"&7%world%&c\" is invalid! Please check your config"),
+    FORMULAS_FOR_WORLD("&fFormulas for world \"&e%world%&f\":"),
+    FORMULA_LIST_ELEMENT("&f&e%order%&f- \"&a%formula%&f\""),
     GUI_DISABLED("&cThe HP shop GUI is disabled in this server"),
     GUI_ERROR("messages.error opening gui", "&cThere was an error while trying to open de buy hp menu, talk to an admin or check console"),
     INVALID_WORLD( "&cWorld \"&7%world%&c\" does not exist."),
@@ -65,7 +68,8 @@ public enum Message implements MessageEnum {
     GROUP_HP_SET("&aGroup HP set to &c%HP% &afor group &f%group%. HP reload recommended."),
     GROUP_HP_UNDER_MINIMUM("&e&lWARNING:&c Group \"%group%\"'s HP (%HP%) is below the minimum (%minimum%)"),
     CANNOT_SET_GROUP_HP_UNDER_MINIMUM("&cA group's HP (%HP%) cannot be under the minimum (%minimum%)"),
-    PLAYER_HP_INFO("&e%player%&7's HP info on world &e%world%&7\nFormula: \"&e%formula%&7\"\nBase HP: &a%base%&7\nGroup HP: &a%group%&7\nPermission HP: &a%permission%&7\nShop HP: &a%shop%")
+    PLAYER_HP_INFO("&e%player%&7's HP info on world &e%world%&7\nFormula: \"&e%formula%&7\"\nBase HP: &a%base%&7\nGroup HP: &a%group%&7\nPermission HP: &a%permission%&7\nShop HP: &a%shop%"),
+    WORLD_HAS_NO_FORMULAS("&cWorld \"&7%world%&c\" has no formulas.")
     ;
 
     private final String path;
