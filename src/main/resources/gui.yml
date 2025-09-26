@@ -1,0 +1,111 @@
+  GUI:
+    # Navigation bar used in paginated GUIs
+    navigation bar:
+      previous page:
+        material: ARROW
+        name: "&f← Previous page"
+        lore:
+          - "&7Go to page &e%previouspage%"
+      next page:
+        material: ARROW
+        name: "&fNext page →"
+        lore:
+          - "&7Go to page &e%nextpage%"
+      middle:
+        material: BOOK
+        name: "&fInfo"
+        lore:
+          - "&7Page &e%page% &7out of &e%totalpages%"
+      empty slots:
+        material: BLACK_STAINED_GLASS_PANE
+        name: "&7&l*"
+        lore: []
+    formulas worlds:
+      title: "&fFormulas - &cChoose world"
+      item:
+        material: BOOKSHELF
+        name: "&e%world%"
+        lore:
+          - "&e%formulas% &7formulas"
+    formulas for world:
+      title: "&fFormulas - &e&l%world%"
+      item:
+        material: KNOWLEDGE_BOOK
+        name: "&e%order%"
+        lore:
+          - "&7\"&a%formula%&7\""
+          - "&eLEFT← &7click to &eChange order"
+          - "&eRIGHT→ &7click to &c&lDelete"
+      add formula item:
+        material: LIME_STAINED_GLASS_PANE
+        name: "&Add formula"
+        lore:
+          - "&7Click to add a new formula"
+    shop:
+      # Should this feature be enabled?
+      enabled: true
+      # The title you want for the GUI
+      title: '&c&lBuy HP'
+      size: 27
+      # Price formulas. Equations for increasing health buy price on proportion to the player's health power.
+      # To use them, set the price to %formula_INDEX%, where INDEX is the index for the formula in formulas.
+      # For example, in order to get '500+(100*%HP%)', you should use %formula_0%, for '100*%HP%' use %formula_1% and so on.
+      # You can use %HP% for the player's current health power.
+      formulas:
+        - '500+(100*%HP%)'
+        - '-100*%HP%'
+        - '%HP%^2'
+        - '(6*100)-(%HP%*100)'
+      # Items go from 0 to the size you specified -1
+      # the format needed:
+      # items:
+      #  material: the type of item
+      #  name: the name the item will have
+      #  lore: lines of lore to add to the item
+      #  type: the hp modify type
+      #  (add = add hearts, set = set hearts, remove = remove hearts, info = player info only. Will not modify HP, any other options = add)
+      #  amount: the amount of hp to add or set to (2hp = 1 heart)
+      #  price: the amount of money to be taken from the player (negative numbers = give money)
+      items:
+        8:
+          material: BOOK
+          name: '&6%name%''s info'
+          lore:
+            - '&fBalance: &a%balance%'
+            - '&fHP: &c%HP%'
+          type: info
+          amount: 0.0
+          price: 0.0
+        12:
+          material: REDSTONE
+          name: '&cRemove 1 heart'
+          lore:
+            - '&6&lClick &fon this item'
+            - '&fto remove 1 heart from your HP'
+            - '&fPrice: &e%price%'
+            - '&fAffordable: %affordable%'
+          type: remove
+          amount: 2.0
+          price: '%formula_1%'
+        13:
+          material: DIAMOND
+          name: '&fSet HP to 3 hearts'
+          lore:
+            - '&6&lClick &fon this item'
+            - '&fto set your HP to 3 hearts'
+            - '&fPrice: &e%price%'
+            - '&fAffordable: %affordable%'
+          type: set
+          amount: 6.0
+          price: '%formula_3%'
+        14:
+          material: EMERALD
+          name: '&aAdd 1 heart'
+          lore:
+            - '&6&lClick &fon this item'
+            - '&fto add 1 heart to your HP'
+            - '&fPrice: &e%price%'
+            - '&fAffordable: %affordable%'
+          type: add
+          amount: 2.0
+          price: '%formula_0%'

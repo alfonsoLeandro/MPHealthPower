@@ -64,6 +64,7 @@ public final class HealthPower extends ReloaderPlugin {
     private YamlFile configYaml;
     private YamlFile consumablesYaml;
     private YamlFile formulasYaml;
+    private YamlFile guiYaml;
     private YamlFile hpYaml;
     private YamlFile messagesYaml;
     private Economy econ = null;
@@ -221,6 +222,7 @@ public final class HealthPower extends ReloaderPlugin {
     public void registerFiles() {
         this.configYaml = new YamlFile(this, "config.yml");
         this.formulasYaml = new YamlFile(this, "formulas.yml");
+        this.guiYaml = new YamlFile(this, "gui.yml");
         this.hpYaml = new YamlFile(this, "HP.yml");
         this.messagesYaml = new YamlFile(this, "messages.yml");
         boolean consumablesFileExisted = new File(this.getDataFolder(), "consumables.yml").exists();
@@ -250,6 +252,8 @@ public final class HealthPower extends ReloaderPlugin {
     public void reloadFiles() {
         this.configYaml.loadFileConfiguration();
         this.hpYaml.loadFileConfiguration();
+        this.formulasYaml.loadFileConfiguration();
+        this.guiYaml.loadFileConfiguration();
         this.messagesYaml.loadFileConfiguration();
         this.consumablesYaml.loadFileConfiguration();
     }
@@ -431,6 +435,10 @@ public final class HealthPower extends ReloaderPlugin {
 
     public YamlFile getFormulasYaml() {
         return this.formulasYaml;
+    }
+
+    public YamlFile getGuiYaml() {
+        return this.guiYaml;
     }
 
     public YamlFile getHpYaml() {
