@@ -19,7 +19,7 @@ public class ShopHandler extends AbstractHandler {
     }
 
     @Override
-    protected boolean meetsCondition(CommandSender sender, String label, String[] args) {
+    protected boolean meetsCondition(CommandSender sender, String[] args) {
         return (args.length == 0 &&
                 this.settings.isShopGUIEnabled() &&
                 sender.hasPermission("HealthPower.gui"))

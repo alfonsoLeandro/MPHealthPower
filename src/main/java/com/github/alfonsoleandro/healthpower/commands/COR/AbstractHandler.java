@@ -18,7 +18,7 @@ public abstract class AbstractHandler {
     }
 
     public void handle(CommandSender sender, String label, String[] args){
-        if(meetsCondition(sender, label, args)){
+        if(meetsCondition(sender, args)){
             this.internalHandle(sender, label, args);
         }else{
             if(this.successor != null) this.successor.handle(sender, label, args);
@@ -27,7 +27,7 @@ public abstract class AbstractHandler {
         }
     }
 
-    protected abstract boolean meetsCondition(CommandSender sender, String label, String[] args);
+    protected abstract boolean meetsCondition(CommandSender sender, String[] args);
 
     protected abstract void internalHandle(CommandSender sender, String label, String[] args);
 

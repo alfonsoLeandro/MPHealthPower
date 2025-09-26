@@ -17,7 +17,7 @@ public class HPModifyHandler extends AbstractHandler {
     }
 
     @Override
-    protected boolean meetsCondition(CommandSender sender, String label, String[] args) {
+    protected boolean meetsCondition(CommandSender sender, String[] args) {
         return args.length > 0 && (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add"));
     }
 

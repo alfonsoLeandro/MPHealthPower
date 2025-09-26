@@ -7,9 +7,6 @@ import org.bukkit.event.Listener;
 
 public class NavigableGUIClickListener implements Listener {
 
-    public NavigableGUIClickListener() {
-    }
-
     @EventHandler
     public void onGUIClick(GUIButtonClickEvent event) {
         // check the cause of the event is a GUI from this plugin

@@ -4,36 +4,23 @@ import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
-import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
-import com.github.alfonsoleandro.mputils.itemstacks.MPItemStacks;
-import com.github.alfonsoleandro.mputils.string.StringUtils;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 public class FormulasHandler extends AbstractHandler {
 
     private final FormulaManager formulaManager;
-    private final Settings settings;
 
     public FormulasHandler(HealthPower plugin, AbstractHandler successor) {
         super(plugin, successor);
         this.formulaManager = plugin.getFormulaManager();
-        this.settings = plugin.getSettings();
     }
 
     @Override
-    protected boolean meetsCondition(CommandSender sender, String label, String[] args) {
+    protected boolean meetsCondition(CommandSender sender, String[] args) {
         return args.length > 0 && (args[0].equalsIgnoreCase("formulas"));
     }
 

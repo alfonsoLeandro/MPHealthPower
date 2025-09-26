@@ -6,7 +6,7 @@ softdepend: [Vault, LuckPerms]
 depend: [MPUtils]
 authors: [lelesape]
 description: Modify players maximum health power
-website: http://bit.ly/2mwvHWN
+website: https://bit.ly/2mwvHWN
 
 commands:
   HealthPower:
