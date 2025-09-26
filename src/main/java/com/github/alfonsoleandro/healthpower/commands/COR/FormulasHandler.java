@@ -1,8 +1,8 @@
 package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
@@ -23,12 +23,12 @@ import java.util.Set;
 
 public class FormulasHandler extends AbstractHandler {
 
-    private final HPManager hpManager;
+    private final FormulaManager formulaManager;
     private final Settings settings;
 
     public FormulasHandler(HealthPower plugin, AbstractHandler successor) {
         super(plugin, successor);
-        this.hpManager = plugin.getHpManager();
+        this.formulaManager = plugin.getFormulaManager();
         this.settings = plugin.getSettings();
     }
 
@@ -55,15 +55,14 @@ public class FormulasHandler extends AbstractHandler {
             formulas.openGUI((Player) sender);
 
         } else {
-            List<Formula> formulas = this.hpManager.getFormulas(args[1]);
+            List<Formula> formulas = this.formulaManager.getFormulas(args[1]);
             if (formulas.isEmpty()) {
                 this.messageSender.send(sender, Message.WORLD_HAS_NO_FORMULAS,
                         "%world%", args[1]);
                 return;
             }
 
-            //Send list of formulas for world
-
+            //Send the list of formulas for a given world
             this.messageSender.send(sender, Message.FORMULAS_FOR_WORLD,
                     "%world%", args[1]);
             for (int i = 0; i < formulas.size(); i++) {
@@ -83,11 +82,11 @@ public class FormulasHandler extends AbstractHandler {
                 false,
                 this.settings.getNavigationBar());
         NamespacedKey worldNameNamespacedKey = this.settings.getWorldNameNamespacedKey();
-        Set<String> worldNames = this.hpManager.getFormulaWorldsNames();
+        Set<String> worldNames = this.formulaManager.getFormulaWorldsNames();
 
         for (String worldName : worldNames) {
             ItemStack formulaWorldItem = this.settings.getFormulasWorldsItem();
-            int formulasCount = this.hpManager.getFormulas(worldName).size();
+            int formulasCount = this.formulaManager.getFormulas(worldName).size();
             MPItemStacks.replacePlaceholders(formulaWorldItem, new HashMap<>() {{
                 put("%world%", worldName);
                 put("%formulas%", String.valueOf(formulasCount));

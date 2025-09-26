@@ -6,6 +6,7 @@ import com.github.alfonsoleandro.healthpower.managers.checking.PeriodicHPChecker
 import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.commands.MPTabCompleter;
@@ -54,6 +55,7 @@ public final class HealthPower extends ReloaderPlugin {
     private Integer serverMinorVersion;
     private String latestVersion;
     private HPManager hpManager;
+    private FormulaManager formulaManager;
     private ConsumableManager consumableManager;
     private HPGUIManager hpGUIManager;
     private MessageSender<Message> messageSender;
@@ -75,6 +77,7 @@ public final class HealthPower extends ReloaderPlugin {
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
         this.settings = new Settings(this);
         this.hpManager = new HPManager(this);
+        this.formulaManager = new  FormulaManager(this);
         new PeriodicHPChecker(this);
         this.consumableManager = new ConsumableManager(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
@@ -406,6 +409,10 @@ public final class HealthPower extends ReloaderPlugin {
 
     public HPManager getHpManager() {
         return this.hpManager;
+    }
+
+    public FormulaManager getFormulaManager() {
+        return this.formulaManager;
     }
 
     public ConsumableManager getConsumableManager() {

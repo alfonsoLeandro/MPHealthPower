@@ -1,8 +1,8 @@
 package com.github.alfonsoleandro.healthpower.listeners;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
@@ -40,14 +40,14 @@ public class FormulasGUIListener implements Listener {
     private final HealthPower plugin;
     private final Settings settings;
     private final MessageSender<Message> messageSender;
-    private final HPManager hpManager;
+    private final FormulaManager formulaManager;
     private final Map<Player, FormulaClickedData> cooldowns = new HashMap<>();
 
     public FormulasGUIListener(HealthPower plugin) {
         this.plugin = plugin;
         this.settings = plugin.getSettings();
         this.messageSender = this.plugin.getMessageSender();
-        this.hpManager = plugin.getHpManager();
+        this.formulaManager = plugin.getFormulaManager();
     }
 
     @EventHandler
@@ -92,7 +92,7 @@ public class FormulasGUIListener implements Listener {
             if (order == null) {
                 return;
             }
-            List<Formula> formulas = this.hpManager.getFormulas(worldName);
+            List<Formula> formulas = this.formulaManager.getFormulas(worldName);
             if (formulas == null || formulas.size() < order) {
                 return;
             }
@@ -144,7 +144,7 @@ public class FormulasGUIListener implements Listener {
         }
 
         FormulaClickedData formulaClickedData = this.cooldowns.get(player);
-        List<Formula> formulas = this.hpManager.getFormulas(formulaClickedData.worldName);
+        List<Formula> formulas = this.formulaManager.getFormulas(formulaClickedData.worldName);
 
         if (formulaClickedData.action.equals(GUIAction.DELETE)) {
             if (!message.equalsIgnoreCase("yes")) {
@@ -158,7 +158,7 @@ public class FormulasGUIListener implements Listener {
                 this.messageSender.send(player, Message.FORMULA_DELETE_ERROR);
                 return;
             }
-            Formula formula = this.hpManager.deleteFormula(formulaClickedData.worldName, formulaClickedData.formulaOrder);
+            Formula formula = this.formulaManager.deleteFormula(formulaClickedData.worldName, formulaClickedData.formulaOrder);
             this.messageSender.send(player, Message.FORMULA_DELETED,
                     "%world%", formulaClickedData.worldName,
                     "%formula%", formula.getRawFormulaString());
@@ -185,7 +185,7 @@ public class FormulasGUIListener implements Listener {
 
             //finally, change order
             if (formulaClickedData.formulaOrder != newOrder) {
-                this.hpManager.changeFormulaOrder(formulaClickedData.worldName, formulaClickedData.formulaOrder, newOrder);
+                this.formulaManager.changeFormulaOrder(formulaClickedData.worldName, formulaClickedData.formulaOrder, newOrder);
             }
             this.messageSender.send(player, Message.FORMULA_ORDER_CHANGED,
                     "%order%", String.valueOf(newOrder));
@@ -212,7 +212,7 @@ public class FormulasGUIListener implements Listener {
                 false,
                 this.settings.getNavigationBar());
         NamespacedKey formulaOrderNamespacedKey = this.settings.getFormulaOrderNamespacedKey();
-        List<Formula> formulas = this.hpManager.getFormulas(worldName);
+        List<Formula> formulas = this.formulaManager.getFormulas(worldName);
 
         for (int i = 0; i < formulas.size(); i++) {
             Formula formula = formulas.get(i);

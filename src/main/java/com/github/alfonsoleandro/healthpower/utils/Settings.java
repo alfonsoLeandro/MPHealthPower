@@ -24,6 +24,7 @@ public class Settings extends Reloadable {
     private boolean shopGUIEnabled;
     private boolean updateHPOnJoin;
     private boolean useGroupsSystem;
+    private boolean usePermissionsSystem;
     private String formulasForWorldTitle;
     private String formulasWorldsTitle;
     private ItemStack formulasForWorldItem;
@@ -56,6 +57,7 @@ public class Settings extends Reloadable {
         this.shopGUIEnabled = config.getBoolean("config.GUI.enabled");
         this.updateHPOnJoin = config.getBoolean("config.update HP on join");
         this.useGroupsSystem = config.getBoolean("config.use groups system");
+        this.usePermissionsSystem = config.getBoolean("config.use permissions system");
         this.formulasForWorldTitle = gui.getString("GUI.formulas for world.title");
         this.formulasWorldsTitle = gui.getString("GUI.formulas worlds.title");
 
@@ -133,6 +135,10 @@ public class Settings extends Reloadable {
 
     public boolean isUseGroupsSystem() {
         return this.useGroupsSystem;
+    }
+
+    public boolean isUsePermissionsSystem() {
+        return this.usePermissionsSystem;
     }
 
     public String getFormulasForWorldTitle() {

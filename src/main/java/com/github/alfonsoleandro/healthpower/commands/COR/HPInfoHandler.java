@@ -1,8 +1,8 @@
 package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.PlayerHpData;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import org.bukkit.Bukkit;
@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 
 public class HPInfoHandler extends AbstractHandler {
 
-    private final HPManager hpManager;
+    private final FormulaManager formulaManager;
 
     public HPInfoHandler(HealthPower plugin, AbstractHandler successor) {
         super(plugin, successor);
-        this.hpManager = plugin.getHpManager();
+        this.formulaManager = plugin.getFormulaManager();
     }
 
     @Override
@@ -54,8 +54,8 @@ public class HPInfoHandler extends AbstractHandler {
             world = toCheck.getWorld();
         }
 
-        PlayerHpData playerHpData = this.hpManager.getPlayerHpData(toCheck, world.getName());
-        Formula applicableFormula = this.hpManager.getApplicableFormula(toCheck, world.getName());
+        PlayerHpData playerHpData = this.formulaManager.getPlayerHpData(toCheck, world.getName());
+        Formula applicableFormula = this.formulaManager.getApplicableFormula(toCheck, world.getName());
 
         this.messageSender.send(sender, Message.PLAYER_HP_INFO,
                 "%player%", toCheck.getName(),
