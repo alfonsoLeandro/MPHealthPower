@@ -18,10 +18,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -63,9 +60,9 @@ public class HPManager extends Reloadable {
         if (this.settings.isUseGroupsSystem()) {
             ConfigurationSection groupsHp = this.hpYaml.getAccess().getConfigurationSection("HP.groups");
             if (groupsHp != null) {
-                groupsHp.getKeys(false).forEach(key -> {
-                    this.hpPerGroup.put(key, groupsHp.getDouble(key));
-                });
+                groupsHp.getKeys(false).forEach(key ->
+                    this.hpPerGroup.put(key, groupsHp.getDouble(key))
+                );
             }
         }
         loadFormulasAndCases();
@@ -114,7 +111,7 @@ public class HPManager extends Reloadable {
                                     "%formula%", f.getRawFormulaString(), "%world%", worldName);
                             return false;
                         })
-                        .toList();
+                        .collect(Collectors.toCollection(ArrayList::new));
                 if (!formulasList.isEmpty()) {
                     this.formulasPerWorld.put(worldName, formulasList);
                 }
@@ -227,6 +224,9 @@ public class HPManager extends Reloadable {
         return formula.calculate(playerHpData, defaultValue);
     }
 
+    public List<Formula> getFormulas(String worldName) {
+        return List.copyOf(this.formulasPerWorld.getOrDefault(worldName, new ArrayList<>()));
+    }
 
     /**
      * Automatically sets a player's HP.
@@ -236,6 +236,7 @@ public class HPManager extends Reloadable {
      * @param newValue The value to set the player's hp to.
      */
     public void automaticSetHP(Player player, double newValue) {
+        // TODO: use new code
         if (this.settings.isDebug()) {
             if (cannotSetHP(player, newValue)) {
                 this.messageSender.send("&cDEBUG: &fHP of " + player.getName() + " would have been set to " + newValue + ", but would exceed the cap.");
