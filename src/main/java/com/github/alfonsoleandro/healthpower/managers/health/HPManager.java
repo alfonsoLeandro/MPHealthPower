@@ -489,5 +489,51 @@ public class HPManager extends Reloadable {
         return this.formulasPerWorld.keySet();
     }
 
+    public Formula deleteFormula(String worldName, int formulaOrder) {
+        List<Formula> formulasForWorld = this.formulasPerWorld.get(worldName);
+        Formula removed = formulasForWorld.remove(formulaOrder);
+        String rawFormulaString = removed.getRawFormulaString();
 
+        YamlFile formulasYaml = this.plugin.getFormulasYaml();
+        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList("formulas per world."+worldName);
+
+        formulasForWorldInFile.remove(rawFormulaString);
+
+        if (formulasForWorldInFile.isEmpty() && formulasForWorld.isEmpty()) {
+            this.formulasPerWorld.remove(worldName);
+            formulasYaml.getAccess().set("formulas per world."+worldName, null);
+        }
+
+        formulasYaml.save(true);
+
+        return removed;
+    }
+
+    /**
+     * Changes the relative order of a formula inside a list of formulas for a given world.
+     * All orders are 1 based.
+     * @param worldName The world in which to modify the formulas.
+     * @param previousOrder The order of the formula that is to be modified.
+     * @param newOrder The new place the formula will take.
+     */
+    public void changeFormulaOrder(String worldName, int previousOrder, int newOrder) {
+        if (previousOrder == newOrder) {
+            return;
+        }
+        List<Formula> formulas = this.formulasPerWorld.get(worldName);
+        if (newOrder < 1 ||  newOrder > formulas.size() + 1) {
+            return;
+        }
+        Formula toEdit = formulas.remove(previousOrder - 1);
+        formulas.add(newOrder - 1, toEdit);
+
+        YamlFile formulasYaml = this.plugin.getFormulasYaml();
+        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList("formulas per world."+worldName);
+
+        formulasForWorldInFile.remove(toEdit.getRawFormulaString());
+        formulasForWorldInFile.add(newOrder - 1, toEdit.getRawFormulaString());
+
+        formulasYaml.getAccess().set("formulas per world."+worldName, formulasForWorldInFile);
+        formulasYaml.save(true);
+    }
 }

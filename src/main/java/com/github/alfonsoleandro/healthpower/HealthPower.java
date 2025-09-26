@@ -1,10 +1,7 @@
 package com.github.alfonsoleandro.healthpower;
 
 import com.github.alfonsoleandro.healthpower.commands.MainCommand;
-import com.github.alfonsoleandro.healthpower.listeners.ConsumablesListener;
-import com.github.alfonsoleandro.healthpower.listeners.GUIClickListener;
-import com.github.alfonsoleandro.healthpower.listeners.LuckPermsListener;
-import com.github.alfonsoleandro.healthpower.listeners.PlayerJoinListener;
+import com.github.alfonsoleandro.healthpower.listeners.*;
 import com.github.alfonsoleandro.healthpower.managers.checking.PeriodicHPChecker;
 import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
@@ -277,7 +274,9 @@ public final class HealthPower extends ReloaderPlugin {
                 "clear {PLAYERS}",
                 "clearAll",
                 "check {PLAYERS}",
-                "checkAll"
+                "checkAll",
+                "info {PLAYERS} {WORLDS}",
+                "formulas {WORLDS}"
         ));
         if (consumablesNames.isEmpty()) {
             possibilities.add("consumable give {PLAYERS} {consumable_name}");
@@ -364,7 +363,10 @@ public final class HealthPower extends ReloaderPlugin {
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerJoinListener(this), this);
-        pm.registerEvents(new GUIClickListener(this), this);
+        pm.registerEvents(new ShopGUIClickListener(this), this);
+        pm.registerEvents(new FormulasGUIListener(this), this);
+        pm.registerEvents(new NavigableGUIClickListener(), this);
+        pm.registerEvents(new ShopGUIClickListener(this), this);
         pm.registerEvents(new ConsumablesListener(this), this);
     }
 
