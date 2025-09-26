@@ -35,7 +35,7 @@ public class FormulaManager extends Reloadable {
     private Map<String, Double> defaultVariablesPerWorld;
     private Map<String, Double> hpPerGroup;
     private double defaultVariableGlobal;
-    private Formula defaultFormula;
+    private List<Formula> globalFormulas;
     private Map<String, List<Formula>> formulasPerWorld;
     private double defaultBaseHp;
 
@@ -64,6 +64,7 @@ public class FormulaManager extends Reloadable {
 
         loadFormulasAndCases();
     }
+
     protected void loadFormulasAndCases() {
         FileConfiguration formulas = this.plugin.getFormulasYaml().getAccess();
 
@@ -79,10 +80,29 @@ public class FormulaManager extends Reloadable {
         // load default for all non specified worlds
         this.defaultVariableGlobal = formulas.getDouble("default for all worlds");
 
-        // Load default formula for all non specified worlds
-        this.defaultFormula = new Formula(Objects.requireNonNull(formulas.getString("default formula")));
-        if (!this.defaultFormula.isValid()) {
-            //TODO: throw error, default formula cannot be invalid
+        // Load global formulas for all non specified worlds
+        List<String> globalFormulasStrings = formulas.getStringList("global formulas");
+        this.globalFormulas = globalFormulasStrings
+                .stream()
+                .map(Formula::new)
+                .filter(f -> {
+                    if (f.isValid()) {
+                        if (this.settings.isDebug()) {
+                            this.messageSender.send(Bukkit.getConsoleSender(),
+                                    Message.FORMULA_VALID,
+                                    "%formula%", f.getRawFormulaString(),
+                                    "%world%", "GLOBAL");
+                        }
+                        return true;
+                    }
+                    this.messageSender.send(Bukkit.getConsoleSender(),
+                            Message.FORMULA_INVALID,
+                            "%formula%", f.getRawFormulaString(),
+                            "%world%", "GLOBAL");
+                    return false;
+                }).collect(Collectors.toCollection(ArrayList::new));
+        if (this.globalFormulas.isEmpty()) {
+            throw new RuntimeException("Global formulas list has no valid formulas, this is essential for the plugin to work, please fix your formulas file.");
         }
 
         //Load formulas per world
@@ -98,13 +118,15 @@ public class FormulaManager extends Reloadable {
                                 if (this.settings.isDebug()) {
                                     this.messageSender.send(Bukkit.getConsoleSender(),
                                             Message.FORMULA_VALID,
-                                            "%formula%", f.getRawFormulaString(), "%world%", worldName);
+                                            "%formula%", f.getRawFormulaString(),
+                                            "%world%", worldName);
                                 }
                                 return true;
                             }
                             this.messageSender.send(Bukkit.getConsoleSender(),
                                     Message.FORMULA_INVALID,
-                                    "%formula%", f.getRawFormulaString(), "%world%", worldName);
+                                    "%formula%", f.getRawFormulaString(),
+                                    "%world%", worldName);
                             return false;
                         })
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -172,7 +194,7 @@ public class FormulaManager extends Reloadable {
                 // Get from HP.yaml
                 FileConfiguration hpYaml = this.hpYaml.getAccess();
                 ConfigurationSection playersSection = hpYaml.getConfigurationSection("HP.players");
-                if (playersSection != null && playersSection.contains(player.getName()+".shop")) {
+                if (playersSection != null && playersSection.contains(player.getName() + ".shop")) {
                     return playersSection.getDouble(player.getName() + ".shop");
                 }
                 return null;
@@ -204,8 +226,14 @@ public class FormulaManager extends Reloadable {
             return worldFormulas.getLast();
         }
 
-        // If no world-specific formulas, return the default formula.
-        return this.defaultFormula;
+        // If no world-specific formulas, find a global formula
+        for (Formula globalFormula : this.globalFormulas) {
+            if (globalFormula.canApply(playerHpData)) {
+                return globalFormula;
+            }
+        }
+        // If no global formula is 100% aplicable, use the last one
+        return this.globalFormulas.getLast();
     }
 
     public double calculate(Player player, String worldName) {
@@ -234,13 +262,13 @@ public class FormulaManager extends Reloadable {
         String rawFormulaString = removed.getRawFormulaString();
 
         YamlFile formulasYaml = this.plugin.getFormulasYaml();
-        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList("formulas per world."+worldName);
+        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList("formulas per world." + worldName);
 
         formulasForWorldInFile.remove(rawFormulaString);
 
         if (formulasForWorldInFile.isEmpty() && formulasForWorld.isEmpty()) {
             this.formulasPerWorld.remove(worldName);
-            formulasYaml.getAccess().set("formulas per world."+worldName, null);
+            formulasYaml.getAccess().set("formulas per world." + worldName, null);
         }
 
         formulasYaml.save(true);
@@ -251,28 +279,29 @@ public class FormulaManager extends Reloadable {
     /**
      * Changes the relative order of a formula inside a list of formulas for a given world.
      * All orders are 1 based.
-     * @param worldName The world in which to modify the formulas.
+     *
+     * @param worldName     The world in which to modify the formulas.
      * @param previousOrder The order of the formula that is to be modified.
-     * @param newOrder The new place the formula will take.
+     * @param newOrder      The new place the formula will take.
      */
     public void changeFormulaOrder(String worldName, int previousOrder, int newOrder) {
         if (previousOrder == newOrder) {
             return;
         }
         List<Formula> formulas = this.formulasPerWorld.get(worldName);
-        if (newOrder < 1 ||  newOrder > formulas.size() + 1) {
+        if (newOrder < 1 || newOrder > formulas.size() + 1) {
             return;
         }
         Formula toEdit = formulas.remove(previousOrder - 1);
         formulas.add(newOrder - 1, toEdit);
 
         YamlFile formulasYaml = this.plugin.getFormulasYaml();
-        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList("formulas per world."+worldName);
+        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList("formulas per world." + worldName);
 
         formulasForWorldInFile.remove(toEdit.getRawFormulaString());
         formulasForWorldInFile.add(newOrder - 1, toEdit.getRawFormulaString());
 
-        formulasYaml.getAccess().set("formulas per world."+worldName, formulasForWorldInFile);
+        formulasYaml.getAccess().set("formulas per world." + worldName, formulasForWorldInFile);
         formulasYaml.save(true);
     }
 
