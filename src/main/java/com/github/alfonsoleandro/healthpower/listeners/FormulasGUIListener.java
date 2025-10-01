@@ -1,16 +1,14 @@
 package com.github.alfonsoleandro.healthpower.listeners;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaCreationData;
-import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaGUIAction;
-import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaModifyManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaCreationData;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaGUIAction;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaModifyManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
-import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaGUIManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.gui.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
-import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
-import com.github.alfonsoleandro.mputils.guis.SimpleGUI;
 import com.github.alfonsoleandro.mputils.guis.events.GUIClickEvent;
 import com.github.alfonsoleandro.mputils.guis.events.GUICloseEvent;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
@@ -18,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -84,10 +83,17 @@ public class FormulasGUIListener implements Listener {
                 public void run() {
                     if (player.getOpenInventory().getType().equals(InventoryType.CRAFTING)) {
                         FormulasGUIListener.this.formulaModifyManager.clearCreationData(player);
+                        FormulasGUIListener.this.formulaGUIManager.clearGUIInfo(player);
                     }
                 }
             }.runTask(this.plugin);
         }
+    }
+
+    @EventHandler
+    public void onDisconnect(PlayerQuitEvent event) {
+        this.formulaModifyManager.clearCreationData(event.getPlayer());
+        this.formulaGUIManager.clearGUIInfo(event.getPlayer());
     }
 
 
@@ -108,8 +114,7 @@ public class FormulasGUIListener implements Listener {
             worldName = persistentDataContainer.get(this.settings.getWorldNameNamespacedKey(), PersistentDataType.STRING);
         }
 
-        DynamicGUI gui = this.formulaGUIManager.createFormulasGUIForWorld(Objects.requireNonNull(worldName));
-        gui.openGUI(player);
+        this.formulaGUIManager.openFormulasGUIForWorld(player, Objects.requireNonNull(worldName));
     }
 
     private void handleFormulaInWorldGUI(GUIClickEvent event, Player player, String guiTags) {
@@ -129,8 +134,7 @@ public class FormulasGUIListener implements Listener {
 
         if (Objects.equals(itemType, "ADD")) {
             int defaultOrder = this.formulaManager.getFormulas(worldName).size() + 1;
-            SimpleGUI gui = this.formulaGUIManager.createFormulaAddGUI(worldName, null, defaultOrder);
-            gui.openGUI(player);
+            this.formulaGUIManager.openFormulaAddGUI(player, worldName, null, defaultOrder);
 
             this.formulaModifyManager.addCreationData(player, worldName, defaultOrder, null);
             return;

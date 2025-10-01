@@ -1,16 +1,14 @@
 package com.github.alfonsoleandro.healthpower.listeners;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaClickedData;
-import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaCreationData;
-import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaGUIAction;
-import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaModifyManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaClickedData;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaCreationData;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaGUIAction;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaModifyManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
-import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaGUIManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.gui.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
-import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
-import com.github.alfonsoleandro.mputils.guis.GUI;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,11 +47,13 @@ public class FormulasChatListener implements Listener {
         if (message.equalsIgnoreCase("cancel")) {
             this.formulaModifyManager.removeCooldown(player);
             this.messageSender.send(player, Message.FORMULA_ACTION_CANCELED);
-            if (this.formulaModifyManager.isCreating(player)) {
-                // Re-open creation GUI
-                openGUISync(player,
-                        this.formulaGUIManager.createFormulaAddGUI(creationData));
-            }
+            // Re-open last GUI
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    FormulasChatListener.this.formulaGUIManager.openLastGUI(player);
+                }
+            }.runTask(this.plugin);
             return;
         }
 
@@ -106,8 +106,13 @@ public class FormulasChatListener implements Listener {
         this.formulaModifyManager.removeCooldown(player);
 
         //Re-open GUI
-        DynamicGUI gui = this.formulaGUIManager.createFormulasGUIForWorld(formulaClickedData.worldName());
-        openGUISync(player, gui);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                FormulasChatListener.this.formulaGUIManager.openFormulasGUIForWorld(player,
+                        formulaClickedData.worldName());
+            }
+        }.runTask(this.plugin);
     }
 
     private void handleDelete(String message, Player player, List<Formula> formulas, FormulaClickedData formulaClickedData) {
@@ -146,8 +151,13 @@ public class FormulasChatListener implements Listener {
                 "%formula%", formula.getRawFormulaString());
         this.formulaModifyManager.removeCooldown(player);
 
-        openGUISync(player,
-                this.formulaGUIManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                FormulasChatListener.this.formulaGUIManager.openFormulaAddGUI(player,
+                        FormulasChatListener.this.formulaModifyManager.getCreationData(player));
+            }
+        }.runTask(this.plugin);
     }
 
     private void handleCreateSetOrder(String message, Player player, List<Formula> formulas, FormulaCreationData creationData) {
@@ -178,15 +188,11 @@ public class FormulasChatListener implements Listener {
                 "%order%", String.valueOf(newOrder));
         this.formulaModifyManager.removeCooldown(player);
 
-        openGUISync(player,
-                this.formulaGUIManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
-    }
-
-    private void openGUISync(Player player, GUI gui) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                gui.openGUI(player);
+                FormulasChatListener.this.formulaGUIManager.openFormulaAddGUI(player,
+                        FormulasChatListener.this.formulaModifyManager.getCreationData(player));
             }
         }.runTask(this.plugin);
     }

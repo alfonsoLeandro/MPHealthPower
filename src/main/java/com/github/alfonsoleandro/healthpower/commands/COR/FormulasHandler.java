@@ -2,10 +2,9 @@ package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
-import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaGUIManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.gui.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
-import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -41,8 +40,7 @@ public class FormulasHandler extends AbstractHandler {
                 return;
             }
             // Open GUI
-            DynamicGUI formulas = this.formulaGUIManager.createFormulasGUI();
-            formulas.openGUI((Player) sender);
+            this.formulaGUIManager.openFormulasGUI((Player) sender);
 
         } else {
             List<Formula> formulas = this.formulaManager.getFormulas(args[1]);

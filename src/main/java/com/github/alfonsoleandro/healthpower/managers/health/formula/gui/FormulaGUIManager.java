@@ -1,7 +1,9 @@
-package com.github.alfonsoleandro.healthpower.managers.health.formula;
+package com.github.alfonsoleandro.healthpower.managers.health.formula.gui;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaCreationData;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaCreationData;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
@@ -11,16 +13,14 @@ import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.string.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.generator.WorldInfo;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FormulaGUIManager {
@@ -28,6 +28,7 @@ public class FormulaGUIManager {
     private final MessageSender<Message> messageSender;
     private final Settings settings;
     private final FormulaManager formulaManager;
+    private final Map<Player, FormulaGUIData> formulaGUIInfo = new HashMap<>();
 
     public FormulaGUIManager(HealthPower plugin) {
         this.messageSender = plugin.getMessageSender();
@@ -35,7 +36,7 @@ public class FormulaGUIManager {
         this.formulaManager = plugin.getFormulaManager();
     }
 
-    public DynamicGUI createFormulasGUI() {
+    public void openFormulasGUI(Player player) {
         DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(this.settings.getFormulasWorldsTitle()),
                 Settings.FORMULAS_PER_WORLD_GUI_TAG,
                 false,
@@ -68,10 +69,11 @@ public class FormulaGUIManager {
             gui.addItem(formulaWorldItem);
         }
 
-        return gui;
+        gui.openGUI(player);
+        this.formulaGUIInfo.put(player, new FormulaGUIData(FormulaGUIMenu.FORMULAS, null, null, null));
     }
 
-    public DynamicGUI createFormulasGUIForWorld(String worldName) {
+    public void openFormulasGUIForWorld(Player player, String worldName) {
         boolean isGlobal = worldName.equals(Settings.GLOBAL_WORLD_SYMBOL);
 
         DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(
@@ -112,16 +114,18 @@ public class FormulaGUIManager {
 
         gui.addItem(formulaAddItem);
 
-        return gui;
+        gui.openGUI(player);
+        this.formulaGUIInfo.put(player, new FormulaGUIData(FormulaGUIMenu.FORMULAS_FOR_WORLD, worldName, null, null));
     }
 
-    public SimpleGUI createFormulaAddGUI(FormulaCreationData formulaCreationData) {
-        return createFormulaAddGUI(formulaCreationData.worldName(),
+    public void openFormulaAddGUI(Player player, FormulaCreationData formulaCreationData) {
+        openFormulaAddGUI(player,
+                formulaCreationData.worldName(),
                 formulaCreationData.formula() == null ? null : formulaCreationData.formula().getRawFormulaString(),
                 formulaCreationData.formulaOrder());
     }
 
-    public SimpleGUI createFormulaAddGUI(String worldName, String formulaRawString, int formulaOrder) {
+    public void openFormulaAddGUI(Player player, String worldName, String formulaRawString, int formulaOrder) {
         boolean isGlobal = worldName.equals(Settings.GLOBAL_WORLD_SYMBOL);
 
         SimpleGUI gui = new SimpleGUI(StringUtils.colorizeString(
@@ -155,7 +159,24 @@ public class FormulaGUIManager {
         gui.setItem(1, formulaOrderItem);
         gui.setItem(8, formulaSaveItem);
 
-        return gui;
+        gui.openGUI(player);
+        this.formulaGUIInfo.put(player, new FormulaGUIData(FormulaGUIMenu.CREATE, worldName, formulaRawString, formulaOrder));
+
+    }
+
+    public void openLastGUI(Player player) {
+        if (this.formulaGUIInfo.containsKey(player)) {
+            FormulaGUIData formulaGUIData = this.formulaGUIInfo.get(player);
+            switch (formulaGUIData.guiMenu()) {
+                case FORMULAS -> openFormulasGUI(player);
+                case FORMULAS_FOR_WORLD -> openFormulasGUIForWorld(player, formulaGUIData.worldName());
+                case CREATE -> openFormulaAddGUI(player, formulaGUIData.worldName(), formulaGUIData.formulaRawString(), formulaGUIData.order());
+            }
+        }
+    }
+
+    public void clearGUIInfo(Player player) {
+        this.formulaGUIInfo.remove(player);
     }
 
 }
