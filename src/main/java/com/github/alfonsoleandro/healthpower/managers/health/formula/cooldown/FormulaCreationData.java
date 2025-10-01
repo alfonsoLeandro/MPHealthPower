@@ -1,4 +1,4 @@
-package com.github.alfonsoleandro.healthpower.managers.cooldown.formula;
+package com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown;
 
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
 

@@ -1,7 +1,8 @@
-package com.github.alfonsoleandro.healthpower.managers.cooldown.formula;
+package com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.gui.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import org.bukkit.entity.Player;
@@ -15,12 +16,14 @@ public class FormulaModifyManager {
 
     private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
+    private final FormulaGUIManager formulaGUIManager;
     private final Map<Player, FormulaClickedData> cooldowns = new HashMap<>();
     private final Map<Player, FormulaCreationData> formulaCreationData = new HashMap<>();
 
     public FormulaModifyManager(HealthPower plugin) {
         this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
+        this.formulaGUIManager = plugin.getFormulaGUIManager();
     }
 
     public void startCooldown(Player player, String worldName, int formulaOrder, FormulaGUIAction action, long seconds) {
@@ -31,6 +34,8 @@ public class FormulaModifyManager {
                 if (FormulaModifyManager.this.cooldowns.containsKey(player)) {
                     FormulaModifyManager.this.cooldowns.remove(player);
                     FormulaModifyManager.this.messageSender.send(player, Message.FORMULA_ACTION_TIMER_RAN_OUT);
+                    // Re-open last GUI
+                    FormulaModifyManager.this.formulaGUIManager.openLastGUI(player);
                 }
             }
         }.runTaskLater(this.plugin, seconds * 20L);
