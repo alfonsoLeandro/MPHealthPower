@@ -68,53 +68,9 @@ public class FormulasChatListener implements Listener {
         } else if (action.equals(FormulaGUIAction.EDIT)) {
             handleEdit(message, player, formulas, formulaClickedData);
         } else if (action.equals(FormulaGUIAction.CREATE_SET_ORDER)) {
-            int newOrder;
-            try {
-                newOrder = Integer.parseInt(message);
-            } catch (NumberFormatException e) {
-                this.messageSender.send(player, Message.FORMULA_INVALID_ORDER,
-                        "%min%", String.valueOf(1),
-                        "%max%", String.valueOf(formulas.size() + 1));
-                return;
-            }
-
-            if (newOrder < 1 || newOrder > formulas.size() + 1) {
-                this.messageSender.send(player, Message.FORMULA_INVALID_ORDER,
-                        "%min%", String.valueOf(1),
-                        "%max%", String.valueOf(formulas.size() + 1));
-                return;
-            }
-
-            this.formulaModifyManager.addCreationData(player,
-                    creationData.worldName(),
-                    newOrder,
-                    creationData.formula() == null ? null : creationData.formula()
-            );
-
-            this.messageSender.send(player, Message.FORMULA_ORDER_SET,
-                    "%order%", String.valueOf(newOrder));
-            openGUISync(player,
-                    this.formulaManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
-
+            handleCreateSetOrder(message, player, formulas, creationData);
         } else if (action.equals(FormulaGUIAction.CREATE_SET_STRING)) {
-            Formula formula = new Formula(message);
-
-            if (!formula.isValid()) {
-                this.messageSender.send(player, Message.FORMULA_INPUT_INVALID);
-                return;
-            }
-
-            this.formulaModifyManager.addCreationData(player,
-                    creationData.worldName(),
-                    creationData.formulaOrder(),
-                    formula
-            );
-
-            this.messageSender.send(player, Message.FORMULA_VALUE_SET,
-                    "%formula%", formula.getRawFormulaString());
-
-            openGUISync(player,
-                    this.formulaManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
+            handleCreateSetString(message, player, creationData);
 
         }
     }
@@ -169,6 +125,60 @@ public class FormulasChatListener implements Listener {
         this.formulaModifyManager.removeCooldown(player);
     }
 
+    private void handleCreateSetString(String message, Player player, FormulaCreationData creationData) {
+        Formula formula = new Formula(message);
+
+        if (!formula.isValid()) {
+            this.messageSender.send(player, Message.FORMULA_INPUT_INVALID);
+            return;
+        }
+
+        this.formulaModifyManager.addCreationData(player,
+                creationData.worldName(),
+                creationData.formulaOrder(),
+                formula
+        );
+
+        this.messageSender.send(player, Message.FORMULA_VALUE_SET,
+                "%formula%", formula.getRawFormulaString());
+        this.formulaModifyManager.removeCooldown(player);
+
+        openGUISync(player,
+                this.formulaManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
+    }
+
+    private void handleCreateSetOrder(String message, Player player, List<Formula> formulas, FormulaCreationData creationData) {
+        int newOrder;
+        try {
+            newOrder = Integer.parseInt(message);
+        } catch (NumberFormatException e) {
+            this.messageSender.send(player, Message.FORMULA_INVALID_ORDER,
+                    "%min%", String.valueOf(1),
+                    "%max%", String.valueOf(formulas.size() + 1));
+            return;
+        }
+
+        if (newOrder < 1 || newOrder > formulas.size() + 1) {
+            this.messageSender.send(player, Message.FORMULA_INVALID_ORDER,
+                    "%min%", String.valueOf(1),
+                    "%max%", String.valueOf(formulas.size() + 1));
+            return;
+        }
+
+        this.formulaModifyManager.addCreationData(player,
+                creationData.worldName(),
+                newOrder,
+                creationData.formula() == null ? null : creationData.formula()
+        );
+
+        this.messageSender.send(player, Message.FORMULA_ORDER_SET,
+                "%order%", String.valueOf(newOrder));
+        this.formulaModifyManager.removeCooldown(player);
+
+        openGUISync(player,
+                this.formulaManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
+    }
+
     private void openGUISync(Player player, GUI gui) {
         new BukkitRunnable() {
             @Override
@@ -177,6 +187,5 @@ public class FormulasChatListener implements Listener {
             }
         }.runTask(this.plugin);
     }
-
 
 }

@@ -302,16 +302,7 @@ public class FormulaManager extends Reloadable {
             return;
         }
         Formula toEdit = formulas.remove(previousOrder - 1);
-        formulas.add(newOrder - 1, toEdit);
-
-        YamlFile formulasYaml = this.plugin.getFormulasYaml();
-        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList("formulas per world." + worldName);
-
-        formulasForWorldInFile.remove(toEdit.getRawFormulaString());
-        formulasForWorldInFile.add(newOrder - 1, toEdit.getRawFormulaString());
-
-        formulasYaml.getAccess().set("formulas per world." + worldName, formulasForWorldInFile);
-        formulasYaml.save(true);
+        setFormulaInOrder(formulas, worldName, toEdit, newOrder);
     }
 
     public void saveNewFormula(String worldName, Formula formula, int formulaOrder) {
@@ -324,7 +315,27 @@ public class FormulaManager extends Reloadable {
             this.messageSender.send(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID_ORDER));
             throw new RuntimeException(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID_ORDER));
         }
-        existingFormulas.add(formulaOrder - 1, formula);
+        setFormulaInOrder(existingFormulas, worldName, formula,  formulaOrder);
+    }
+
+    private void setFormulaInOrder(List<Formula> formulas, String worldName, Formula formula, int newOrder) {
+        formulas.add(newOrder - 1, formula);
+
+        YamlFile formulasYaml = this.plugin.getFormulasYaml();
+        String path;
+        if (worldName.equals(Settings.GLOBAL_WORLD_SYMBOL)) {
+            path = "global formulas";
+        } else {
+            path = "formulas per world." + worldName;
+        }
+        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList(path);
+
+        formulasForWorldInFile.remove(formula.getRawFormulaString());
+        formulasForWorldInFile.add(newOrder - 1, formula.getRawFormulaString());
+
+        formulasYaml.getAccess().set(path, formulasForWorldInFile);
+        formulasYaml.save(true);
+
     }
 
     public DynamicGUI createFormulasGUI() {

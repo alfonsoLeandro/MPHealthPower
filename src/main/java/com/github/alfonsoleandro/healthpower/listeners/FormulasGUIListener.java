@@ -121,7 +121,8 @@ public class FormulasGUIListener implements Listener {
         PersistentDataContainer persistentDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
         String itemType = persistentDataContainer.get(this.settings.getFormulaItemTypeNamespacedKey(), PersistentDataType.STRING);
         String worldName = guiTags.replace(Settings.FORMULAS_FOR_WORLD_GUI_TAG_PREFIX, "");
-        boolean isGlobal = worldName.equals(Settings.GLOBAL_WORLD_SYMBOL);
+        String worldNameForMessages = worldName.equals(Settings.GLOBAL_WORLD_SYMBOL) ?
+                this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME) : worldName;
 
         if (Objects.equals(itemType, "ADD")) {
             int defaultOrder = this.formulaManager.getFormulas(worldName).size() + 1;
@@ -146,7 +147,7 @@ public class FormulasGUIListener implements Listener {
         if (event.getClick().isRightClick()) {
             //CONFIRM DELETE
             this.messageSender.send(player, Message.FORMULA_CONFIRM_DELETE,
-                    "%world%", (isGlobal ? this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME) : worldName),
+                    "%world%", worldNameForMessages,
                     "%formula%", formula.getRawFormulaString(),
                     "%seconds%", String.valueOf(this.settings.getFormulaEditCooldownTime()));
 
@@ -156,7 +157,7 @@ public class FormulasGUIListener implements Listener {
 
         } else if (event.getClick().isLeftClick()) {
             this.messageSender.send(player, Message.FORMULA_ENTER_NEW_ORDER,
-                    "%world%", (isGlobal ? this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME) : worldName),
+                    "%world%", worldNameForMessages,
                     "%formula%", formula.getRawFormulaString(),
                     "%seconds%", String.valueOf(this.settings.getFormulaEditCooldownTime()));
 
@@ -170,19 +171,21 @@ public class FormulasGUIListener implements Listener {
         // get creation data
         FormulaCreationData creationData = this.formulaModifyManager.getCreationData(player);
         String worldName = creationData.worldName();
+        String worldNameForMessages = worldName.equals(Settings.GLOBAL_WORLD_SYMBOL) ?
+                this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME) : worldName;
         int formulaOrder = creationData.formulaOrder();
 
         if (rawSlot == 0) {
             this.messageSender.send(player, Message.FORMULA_ADD_ENTER_NEW_STRING,
                     "%seconds%", String.valueOf(this.settings.getFormulaCreateCooldownTime()),
-                    "%world%", worldName == null ? this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME) : worldName);
+                    "%world%", worldNameForMessages);
             this.formulaModifyManager.startCooldown(player, worldName, formulaOrder, FormulaGUIAction.CREATE_SET_STRING, this.settings.getFormulaCreateCooldownTime());
             player.closeInventory();
 
         } else if (rawSlot == 1) {
             this.messageSender.send(player, Message.FORMULA_ADD_ENTER_NEW_ORDER,
                     "%seconds%", String.valueOf(this.settings.getFormulaCreateCooldownTime()),
-                    "%world%", worldName == null ? this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME) : worldName);
+                    "%world%", worldNameForMessages);
             this.formulaModifyManager.startCooldown(player, worldName, formulaOrder, FormulaGUIAction.CREATE_SET_ORDER, this.settings.getFormulaCreateCooldownTime());
             player.closeInventory();
 
@@ -194,8 +197,9 @@ public class FormulasGUIListener implements Listener {
 
                 this.messageSender.send(player, Message.FORMULA_SAVED,
                         "%formula%", formula.getRawFormulaString(),
-                        "%world%", worldName,
+                        "%world%", worldNameForMessages,
                         "%order%",  String.valueOf(formulaOrder));
+                player.closeInventory();
             } else {
                 this.messageSender.send(player, Message.FORMULA_CANNOT_SAVE);
             }

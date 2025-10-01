@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 public class MainCommand implements CommandExecutor {
 
     private final AbstractHandler COR;
-    //TODO: add command to check formulas for world
     //TODO: modify set command to allow to set each type of HP
 
     public MainCommand(HealthPower plugin) {
