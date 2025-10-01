@@ -2,6 +2,7 @@ package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
@@ -13,10 +14,12 @@ import java.util.List;
 public class FormulasHandler extends AbstractHandler {
 
     private final FormulaManager formulaManager;
+    private final FormulaGUIManager formulaGUIManager;
 
     public FormulasHandler(HealthPower plugin, AbstractHandler successor) {
         super(plugin, successor);
         this.formulaManager = plugin.getFormulaManager();
+        this.formulaGUIManager = plugin.getFormulaGUIManager();
     }
 
     @Override
@@ -38,7 +41,7 @@ public class FormulasHandler extends AbstractHandler {
                 return;
             }
             // Open GUI
-            DynamicGUI formulas = this.formulaManager.createFormulasGUI();
+            DynamicGUI formulas = this.formulaGUIManager.createFormulasGUI();
             formulas.openGUI((Player) sender);
 
         } else {

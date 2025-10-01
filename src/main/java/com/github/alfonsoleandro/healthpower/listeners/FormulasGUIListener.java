@@ -5,6 +5,7 @@ import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaCr
 import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaGUIAction;
 import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaModifyManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
@@ -31,6 +32,7 @@ public class FormulasGUIListener implements Listener {
     private final Settings settings;
     private final MessageSender<Message> messageSender;
     private final FormulaManager formulaManager;
+    private final FormulaGUIManager formulaGUIManager;
     private final FormulaModifyManager formulaModifyManager;
 
     public FormulasGUIListener(HealthPower plugin) {
@@ -38,6 +40,7 @@ public class FormulasGUIListener implements Listener {
         this.settings = plugin.getSettings();
         this.messageSender = plugin.getMessageSender();
         this.formulaManager = plugin.getFormulaManager();
+        this.formulaGUIManager = plugin.getFormulaGUIManager();
         this.formulaModifyManager = plugin.getFormulaModifyCooldown();
     }
 
@@ -105,7 +108,7 @@ public class FormulasGUIListener implements Listener {
             worldName = persistentDataContainer.get(this.settings.getWorldNameNamespacedKey(), PersistentDataType.STRING);
         }
 
-        DynamicGUI gui = this.formulaManager.createFormulasGUIForWorld(Objects.requireNonNull(worldName));
+        DynamicGUI gui = this.formulaGUIManager.createFormulasGUIForWorld(Objects.requireNonNull(worldName));
         gui.openGUI(player);
     }
 
@@ -126,7 +129,7 @@ public class FormulasGUIListener implements Listener {
 
         if (Objects.equals(itemType, "ADD")) {
             int defaultOrder = this.formulaManager.getFormulas(worldName).size() + 1;
-            SimpleGUI gui = this.formulaManager.createFormulaAddGUI(worldName, null, defaultOrder);
+            SimpleGUI gui = this.formulaGUIManager.createFormulaAddGUI(worldName, null, defaultOrder);
             gui.openGUI(player);
 
             this.formulaModifyManager.addCreationData(player, worldName, defaultOrder, null);

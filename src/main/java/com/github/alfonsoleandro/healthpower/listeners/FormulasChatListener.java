@@ -6,6 +6,7 @@ import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaCr
 import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaGUIAction;
 import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaModifyManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
@@ -24,12 +25,14 @@ public class FormulasChatListener implements Listener {
     private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
     private final FormulaManager formulaManager;
+    private final FormulaGUIManager formulaGUIManager;
     private final FormulaModifyManager formulaModifyManager;
 
     public FormulasChatListener(HealthPower plugin) {
         this.plugin = plugin;
         this.messageSender = this.plugin.getMessageSender();
         this.formulaManager = plugin.getFormulaManager();
+        this.formulaGUIManager = plugin.getFormulaGUIManager();
         this.formulaModifyManager = plugin.getFormulaModifyCooldown();
     }
 
@@ -49,7 +52,7 @@ public class FormulasChatListener implements Listener {
             if (this.formulaModifyManager.isCreating(player)) {
                 // Re-open creation GUI
                 openGUISync(player,
-                        this.formulaManager.createFormulaAddGUI(creationData));
+                        this.formulaGUIManager.createFormulaAddGUI(creationData));
             }
             return;
         }
@@ -103,7 +106,7 @@ public class FormulasChatListener implements Listener {
         this.formulaModifyManager.removeCooldown(player);
 
         //Re-open GUI
-        DynamicGUI gui = this.formulaManager.createFormulasGUIForWorld(formulaClickedData.worldName());
+        DynamicGUI gui = this.formulaGUIManager.createFormulasGUIForWorld(formulaClickedData.worldName());
         openGUISync(player, gui);
     }
 
@@ -144,7 +147,7 @@ public class FormulasChatListener implements Listener {
         this.formulaModifyManager.removeCooldown(player);
 
         openGUISync(player,
-                this.formulaManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
+                this.formulaGUIManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
     }
 
     private void handleCreateSetOrder(String message, Player player, List<Formula> formulas, FormulaCreationData creationData) {
@@ -176,7 +179,7 @@ public class FormulasChatListener implements Listener {
         this.formulaModifyManager.removeCooldown(player);
 
         openGUISync(player,
-                this.formulaManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
+                this.formulaGUIManager.createFormulaAddGUI(this.formulaModifyManager.getCreationData(player)));
     }
 
     private void openGUISync(Player player, GUI gui) {

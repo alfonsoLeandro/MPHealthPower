@@ -7,6 +7,7 @@ import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManag
 import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaModifyManager;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
@@ -57,6 +58,7 @@ public final class HealthPower extends ReloaderPlugin {
     private String latestVersion;
     private HPManager hpManager;
     private FormulaManager formulaManager;
+    private FormulaGUIManager formulaGUIManager;
     private FormulaModifyManager formulaModifyManager;
     private ConsumableManager consumableManager;
     private HPGUIManager hpGUIManager;
@@ -80,6 +82,7 @@ public final class HealthPower extends ReloaderPlugin {
         this.settings = new Settings(this);
         this.hpManager = new HPManager(this);
         this.formulaManager = new FormulaManager(this);
+        this.formulaGUIManager = new FormulaGUIManager(this);
         this.formulaModifyManager = new FormulaModifyManager(this);
         new PeriodicHPChecker(this);
         this.consumableManager = new ConsumableManager(this);
@@ -418,6 +421,10 @@ public final class HealthPower extends ReloaderPlugin {
 
     public FormulaManager getFormulaManager() {
         return this.formulaManager;
+    }
+
+    public FormulaGUIManager getFormulaGUIManager() {
+        return this.formulaGUIManager;
     }
 
     public FormulaModifyManager getFormulaModifyCooldown() {
