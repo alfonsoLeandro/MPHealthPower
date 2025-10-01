@@ -1,6 +1,6 @@
 # This file contains the base of how HP is calculated
 # The default value to use for a health *variable* if the value is not present, and only if it is the last case available.
-# (i.e: player has no specific health permissions, then the %permission% variable is set to this value)
+# (i.e: player has no specific health permissions, then the "permission" variable is set to this value)
 default if not present:
   world: 1
 # in the rest of the worlds, not specified above

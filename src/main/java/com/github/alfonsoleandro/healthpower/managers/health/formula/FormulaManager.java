@@ -314,6 +314,19 @@ public class FormulaManager extends Reloadable {
         formulasYaml.save(true);
     }
 
+    public void saveNewFormula(String worldName, Formula formula, int formulaOrder) {
+        if (!formula.isValid()) {
+            this.messageSender.send(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID));
+            throw new RuntimeException(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID));
+        }
+        List<Formula> existingFormulas = this.formulasPerWorld.getOrDefault(worldName, new ArrayList<>());
+        if (formulaOrder < 1 || existingFormulas.size() + 1 < formulaOrder) {
+            this.messageSender.send(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID_ORDER));
+            throw new RuntimeException(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID_ORDER));
+        }
+        existingFormulas.add(formulaOrder - 1, formula);
+    }
+
     public DynamicGUI createFormulasGUI() {
         DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(this.settings.getFormulasWorldsTitle()),
                 Settings.FORMULAS_PER_WORLD_GUI_TAG,

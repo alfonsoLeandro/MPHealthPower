@@ -10,6 +10,11 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Objects;
 
 public class Settings extends Reloadable {
 
@@ -42,6 +47,9 @@ public class Settings extends Reloadable {
     private boolean updateHPOnJoin;
     private boolean useGroupsSystem;
     private boolean usePermissionsSystem;
+    private long formulaCreateCooldownTime;
+    private long formulaDeleteCooldownTime;
+    private long formulaEditCooldownTime;
     private String addFormulaTitle;
     private String formulasForWorldTitle;
     private String formulasWorldsTitle;
@@ -85,6 +93,11 @@ public class Settings extends Reloadable {
         this.updateHPOnJoin = config.getBoolean("config.update HP on join");
         this.useGroupsSystem = config.getBoolean("config.use groups system");
         this.usePermissionsSystem = config.getBoolean("config.use permissions system");
+
+        this.formulaCreateCooldownTime = config.getLong("config.formulas admin cooldown.create");
+        this.formulaDeleteCooldownTime = config.getLong("config.formulas admin cooldown.delete");
+        this.formulaEditCooldownTime = config.getLong("config.formulas admin cooldown.edit");
+
         this.addFormulaTitle = gui.getString("GUI.add formula.title");
         this.formulasForWorldTitle = gui.getString("GUI.formulas for world.title");
         this.formulasWorldsTitle = gui.getString("GUI.formulas worlds.title");
@@ -185,6 +198,18 @@ public class Settings extends Reloadable {
 
     public boolean isUsePermissionsSystem() {
         return this.usePermissionsSystem;
+    }
+
+    public long getFormulaCreateCooldownTime() {
+        return this.formulaCreateCooldownTime;
+    }
+
+    public long getFormulaDeleteCooldownTime() {
+        return this.formulaDeleteCooldownTime;
+    }
+
+    public long getFormulaEditCooldownTime() {
+        return this.formulaEditCooldownTime;
     }
 
     public String getAddFormulaTitle() {
