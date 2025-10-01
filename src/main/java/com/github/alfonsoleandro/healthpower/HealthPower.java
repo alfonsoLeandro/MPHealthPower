@@ -4,7 +4,7 @@ import com.github.alfonsoleandro.healthpower.commands.MainCommand;
 import com.github.alfonsoleandro.healthpower.listeners.*;
 import com.github.alfonsoleandro.healthpower.managers.checking.PeriodicHPChecker;
 import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
-import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaModifyCooldown;
+import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaModifyManager;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
@@ -57,7 +57,7 @@ public final class HealthPower extends ReloaderPlugin {
     private String latestVersion;
     private HPManager hpManager;
     private FormulaManager formulaManager;
-    private FormulaModifyCooldown formulaModifyCooldown;
+    private FormulaModifyManager formulaModifyManager;
     private ConsumableManager consumableManager;
     private HPGUIManager hpGUIManager;
     private MessageSender<Message> messageSender;
@@ -80,7 +80,7 @@ public final class HealthPower extends ReloaderPlugin {
         this.settings = new Settings(this);
         this.hpManager = new HPManager(this);
         this.formulaManager = new FormulaManager(this);
-        this.formulaModifyCooldown = new FormulaModifyCooldown(this);
+        this.formulaModifyManager = new FormulaModifyManager(this);
         new PeriodicHPChecker(this);
         this.consumableManager = new ConsumableManager(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
@@ -420,8 +420,8 @@ public final class HealthPower extends ReloaderPlugin {
         return this.formulaManager;
     }
 
-    public FormulaModifyCooldown getFormulaModifyCooldown() {
-        return this.formulaModifyCooldown;
+    public FormulaModifyManager getFormulaModifyCooldown() {
+        return this.formulaModifyManager;
     }
 
     public ConsumableManager getConsumableManager() {

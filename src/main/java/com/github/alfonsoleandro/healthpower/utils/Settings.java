@@ -42,18 +42,28 @@ public class Settings extends Reloadable {
     private boolean updateHPOnJoin;
     private boolean useGroupsSystem;
     private boolean usePermissionsSystem;
+    private String addFormulaTitle;
     private String formulasForWorldTitle;
     private String formulasWorldsTitle;
+    private ItemStack formulaAddItem;
+    private ItemStack formulaAddOrderItem;
+    private ItemStack formulaAddSaveCorrectItem;
+    private ItemStack formulaAddSaveIncorrectItem;
+    private ItemStack formulaAddStringWithValueItem;
+    private ItemStack formulaAddStringWithoutValueItem;
     private ItemStack formulasForWorldItem;
+    private ItemStack formulasGlobalItem;
     private ItemStack formulasWorldsItem;
     private NavigationBar navigationBar;
     private final NamespacedKey worldNameNamespacedKey;
+    private final NamespacedKey formulaItemTypeNamespacedKey;
     private final NamespacedKey formulaOrderNamespacedKey;
 
 
     public Settings(HealthPower plugin) {
         super(plugin, Priority.HIGHEST);
         this.worldNameNamespacedKey = new NamespacedKey(plugin, "worldName");
+        this.formulaItemTypeNamespacedKey = new NamespacedKey(plugin, "formulaItemType");
         this.formulaOrderNamespacedKey = new NamespacedKey(plugin, "formulaOrder");
         this.plugin = plugin;
         loadFields();
@@ -75,11 +85,23 @@ public class Settings extends Reloadable {
         this.updateHPOnJoin = config.getBoolean("config.update HP on join");
         this.useGroupsSystem = config.getBoolean("config.use groups system");
         this.usePermissionsSystem = config.getBoolean("config.use permissions system");
+        this.addFormulaTitle = gui.getString("GUI.add formula.title");
         this.formulasForWorldTitle = gui.getString("GUI.formulas for world.title");
         this.formulasWorldsTitle = gui.getString("GUI.formulas worlds.title");
 
+        this.formulaAddItem = getGUIItem(gui, "formulas for world.add formula item");
         this.formulasForWorldItem = getGUIItem(gui, "formulas for world.item");
+        this.formulasGlobalItem = getGUIItem(gui,"formulas worlds.global");
         this.formulasWorldsItem = getGUIItem(gui, "formulas worlds.item");
+        setItemPersistentData(this.formulaAddItem, this.formulaItemTypeNamespacedKey, "ADD");
+        setItemPersistentData(this.formulasForWorldItem, this.formulaItemTypeNamespacedKey, "ITEM");
+        setItemPersistentData(this.formulasGlobalItem, this.formulaItemTypeNamespacedKey, "GLOBAL");
+        setItemPersistentData(this.formulasWorldsItem, this.formulaItemTypeNamespacedKey, "ITEM");
+        this.formulaAddOrderItem = getGUIItem(gui, "add formula.formula order");
+        this.formulaAddSaveCorrectItem = getGUIItem(gui, "add formula.save.correct");
+        this.formulaAddSaveIncorrectItem = getGUIItem(gui, "add formula.save.incorrect");
+        this.formulaAddStringWithValueItem = getGUIItem(gui, "add formula.formula string.with value");
+        this.formulaAddStringWithoutValueItem = getGUIItem(gui, "add formula.formula string.without value");
 
         this.navigationBar = new NavigationBar();
 
@@ -109,6 +131,13 @@ public class Settings extends Reloadable {
                 fileConfiguration.getString("GUI."+path+".name"),
                 fileConfiguration.getStringList("GUI."+path+".lore")
         );
+    }
+
+    private void setItemPersistentData(ItemStack itemStack, NamespacedKey namespacedKey, String data) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer persistentDataContainer = Objects.requireNonNull(itemMeta).getPersistentDataContainer();
+        persistentDataContainer.set(this.formulaItemTypeNamespacedKey, PersistentDataType.STRING, data);
+        itemStack.setItemMeta(itemMeta);
     }
 
 
@@ -158,6 +187,10 @@ public class Settings extends Reloadable {
         return this.usePermissionsSystem;
     }
 
+    public String getAddFormulaTitle() {
+        return this.addFormulaTitle;
+    }
+
     public String getFormulasForWorldTitle() {
         return this.formulasForWorldTitle;
     }
@@ -166,8 +199,36 @@ public class Settings extends Reloadable {
         return this.formulasWorldsTitle;
     }
 
+    public ItemStack getFormulaAddOrderItem() {
+        return this.formulaAddOrderItem.clone();
+    }
+
+    public ItemStack getFormulaAddSaveCorrectItem() {
+        return this.formulaAddSaveCorrectItem.clone();
+    }
+
+    public ItemStack getFormulaAddSaveIncorrectItem() {
+        return this.formulaAddSaveIncorrectItem.clone();
+    }
+
+    public ItemStack getFormulaAddStringWithValueItem() {
+        return this.formulaAddStringWithValueItem.clone();
+    }
+
+    public ItemStack getFormulaAddStringWithoutValueItem() {
+        return this.formulaAddStringWithoutValueItem.clone();
+    }
+
+    public ItemStack getFormulaAddItem() {
+        return this.formulaAddItem.clone();
+    }
+
     public ItemStack getFormulasForWorldItem() {
         return this.formulasForWorldItem.clone();
+    }
+
+    public ItemStack getFormulasGlobalItem() {
+        return this.formulasGlobalItem.clone();
     }
 
     public ItemStack getFormulasWorldsItem() {
@@ -180,6 +241,10 @@ public class Settings extends Reloadable {
 
     public NamespacedKey getWorldNameNamespacedKey() {
         return this.worldNameNamespacedKey;
+    }
+
+    public NamespacedKey getFormulaItemTypeNamespacedKey() {
+        return this.formulaItemTypeNamespacedKey;
     }
 
     public NamespacedKey getFormulaOrderNamespacedKey() {

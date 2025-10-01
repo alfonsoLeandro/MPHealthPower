@@ -27,6 +27,12 @@
         name: "&e%world%"
         lore:
           - "&e%formulas% &7formulas"
+      global:
+        material: GRASS_BLOCK
+        name: "&aGlobal"
+        lore:
+          - "&7Non world specific formulas"
+          - "&e%formulas% &7formulas"
     formulas for world:
       title: "&fFormulas - &e&l%world%"
       item:
@@ -38,9 +44,41 @@
           - "&eRIGHT→ &7click to &c&lDelete"
       add formula item:
         material: LIME_STAINED_GLASS_PANE
-        name: "&Add formula"
+        name: "&aAdd formula"
         lore:
           - "&7Click to add a new formula"
+    add formula:
+      title: "&fFormulas - &e&l%world% &f- &a&lCreate"
+      formula string:
+        without value:
+          material: RED_STAINED_GLASS_PANE
+          name: "&eFormula"
+          lore:
+            - "&7Click to add a value"
+        with value:
+          material: LIME_STAINED_GLASS_PANE
+          name: "&eFormula"
+          lore:
+            - "&7Current value: &e%formula%"
+            - "&7Click to edit"
+      formula order:
+        material: CLOCK
+        name: "&eOrder"
+        lore:
+          - "&7Current value: &e%order%"
+          - "&7Click to edit"
+      save:
+        correct:
+          material: EMERALD
+          name: "&aSave"
+          lore:
+            - "&7Click to confirm and &asave"
+        incorrect:
+          material: REDSTONE
+          name: "&aSave"
+          lore:
+            - "&7Click to confirm and &asave"
+            - "&cUnavailable&7: Please add a formula value"
     shop:
       # Should this feature be enabled?
       enabled: true

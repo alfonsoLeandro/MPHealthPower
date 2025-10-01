@@ -1,10 +1,12 @@
 package com.github.alfonsoleandro.healthpower.managers.health.formula;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
+import com.github.alfonsoleandro.healthpower.managers.cooldown.formula.FormulaCreationData;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.files.YamlFile;
 import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
+import com.github.alfonsoleandro.mputils.guis.SimpleGUI;
 import com.github.alfonsoleandro.mputils.itemstacks.MPItemStacks;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.reloadable.Reloadable;
@@ -15,6 +17,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.WorldInfo;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -35,7 +38,6 @@ public class FormulaManager extends Reloadable {
     private Map<String, Double> defaultVariablesPerWorld;
     private Map<String, Double> hpPerGroup;
     private double defaultVariableGlobal;
-    private List<Formula> globalFormulas;
     private Map<String, List<Formula>> formulasPerWorld;
     private double defaultBaseHp;
 
@@ -82,7 +84,7 @@ public class FormulaManager extends Reloadable {
 
         // Load global formulas for all non specified worlds
         List<String> globalFormulasStrings = formulas.getStringList("global formulas");
-        this.globalFormulas = globalFormulasStrings
+        List<Formula> globalFormulas = globalFormulasStrings
                 .stream()
                 .map(Formula::new)
                 .filter(f -> {
@@ -91,22 +93,23 @@ public class FormulaManager extends Reloadable {
                             this.messageSender.send(Bukkit.getConsoleSender(),
                                     Message.FORMULA_VALID,
                                     "%formula%", f.getRawFormulaString(),
-                                    "%world%", "GLOBAL");
+                                    "%world%", this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME));
                         }
                         return true;
                     }
                     this.messageSender.send(Bukkit.getConsoleSender(),
                             Message.FORMULA_INVALID,
                             "%formula%", f.getRawFormulaString(),
-                            "%world%", "GLOBAL");
+                            "%world%", this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME));
                     return false;
                 }).collect(Collectors.toCollection(ArrayList::new));
-        if (this.globalFormulas.isEmpty()) {
+        if (globalFormulas.isEmpty()) {
             throw new RuntimeException("Global formulas list has no valid formulas, this is essential for the plugin to work, please fix your formulas file.");
         }
 
         //Load formulas per world
         this.formulasPerWorld = new HashMap<>();
+        this.formulasPerWorld.put(Settings.GLOBAL_WORLD_SYMBOL, globalFormulas);
         ConfigurationSection formulasPerWorld = formulas.getConfigurationSection("formulas per world");
         if (formulasPerWorld != null) {
             for (String worldName : formulasPerWorld.getKeys(false)) {
@@ -227,13 +230,14 @@ public class FormulaManager extends Reloadable {
         }
 
         // If no world-specific formulas, find a global formula
-        for (Formula globalFormula : this.globalFormulas) {
+        List<Formula> globalFormulas = this.formulasPerWorld.get(Settings.GLOBAL_WORLD_SYMBOL);
+        for (Formula globalFormula : globalFormulas) {
             if (globalFormula.canApply(playerHpData)) {
                 return globalFormula;
             }
         }
         // If no global formula is 100% aplicable, use the last one
-        return this.globalFormulas.getLast();
+        return globalFormulas.getLast();
     }
 
     public double calculate(Player player, String worldName) {
@@ -253,11 +257,16 @@ public class FormulaManager extends Reloadable {
     }
 
     public Set<String> getFormulaWorldsNames() {
-        return this.formulasPerWorld.keySet();
+        return this.formulasPerWorld.keySet().stream().filter(s -> !s.equals(Settings.GLOBAL_WORLD_SYMBOL))
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     public Formula deleteFormula(String worldName, int formulaOrder) {
         List<Formula> formulasForWorld = this.formulasPerWorld.get(worldName);
+        // Special case global formulas
+        if (worldName.equals(Settings.GLOBAL_WORLD_SYMBOL) && formulasForWorld.size() == 1) {
+            throw new RuntimeException("The global formulas list must contain at least 1 valid formula.");
+        }
         Formula removed = formulasForWorld.remove(formulaOrder);
         String rawFormulaString = removed.getRawFormulaString();
 
@@ -312,6 +321,16 @@ public class FormulaManager extends Reloadable {
                 this.settings.getNavigationBar());
         NamespacedKey worldNameNamespacedKey = this.settings.getWorldNameNamespacedKey();
         Set<String> worldNames = getFormulaWorldsNames();
+        // Add the worlds that do not have formulas
+        worldNames.addAll(Bukkit.getWorlds().stream().map(WorldInfo::getName).collect(Collectors.toSet()));
+
+        // Add "GLOBAL" option for global formulas
+        ItemStack formulasGlobalItem = this.settings.getFormulasGlobalItem();
+        int globalFormulasCount = this.formulasPerWorld.get(Settings.GLOBAL_WORLD_SYMBOL).size();
+        MPItemStacks.replacePlaceholders(formulasGlobalItem, new HashMap<>() {{
+            put("%formulas%", String.valueOf(globalFormulasCount));
+        }});
+        gui.addItem(formulasGlobalItem);
 
         for (String worldName : worldNames) {
             ItemStack formulaWorldItem = this.settings.getFormulasWorldsItem();
@@ -332,8 +351,12 @@ public class FormulaManager extends Reloadable {
     }
 
     public DynamicGUI createFormulasGUIForWorld(String worldName) {
-        DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(this.settings.getFormulasForWorldTitle().replace("%world%", worldName)),
-                "MPHealthPower:formulas:items:" + worldName,
+        boolean isGlobal = worldName.equals(Settings.GLOBAL_WORLD_SYMBOL);
+
+        DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(
+                this.settings.getFormulasForWorldTitle().replace("%world%",
+                        isGlobal ? this.messageSender.getString(Message.FORMULA_LIST_GLOBAL) : worldName)),
+                Settings.FORMULAS_FOR_WORLD_GUI_TAG_PREFIX + worldName,
                 false,
                 this.settings.getNavigationBar());
         NamespacedKey formulaOrderNamespacedKey = this.settings.getFormulaOrderNamespacedKey();
@@ -344,7 +367,9 @@ public class FormulaManager extends Reloadable {
             ItemStack formulaWorldItem = this.settings.getFormulasForWorldItem();
             int order = i + 1;
             MPItemStacks.replacePlaceholders(formulaWorldItem, new HashMap<>() {{
-                put("%world%", worldName);
+                put("%world%", isGlobal ?
+                        FormulaManager.this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME)
+                        : worldName);
                 put("%order%", String.valueOf(order));
                 put("%formula%", formula.getRawFormulaString());
             }});
@@ -355,6 +380,59 @@ public class FormulaManager extends Reloadable {
 
             gui.addItem(formulaWorldItem);
         }
+
+        //Add "add formula" item
+        ItemStack formulaAddItem = this.settings.getFormulaAddItem();
+        MPItemStacks.replacePlaceholders(formulaAddItem, new HashMap<>() {{
+            put("%world%", isGlobal ?
+                    FormulaManager.this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME)
+                    : worldName);
+        }});
+
+        gui.addItem(formulaAddItem);
+
+        return gui;
+    }
+
+    public SimpleGUI createFormulaAddGUI(FormulaCreationData formulaCreationData) {
+        return createFormulaAddGUI(formulaCreationData.worldName(),
+                formulaCreationData.formula() == null ? null : formulaCreationData.formula().getRawFormulaString(),
+                formulaCreationData.formulaOrder());
+    }
+
+    public SimpleGUI createFormulaAddGUI(String worldName, String formulaRawString, int formulaOrder) {
+        boolean isGlobal = worldName.equals(Settings.GLOBAL_WORLD_SYMBOL);
+
+        SimpleGUI gui = new SimpleGUI(StringUtils.colorizeString(
+                this.settings.getAddFormulaTitle().replace("%world%",
+                        (isGlobal ? this.messageSender.getString(Message.FORMULA_LIST_GLOBAL) : worldName))),
+                9,
+                Settings.FORMULAS_ADD_GUI_TAG_PREFIX + worldName);
+
+        ItemStack formulaStringItem;
+        if (formulaRawString == null) {
+            formulaStringItem = this.settings.getFormulaAddStringWithoutValueItem();
+        } else {
+            formulaStringItem = this.settings.getFormulaAddStringWithValueItem();
+            MPItemStacks.replacePlaceholders(formulaStringItem, new HashMap<>() {{
+                put("%formula%", formulaRawString);
+            }});
+        }
+        ItemStack formulaOrderItem = this.settings.getFormulaAddOrderItem();
+        MPItemStacks.replacePlaceholders(formulaOrderItem, new HashMap<>() {{
+            put("%order%", String.valueOf(formulaOrder));
+        }});
+
+        ItemStack formulaSaveItem;
+        if (formulaRawString == null) {
+            formulaSaveItem = this.settings.getFormulaAddSaveIncorrectItem();
+        } else {
+            formulaSaveItem = this.settings.getFormulaAddSaveCorrectItem();
+        }
+
+        gui.setItem(0, formulaStringItem);
+        gui.setItem(1, formulaOrderItem);
+        gui.setItem(8, formulaSaveItem);
 
         return gui;
     }
