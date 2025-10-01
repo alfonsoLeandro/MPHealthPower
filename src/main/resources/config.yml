@@ -15,7 +15,7 @@ config:
   # they only had 20, instead of the right amount, to avoid this inconvenience, even though it does not really affect
   # their real max health, the plugin will remove hearts, and then it will give them back.
   update HP on join: true
-  # Whether the plugin should check AND CORRECT a players HP based on HP.yml.
+  # Whether the plugin should check AND CORRECT a player's HP based on HP.yml.
   check HP on join: true
   check HP on reload: true
   # If the above options are true, and the player was not in the file, should the groups' system be used instead?
@@ -35,7 +35,7 @@ config:
   periodic checker:
       # If true, the periodic checker will check player's HP
       enabled: false
-      # The interval between periodic checks, should be composed of a number and a time unit
+      # The interval between periodic checks, it should be composed of a number and a time unit
       # Available time units: t = ticks (20 ticks =~ 1 second), s = seconds, m = minutes, h = hours, d = days, w = weeks
       period: 5m
   GUI:
@@ -44,7 +44,7 @@ config:
     # The title you want for the GUI
     title: '&c&lBuy HP'
     size: 27
-    # Price formulas. Equations for increasing health buy price on proportion to the player's health power.
+    # Price formulas. Equations for increasing health buy price in proportion to the player's health power.
     # To use them, set the price to %formula_INDEX%, where INDEX is the index for the formula in formulas.
     # For example, in order to get '500+(100*%HP%)', you should use %formula_0%, for '100*%HP%' use %formula_1% and so on.
     # You can use %HP% for the player's current health power.
