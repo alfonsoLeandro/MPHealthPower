@@ -107,7 +107,7 @@ public class HPGUIManager extends Reloadable {
         if (!this.settings.isShopGUIEnabled()) {
             return;
         }
-        SimpleGUI shopGUI = new SimpleGUI(this.shopGUITitle, this.shopGUISize, "MPHealthPower:SHOP");
+        SimpleGUI shopGUI = new SimpleGUI(this.shopGUITitle, this.shopGUISize, Settings.SHOP_GUI_TAG);
         double balance = this.economy.getBalance(player);
         double health = this.hpManager.getHealth(player);
 

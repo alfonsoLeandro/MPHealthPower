@@ -307,7 +307,7 @@ public class FormulaManager extends Reloadable {
 
     public DynamicGUI createFormulasGUI() {
         DynamicGUI gui = new DynamicGUI(StringUtils.colorizeString(this.settings.getFormulasWorldsTitle()),
-                "MPHealthPower:formulas:worlds",
+                Settings.FORMULAS_PER_WORLD_GUI_TAG,
                 false,
                 this.settings.getNavigationBar());
         NamespacedKey worldNameNamespacedKey = this.settings.getWorldNameNamespacedKey();

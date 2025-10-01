@@ -13,6 +13,23 @@ import org.bukkit.inventory.ItemStack;
 
 public class Settings extends Reloadable {
 
+    // Constants
+    public static final String TAG_PREFIX = "MPHealthPower";
+    // GUI TAGS
+    public static final String SHOP_GUI_TAG = TAG_PREFIX + ":SHOP";
+    public static final String FORMULAS_GUI_TAG_PREFIX = TAG_PREFIX + ":formulas";
+    public static final String FORMULAS_PER_WORLD_GUI_TAG = FORMULAS_GUI_TAG_PREFIX + ":worlds";
+    public static final String FORMULAS_FOR_WORLD_GUI_TAG_PREFIX = FORMULAS_GUI_TAG_PREFIX + ":items:";
+    public static final String FORMULAS_ADD_GUI_TAG_PREFIX = FORMULAS_GUI_TAG_PREFIX + ":add:";
+    // BUTTON TAGS
+    public static final String PREVIOUS_PAGE_BUTTON_TAG = TAG_PREFIX + ":previous_page";
+    public static final String NEXT_PAGE_BUTTON_TAG = TAG_PREFIX + ":next_page";
+    public static final String MIDDLE_BUTTON_TAG = TAG_PREFIX + ":middle";
+    public static final String EMPTY_SLOTS_BUTTON_TAG = TAG_PREFIX + ":empty";
+    // GLOBAL WORLD SYMBOL
+    public static final String GLOBAL_WORLD_SYMBOL = "*";
+
+
     private final HealthPower plugin;
     // Fields
     private boolean checkHPOnJoin;
@@ -71,10 +88,10 @@ public class Settings extends Reloadable {
         ItemStack middleItem = getGUIItem(gui, "navigation bar.middle");
         ItemStack emptySlotsItem = getGUIItem(gui, "navigation bar.empty slots");
 
-        GUIButton previousPageButton = new GUIButton("MPHealthPower:previous_page", previousPageItem, GUIButton.GUIButtonCondition.HAS_PREVIOUS_PAGE, emptySlotsItem);
-        GUIButton nextPageButton = new GUIButton("MPHealthPower:next_page", nextPageItem, GUIButton.GUIButtonCondition.HAS_NEXT_PAGE, emptySlotsItem);
-        GUIButton middleButton = new GUIButton("MPHealthPower:middle", middleItem, GUIButton.GUIButtonCondition.ALWAYS, null);
-        GUIButton emptySlotsButton = new GUIButton("MPHealthPower:empty", emptySlotsItem, GUIButton.GUIButtonCondition.ALWAYS, null);
+        GUIButton previousPageButton = new GUIButton(PREVIOUS_PAGE_BUTTON_TAG, previousPageItem, GUIButton.GUIButtonCondition.HAS_PREVIOUS_PAGE, emptySlotsItem);
+        GUIButton nextPageButton = new GUIButton(NEXT_PAGE_BUTTON_TAG, nextPageItem, GUIButton.GUIButtonCondition.HAS_NEXT_PAGE, emptySlotsItem);
+        GUIButton middleButton = new GUIButton(MIDDLE_BUTTON_TAG, middleItem, GUIButton.GUIButtonCondition.ALWAYS, null);
+        GUIButton emptySlotsButton = new GUIButton(EMPTY_SLOTS_BUTTON_TAG, emptySlotsItem, GUIButton.GUIButtonCondition.ALWAYS, null);
 
         this.navigationBar.setButtonAt(0, previousPageButton);
         this.navigationBar.setButtonAt(4, middleButton);

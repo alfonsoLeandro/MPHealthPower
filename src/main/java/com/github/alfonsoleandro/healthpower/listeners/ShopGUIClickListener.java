@@ -5,6 +5,7 @@ import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIItem;
 import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
+import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.guis.events.GUIClickEvent;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import net.milkbowl.vault.economy.Economy;
@@ -29,7 +30,7 @@ public class ShopGUIClickListener implements Listener {
     @EventHandler
     public void onGUIClick(GUIClickEvent event) {
         // check the cause of the event is a GUI from this plugin
-        if (!event.getGui().getGuiTags().equals("MPHealthPower:SHOP")) {
+        if (!event.getGui().getGuiTags().equals(Settings.SHOP_GUI_TAG)) {
             return;
         }
         int slot = event.getRawSlot();

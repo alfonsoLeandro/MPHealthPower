@@ -38,9 +38,10 @@ public class FormulasGUIListener implements Listener {
     public void onGUIClick(GUIClickEvent event) {
         // check the cause of the event is a GUI from this plugin, specifically a formulas GUI click
         String guiTags = event.getGui().getGuiTags();
-        if (!guiTags.startsWith("MPHealthPower:formulas")
+        int rawSlot = event.getRawSlot();
+        if (!guiTags.startsWith(Settings.FORMULAS_GUI_TAG_PREFIX)
                 || event.isButtonClick()
-                || event.getRawSlot() >= event.getGui().getSize()) {
+                || rawSlot >= event.getGui().getSize()) {
             return;
         }
         event.setCancelled(true);

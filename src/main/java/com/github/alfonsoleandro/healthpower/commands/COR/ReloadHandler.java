@@ -44,7 +44,7 @@ public class ReloadHandler extends AbstractHandler {
         }
 
         // Closes the GUI for all players in case anyone was buying HP
-        PlayersOnGUIsManager.removeAll("MPHealthPower:SHOP");
+        PlayersOnGUIsManager.removeAll(Settings.SHOP_GUI_TAG);
 
         FileConfiguration hpFile = this.plugin.getHpYaml().getAccess();
 
