@@ -3,7 +3,9 @@ package com.github.alfonsoleandro.healthpower.managers.health.formula.gui;
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaClickedData;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaCreationData;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaModifyManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.guis.DynamicGUI;
@@ -25,12 +27,14 @@ import java.util.stream.Collectors;
 
 public class FormulaGUIManager {
 
+    private final HealthPower plugin;
     private final MessageSender<Message> messageSender;
     private final Settings settings;
     private final FormulaManager formulaManager;
-    private final Map<Player, FormulaGUIData> formulaGUIInfo = new HashMap<>();
+    private final Map<Player, FormulaGUIMenu> formulaGUIInfo = new HashMap<>();
 
     public FormulaGUIManager(HealthPower plugin) {
+        this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
         this.settings = plugin.getSettings();
         this.formulaManager = plugin.getFormulaManager();
@@ -70,7 +74,7 @@ public class FormulaGUIManager {
         }
 
         gui.openGUI(player);
-        this.formulaGUIInfo.put(player, new FormulaGUIData(FormulaGUIMenu.FORMULAS, null, null, null));
+        this.formulaGUIInfo.put(player, FormulaGUIMenu.FORMULAS);
     }
 
     public void openFormulasGUIForWorld(Player player, String worldName) {
@@ -115,7 +119,7 @@ public class FormulaGUIManager {
         gui.addItem(formulaAddItem);
 
         gui.openGUI(player);
-        this.formulaGUIInfo.put(player, new FormulaGUIData(FormulaGUIMenu.FORMULAS_FOR_WORLD, worldName, null, null));
+        this.formulaGUIInfo.put(player, FormulaGUIMenu.FORMULAS_FOR_WORLD);
     }
 
     public void openFormulaAddGUI(Player player, FormulaCreationData formulaCreationData) {
@@ -160,17 +164,24 @@ public class FormulaGUIManager {
         gui.setItem(8, formulaSaveItem);
 
         gui.openGUI(player);
-        this.formulaGUIInfo.put(player, new FormulaGUIData(FormulaGUIMenu.CREATE, worldName, formulaRawString, formulaOrder));
+        this.formulaGUIInfo.put(player, FormulaGUIMenu.CREATE);
 
     }
 
     public void openLastGUI(Player player) {
         if (this.formulaGUIInfo.containsKey(player)) {
-            FormulaGUIData formulaGUIData = this.formulaGUIInfo.get(player);
-            switch (formulaGUIData.guiMenu()) {
+            FormulaModifyManager formulaModifyManager = this.plugin.getFormulaModifyManager();
+            FormulaGUIMenu guiMenu = this.formulaGUIInfo.get(player);
+            switch (guiMenu) {
                 case FORMULAS -> openFormulasGUI(player);
-                case FORMULAS_FOR_WORLD -> openFormulasGUIForWorld(player, formulaGUIData.worldName());
-                case CREATE -> openFormulaAddGUI(player, formulaGUIData.worldName(), formulaGUIData.formulaRawString(), formulaGUIData.order());
+                case FORMULAS_FOR_WORLD -> {
+                    FormulaClickedData data = formulaModifyManager.getData(player);
+                    openFormulasGUIForWorld(player, data.worldName());
+                }
+                case CREATE -> {
+                    FormulaCreationData creationData = formulaModifyManager.getCreationData(player);
+                    openFormulaAddGUI(player, creationData);
+                }
             }
         }
     }
