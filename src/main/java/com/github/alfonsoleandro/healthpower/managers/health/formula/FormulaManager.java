@@ -256,17 +256,25 @@ public class FormulaManager extends Reloadable {
         if (worldName.equals(Settings.GLOBAL_WORLD_SYMBOL) && formulasForWorld.size() == 1) {
             throw new RuntimeException("The global formulas list must contain at least 1 valid formula.");
         }
-        Formula removed = formulasForWorld.remove(formulaOrder);
+        Formula removed = formulasForWorld.remove(formulaOrder - 1);
         String rawFormulaString = removed.getRawFormulaString();
 
         YamlFile formulasYaml = this.plugin.getFormulasYaml();
-        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList("formulas per world." + worldName);
+        String path;
+        if (worldName.equals(Settings.GLOBAL_WORLD_SYMBOL)) {
+            path = "global formulas";
+        } else {
+            path = "formulas per world." + worldName;
+        }
+        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList(path);
 
         formulasForWorldInFile.remove(rawFormulaString);
 
         if (formulasForWorldInFile.isEmpty() && formulasForWorld.isEmpty()) {
             this.formulasPerWorld.remove(worldName);
-            formulasYaml.getAccess().set("formulas per world." + worldName, null);
+            formulasYaml.getAccess().set(path, null);
+        } else {
+            formulasYaml.getAccess().set(path, formulasForWorldInFile);
         }
 
         formulasYaml.save(true);
@@ -303,6 +311,9 @@ public class FormulaManager extends Reloadable {
         if (formulaOrder < 1 || existingFormulas.size() + 1 < formulaOrder) {
             this.messageSender.send(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID_ORDER));
             throw new RuntimeException(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID_ORDER));
+        }
+        if (!this.formulasPerWorld.containsKey(worldName)) {
+            this.formulasPerWorld.put(worldName, existingFormulas);
         }
         setFormulaInOrder(existingFormulas, worldName, formula,  formulaOrder);
     }

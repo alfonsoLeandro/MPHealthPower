@@ -40,7 +40,7 @@ public class FormulasGUIListener implements Listener {
         this.messageSender = plugin.getMessageSender();
         this.formulaManager = plugin.getFormulaManager();
         this.formulaGUIManager = plugin.getFormulaGUIManager();
-        this.formulaModifyManager = plugin.getFormulaModifyCooldown();
+        this.formulaModifyManager = plugin.getFormulaModifyManager();
     }
 
     @EventHandler
