@@ -19,6 +19,7 @@ messages:
   formula deleted: "&aFormula \"&e%formula%&a\" for world \"&e%world%&a\" successfully deleted."
   formula delete unknown message: "&cMessage not recognized. &fType &a&lYes &fto confirm formula deletion."
   formula delete error: "&cThe formula could not be deleted. Please try again."
+  formula editing blocked commands: "&cPlease finish editing formulas before sending new HP commands."
   formula enter new order: "&fEnter new order for the formula \"&e%formula%&f\" in world \"&e%world%&f\" before &e%seconds% seconds&f. Type &c&lCANCEL &fto cancel."
   formula invalid order: "&cInvalid input for new formula order. Must be a number between &e%min% &cand &e%max%&c."
   formula input invalid: "&cInvalid input for new formula. Must be a valid mathematical expression. Available variables: &fbase&c, &fpermission&c, &fgroup &cand &fshop"

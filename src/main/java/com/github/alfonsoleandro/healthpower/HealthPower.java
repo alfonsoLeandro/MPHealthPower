@@ -427,7 +427,7 @@ public final class HealthPower extends ReloaderPlugin {
         return this.formulaGUIManager;
     }
 
-    public FormulaModifyManager getFormulaModifyCooldown() {
+    public FormulaModifyManager getFormulaModifyManager() {
         return this.formulaModifyManager;
     }
 

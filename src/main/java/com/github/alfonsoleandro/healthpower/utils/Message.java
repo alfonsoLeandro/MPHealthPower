@@ -42,6 +42,7 @@ public enum Message implements MessageEnum {
     FORMULA_DELETED("&aFormula \"&e%formula%&a\" for world \"&e%world%&a\" successfully deleted."),
     FORMULA_DELETE_UNKNOWN_MESSAGE("&cMessage not recognized. &fType &a&lYes &fto confirm formula deletion."),
     FORMULA_DELETE_ERROR("&cThe formula could not be deleted. Please try again."),
+    FORMULA_EDITING_BLOCKED_COMMANDS("&cPlease finish editing formulas before sending new HP commands."),
     FORMULA_ENTER_NEW_ORDER("&fEnter new order for the formula \"&e%formula%&f\" in world \"&e%world%&f\" before &e%seconds% seconds&f. Type &c&lCANCEL &fto cancel."),
     FORMULA_INVALID_ORDER("&cInvalid input for new formula order. Must be a number between &e%min% &cand &e%max%&c."),
     FORMULA_INPUT_INVALID("&cInvalid input for new formula. Must be a valid mathematical expression. Available variables: &fbase&c, &fpermission&c, &fgroup &cand &fshop"),
