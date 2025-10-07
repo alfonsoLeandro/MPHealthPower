@@ -31,7 +31,7 @@ public class FormulasChatListener implements Listener {
         this.messageSender = this.plugin.getMessageSender();
         this.formulaManager = plugin.getFormulaManager();
         this.formulaGUIManager = plugin.getFormulaGUIManager();
-        this.formulaModifyManager = plugin.getFormulaModifyCooldown();
+        this.formulaModifyManager = plugin.getFormulaModifyManager();
     }
 
     @EventHandler
@@ -45,13 +45,13 @@ public class FormulasChatListener implements Listener {
         FormulaCreationData creationData = this.formulaModifyManager.getCreationData(player);
 
         if (message.equalsIgnoreCase("cancel")) {
-            this.formulaModifyManager.removeCooldown(player);
             this.messageSender.send(player, Message.FORMULA_ACTION_CANCELED);
             // Re-open last GUI
+            reOpenLastGUISync(player);
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    FormulasChatListener.this.formulaGUIManager.openLastGUI(player);
+                    FormulasChatListener.this.formulaModifyManager.removeCooldown(player);
                 }
             }.runTask(this.plugin);
             return;
@@ -103,14 +103,12 @@ public class FormulasChatListener implements Listener {
         }
         this.messageSender.send(player, Message.FORMULA_ORDER_CHANGED,
                 "%order%", String.valueOf(newOrder));
-        this.formulaModifyManager.removeCooldown(player);
 
-        //Re-open GUI
+        reOpenLastGUISync(player);
         new BukkitRunnable() {
             @Override
             public void run() {
-                FormulasChatListener.this.formulaGUIManager.openFormulasGUIForWorld(player,
-                        formulaClickedData.worldName());
+                FormulasChatListener.this.formulaModifyManager.removeCooldown(player);
             }
         }.runTask(this.plugin);
     }
@@ -121,9 +119,16 @@ public class FormulasChatListener implements Listener {
             return;
         }
 
-        //CONFIRM DELETE, DELETE FORMULA
-        if (formulas == null || formulas.size() <= formulaClickedData.formulaOrder()) {
+        // Make sure there is a formula in that index
+        if (formulas == null || formulas.size() <= formulaClickedData.formulaOrder() - 1) {
             this.messageSender.send(player, Message.FORMULA_DELETE_ERROR);
+            reOpenLastGUISync(player);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    FormulasChatListener.this.formulaModifyManager.removeCooldown(player);
+                }
+            }.runTask(this.plugin);
             return;
         }
         Formula formula = this.formulaManager.deleteFormula(formulaClickedData.worldName(), formulaClickedData.formulaOrder());
@@ -151,13 +156,7 @@ public class FormulasChatListener implements Listener {
                 "%formula%", formula.getRawFormulaString());
         this.formulaModifyManager.removeCooldown(player);
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                FormulasChatListener.this.formulaGUIManager.openFormulaAddGUI(player,
-                        FormulasChatListener.this.formulaModifyManager.getCreationData(player));
-            }
-        }.runTask(this.plugin);
+        reOpenLastGUISync(player);
     }
 
     private void handleCreateSetOrder(String message, Player player, List<Formula> formulas, FormulaCreationData creationData) {
@@ -188,11 +187,14 @@ public class FormulasChatListener implements Listener {
                 "%order%", String.valueOf(newOrder));
         this.formulaModifyManager.removeCooldown(player);
 
+       reOpenLastGUISync(player);
+    }
+
+    private void reOpenLastGUISync(Player player) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                FormulasChatListener.this.formulaGUIManager.openFormulaAddGUI(player,
-                        FormulasChatListener.this.formulaModifyManager.getCreationData(player));
+                FormulasChatListener.this.formulaGUIManager.openLastGUI(player);
             }
         }.runTask(this.plugin);
     }
