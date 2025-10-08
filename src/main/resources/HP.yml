@@ -3,12 +3,7 @@
 # 2- by permission (if player has any permission with the "healthpower.amount.NUMBER" format, that value will be used)
 # 3- by group (if a player's primary group is under the groups list in this file, the value for that group will be used)
 # 4- default (if none of the above apply for a player, this default value will be used).
-# Set default to 0 or any negative number to not use a default value and not modify players' hp when any other methods
-# apply to them.
-# Minimum HP is the lowest amount of HP a player can have, by default 1 (half a heart). Has to be higher or equal than 1
 HP:
-  default: 20
-  minimum: 1
   players: []
   groups:
     owner: 20

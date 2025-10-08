@@ -5,6 +5,22 @@ config:
   use metrics: true
   # Should the plugin tell the console the group of a player when they join?
   debug: false
+  # Default base HP for new players. 20 = 1 full bar
+  default base HP: 20
+  # Cooldowns for HP formulas editing/creating
+  formulas admin cooldown:
+    create: 30
+    delete: 10
+    edit: 10
+# Minimum amount of HP a player can have. After a formula is applied, if the resulting value is lower than this
+# number, the player's HP will set to this amount.
+## TODO: implement
+HP floor:
+  # if a world is not specified
+  global: 1
+  worlds:
+    world: 3
+    world_the_end: 2
   # Maximum amount of HP a player can get. When adding or setting, if enabled and the resulting HP is
   # higher than this cap and the player does not have the "HealthPower.cap.bypass" the HP will not be modified.
   HP cap:
