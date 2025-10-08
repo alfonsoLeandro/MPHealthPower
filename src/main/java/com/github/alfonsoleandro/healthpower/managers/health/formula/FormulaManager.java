@@ -257,27 +257,11 @@ public class FormulaManager extends Reloadable {
             throw new RuntimeException("The global formulas list must contain at least 1 valid formula.");
         }
         Formula removed = formulasForWorld.remove(formulaOrder - 1);
-        String rawFormulaString = removed.getRawFormulaString();
 
-        YamlFile formulasYaml = this.plugin.getFormulasYaml();
-        String path;
-        if (worldName.equals(Settings.GLOBAL_WORLD_SYMBOL)) {
-            path = "global formulas";
-        } else {
-            path = "formulas per world." + worldName;
-        }
-        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList(path);
-
-        formulasForWorldInFile.remove(rawFormulaString);
-
-        if (formulasForWorldInFile.isEmpty() && formulasForWorld.isEmpty()) {
+        if (formulasForWorld.isEmpty()) {
             this.formulasPerWorld.remove(worldName);
-            formulasYaml.getAccess().set(path, null);
-        } else {
-            formulasYaml.getAccess().set(path, formulasForWorldInFile);
         }
-
-        formulasYaml.save(true);
+        saveToFile(worldName, formulasForWorld);
 
         return removed;
     }
@@ -299,7 +283,9 @@ public class FormulaManager extends Reloadable {
             return;
         }
         Formula toEdit = formulas.remove(previousOrder - 1);
-        setFormulaInOrder(formulas, worldName, toEdit, newOrder);
+        formulas.add(newOrder - 1, toEdit);
+
+        saveToFile(worldName, formulas);
     }
 
     public void saveNewFormula(String worldName, Formula formula, int formulaOrder) {
@@ -308,19 +294,20 @@ public class FormulaManager extends Reloadable {
             throw new RuntimeException(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID));
         }
         List<Formula> existingFormulas = this.formulasPerWorld.getOrDefault(worldName, new ArrayList<>());
-        if (formulaOrder < 1 || existingFormulas.size() + 1 < formulaOrder) {
+        if (formulaOrder < 1 || existingFormulas.size() < formulaOrder - 1) {
             this.messageSender.send(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID_ORDER));
             throw new RuntimeException(this.messageSender.getString(Message.FORMULA_CANNOT_SAVE_INVALID_ORDER));
         }
         if (!this.formulasPerWorld.containsKey(worldName)) {
             this.formulasPerWorld.put(worldName, existingFormulas);
         }
-        setFormulaInOrder(existingFormulas, worldName, formula,  formulaOrder);
+
+        existingFormulas.add(formulaOrder - 1, formula);
+
+        saveToFile(worldName, existingFormulas);
     }
 
-    private void setFormulaInOrder(List<Formula> formulas, String worldName, Formula formula, int newOrder) {
-        formulas.add(newOrder - 1, formula);
-
+    private void saveToFile(String worldName, List<Formula> formulas) {
         YamlFile formulasYaml = this.plugin.getFormulasYaml();
         String path;
         if (worldName.equals(Settings.GLOBAL_WORLD_SYMBOL)) {
@@ -328,14 +315,14 @@ public class FormulaManager extends Reloadable {
         } else {
             path = "formulas per world." + worldName;
         }
-        List<String> formulasForWorldInFile = formulasYaml.getAccess().getStringList(path);
 
-        formulasForWorldInFile.remove(formula.getRawFormulaString());
-        formulasForWorldInFile.add(newOrder - 1, formula.getRawFormulaString());
+        if (formulas == null || formulas.isEmpty()) {
+            formulasYaml.getAccess().set(path, null);
+        } else {
+            formulasYaml.getAccess().set(path, formulas.stream().map(Formula::getRawFormulaString).toList());
+        }
 
-        formulasYaml.getAccess().set(path, formulasForWorldInFile);
         formulasYaml.save(true);
-
     }
 
     @Override
