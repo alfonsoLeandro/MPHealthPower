@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class FormulaModifyManager {
 
@@ -72,5 +73,13 @@ public class FormulaModifyManager {
 
     public FormulaCreationData getCreationData(Player player) {
         return this.formulaCreationData.get(player);
+    }
+
+    public Set<Player> getPlayersOnCooldown() {
+        return this.cooldowns.keySet();
+    }
+
+    public Set<Player> getPlayersCreating() {
+        return this.formulaCreationData.keySet();
     }
 }

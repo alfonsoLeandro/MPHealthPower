@@ -2,25 +2,23 @@ package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
+import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaModifyManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.guis.utils.PlayersOnGUIsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-import java.util.Objects;
 
 public class ReloadHandler extends AbstractHandler {
 
     private final HPManager hpManager;
-    private final Settings settings;
+    private final FormulaModifyManager formulaModifyManager;
 
     public ReloadHandler(HealthPower plugin, AbstractHandler successor) {
         super(plugin, successor);
         this.hpManager = plugin.getHpManager();
-        this.settings = plugin.getSettings();
+        this.formulaModifyManager = plugin.getFormulaModifyManager();
     }
 
     @Override
@@ -45,27 +43,23 @@ public class ReloadHandler extends AbstractHandler {
 
         // Closes the GUI for all players in case anyone was buying HP
         PlayersOnGUIsManager.removeAll(Settings.SHOP_GUI_TAG);
+        PlayersOnGUIsManager.removeAll(Settings.FORMULAS_PER_WORLD_GUI_TAG);
+        // Cannot close the GUI for players on formula add and formulas for world GUIs
 
-        FileConfiguration hpFile = this.plugin.getHpYaml().getAccess();
+        // Cancel all players editing or creating formulas
+        for (Player player : this.formulaModifyManager.getPlayersOnCooldown()) {
+            this.formulaModifyManager.removeCooldown(player);
+            if (player.isOnline()) {
+                this.messageSender.send(player, Message.FORMULA_ACTION_CANCELED);
+                player.closeInventory();
+            }
+        }
 
-        if (hpFile.contains("HP.groups") && this.settings.isUseGroupsSystem()) {
-            double minimumHP = this.settings.getMinimumHP();
-            for (String groupName : Objects.requireNonNull(hpFile.getConfigurationSection("HP.groups"))
-                    .getKeys(false)) {
-                double groupHp = hpFile.getDouble("HP.groups." + groupName);
-                if (groupHp < minimumHP) {
-                    if(!sender.equals(Bukkit.getConsoleSender())){
-                        this.messageSender.send(sender, Message.GROUP_HP_UNDER_MINIMUM,
-                                "%group%", groupName,
-                                "%HP%", String.valueOf(groupHp),
-                                "%minimum%", String.valueOf(minimumHP));
-                    }
-                    this.messageSender.send(Bukkit.getConsoleSender(), Message.GROUP_HP_UNDER_MINIMUM,
-                            "%group%", groupName,
-                            "%HP%", String.valueOf(groupHp),
-                            "%minimum%", String.valueOf(minimumHP));
-                }
-
+        for (Player player : this.formulaModifyManager.getPlayersCreating()) {
+            this.formulaModifyManager.clearCreationData(player);
+            if (player.isOnline()) {
+                this.messageSender.send(player, Message.FORMULA_ACTION_CANCELED);
+                player.closeInventory();
             }
         }
 
