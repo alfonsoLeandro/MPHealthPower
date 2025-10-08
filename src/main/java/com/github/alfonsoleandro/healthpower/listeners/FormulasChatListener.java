@@ -9,6 +9,7 @@ import com.github.alfonsoleandro.healthpower.managers.health.formula.Formula;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.gui.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
+import com.github.alfonsoleandro.healthpower.utils.Settings;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -133,7 +134,8 @@ public class FormulasChatListener implements Listener {
         }
         Formula formula = this.formulaManager.deleteFormula(formulaClickedData.worldName(), formulaClickedData.formulaOrder());
         this.messageSender.send(player, Message.FORMULA_DELETED,
-                "%world%", formulaClickedData.worldName(),
+                "%world%", formulaClickedData.worldName().equals(Settings.GLOBAL_WORLD_SYMBOL) ?
+                this.messageSender.getString(Message.FORMULA_LIST_GLOBAL_WORLD_NAME) : formulaClickedData.worldName(),
                 "%formula%", formula.getRawFormulaString());
         this.formulaModifyManager.removeCooldown(player);
     }
