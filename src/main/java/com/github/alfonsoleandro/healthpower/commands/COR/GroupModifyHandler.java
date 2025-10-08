@@ -58,14 +58,6 @@ public class GroupModifyHandler extends AbstractHandler {
             return;
         }
 
-        double minimumHP = this.settings.getMinimumHP();
-        if (minimumHP > hp) {
-            this.messageSender.send(sender, Message.CANNOT_SET_GROUP_HP_UNDER_MINIMUM,
-                    "%HP%", String.valueOf(hp),
-                    "%minimum%", String.valueOf(minimumHP));
-            return;
-        }
-
         FileConfiguration hpFile = this.plugin.getHpYaml().getAccess();
         hpFile.set("HP.groups." + groupName, hp);
 
