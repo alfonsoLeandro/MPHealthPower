@@ -372,13 +372,13 @@ public final class HealthPower extends ReloaderPlugin {
      */
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new PlayerJoinListener(this), this);
-        pm.registerEvents(new ShopGUIClickListener(this), this);
-        pm.registerEvents(new FormulasGUIListener(this), this);
-        pm.registerEvents(new FormulasChatListener(this), this);
-        pm.registerEvents(new NavigableGUIClickListener(), this);
-        pm.registerEvents(new ShopGUIClickListener(this), this);
         pm.registerEvents(new ConsumablesListener(this), this);
+        pm.registerEvents(new FormulasChatListener(this), this);
+        pm.registerEvents(new FormulasGUIListener(this), this);
+        pm.registerEvents(new NavigableGUIClickListener(), this);
+        pm.registerEvents(new PlayerJoinListener(this), this);
+        pm.registerEvents(new PlayerTeleportListener(this), this);
+        pm.registerEvents(new ShopGUIClickListener(this), this);
     }
 
     /**
