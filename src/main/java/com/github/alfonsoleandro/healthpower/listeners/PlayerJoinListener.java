@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerJoinListener implements Listener {
 
@@ -37,7 +36,7 @@ public class PlayerJoinListener implements Listener {
             this.hpManager.checkAndCorrectHP(player);
         }
 
-        updateHPBar(player);
+        this.hpManager.updateRenderHPBar(player);
     }
 
 
@@ -55,28 +54,5 @@ public class PlayerJoinListener implements Listener {
             }
         }
     }
-
-
-    /**
-     * Forces a render update for the players' HP bar.
-     *
-     * @param player The player to update the bar for.
-     */
-    private void updateHPBar(Player player) {
-        if (this.settings.isUpdateHPOnJoin()) {
-            if (this.settings.isDebug()) {
-                this.messageSender.send("Updating HP bar of player " + player.getName());
-            }
-            double actualHealth = this.hpManager.getHealth(player);
-            this.hpManager.setHP(player, 1);
-            new BukkitRunnable() {
-                public void run() {
-                    PlayerJoinListener.this.hpManager.setHP(player, actualHealth);
-                }
-            }.runTaskLater(this.plugin, 2);
-
-        }
-    }
-
 
 }

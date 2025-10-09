@@ -9,9 +9,11 @@ import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.reloadable.Reloadable;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -133,6 +135,28 @@ public class HPManager extends Reloadable {
         hpYaml.getAccess().set("HP.players." + player.getName() + ".shop", amount);
 
         hpYaml.save(false);
+    }
+
+    /**
+     * Forces a render update for the players' HP bar.
+     *
+     * @param player The player to update the bar for.
+     */
+    public void updateRenderHPBar(Player player) {
+        if (this.settings.isUpdateHPOnJoin()) {
+            if (this.settings.isDebug()) {
+                this.messageSender.send("Updating HP bar of player " + player.getName());
+            }
+            double actualHealth = getHealth(player);
+            AttributeInstance maxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH));
+            maxHealth.setBaseValue(1);
+            new BukkitRunnable() {
+                public void run() {
+                    maxHealth.setBaseValue(actualHealth);
+                }
+            }.runTaskLater(this.plugin, 2);
+
+        }
     }
 
     private void debugPlayerGroupInfo(Player player) {
