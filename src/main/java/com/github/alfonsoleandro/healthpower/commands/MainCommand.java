@@ -16,17 +16,19 @@ public class MainCommand implements CommandExecutor {
         this.COR = new FormulaEditCommandBlockerHandler(plugin, new ShopHandler(plugin,
                 new HelpHandler(plugin, new VersionHandler(plugin,
                         new ReloadHandler(plugin, new HPModifyHandler(plugin,
-                                new ConsumablesHandler(plugin, new ClearHandler(plugin,
-                                        new ClearAllHandler(plugin, new HPCheckHandler(plugin,
-                                                new HPCheckAllHandler(plugin, new GroupModifyHandler(plugin,
-                                                        new HPInfoHandler(plugin, new FormulasHandler(plugin,
-                                                        null)
+                                new ConsumableGiveHandler(plugin, new ConsumableSetHandler(plugin,
+                                        new ClearHandler(plugin, new ClearAllHandler(plugin,
+                                                new HPCheckHandler(plugin, new HPCheckAllHandler(plugin,
+                                                        new GroupModifyHandler(plugin, new HPInfoHandler(plugin,
+                                                                new FormulasHandler(plugin,
+                                                                        null)
                                                         ))
+                                                ))
                                         ))
                                 ))
                         ))
                 ))
-        ))
+        )
         );
     }
 
