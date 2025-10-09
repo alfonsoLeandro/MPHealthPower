@@ -43,6 +43,7 @@ public class Settings extends Reloadable {
     private boolean periodicCheckerEnabled;
     private long periodicCheckerPeriod;
     private boolean notifyHPCheck;
+    private boolean notifyHPModify;
     private boolean shopGUIEnabled;
     private boolean updateHPOnJoin;
     private boolean useGroupsSystem;
@@ -89,6 +90,7 @@ public class Settings extends Reloadable {
         String timeString = config.getString("config.periodic checker.period");
         this.periodicCheckerPeriod = TimeUtils.getTicks(timeString != null ? timeString : "5m");
         this.notifyHPCheck = config.getBoolean("config.notify HP check");
+        this.notifyHPModify = config.getBoolean("config.notify HP modify");
         this.shopGUIEnabled = gui.getBoolean("GUI.shop.enabled");
         this.updateHPOnJoin = config.getBoolean("config.update HP on join");
         this.useGroupsSystem = config.getBoolean("config.use groups system");
@@ -184,6 +186,10 @@ public class Settings extends Reloadable {
 
     public boolean isNotifyHPCheck() {
         return this.notifyHPCheck;
+    }
+
+    public boolean isNotifyHPModify() {
+        return this.notifyHPModify;
     }
 
     public boolean isShopGUIEnabled() {

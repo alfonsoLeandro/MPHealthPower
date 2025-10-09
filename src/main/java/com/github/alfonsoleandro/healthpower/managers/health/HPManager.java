@@ -4,6 +4,7 @@ import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
+import com.github.alfonsoleandro.mputils.files.YamlFile;
 import com.github.alfonsoleandro.mputils.message.MessageSender;
 import com.github.alfonsoleandro.mputils.reloadable.Reloadable;
 import net.milkbowl.vault.permission.Permission;
@@ -96,6 +97,42 @@ public class HPManager extends Reloadable {
 
     public double getHealth(Player player) {
         return Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getBaseValue();
+    }
+
+    public void addBaseHP(Player player, double amount) {
+        YamlFile hpYaml = this.plugin.getHpYaml();
+        FileConfiguration hpFile = hpYaml.getAccess();
+        double prev = hpFile.contains("HP.players." + player.getName() + ".base") ?
+                hpFile.getDouble("HP.players." + player.getName() + ".base") :
+                this.settings.getDefaultBaseHp();
+        hpFile.set("HP.players." + player.getName() + ".base", prev + amount);
+
+        hpYaml.save(false);
+    }
+
+    public void setBaseHP(Player player, double amount) {
+        YamlFile hpYaml = this.plugin.getHpYaml();
+        hpYaml.getAccess().set("HP.players." + player.getName() + ".base", amount);
+
+        hpYaml.save(false);
+    }
+
+    public void addShopHP(Player player, double amount) {
+        YamlFile hpYaml = this.plugin.getHpYaml();
+        FileConfiguration hpFile = hpYaml.getAccess();
+        double prev = hpFile.contains("HP.players." + player.getName() + ".shop") ?
+                hpFile.getDouble("HP.players." + player.getName() + ".shop") :
+                this.settings.getDefaultBaseHp();
+        hpFile.set("HP.players." + player.getName() + ".shop", prev + amount);
+
+        hpYaml.save(false);
+    }
+
+    public void setShopHP(Player player, double amount) {
+        YamlFile hpYaml = this.plugin.getHpYaml();
+        hpYaml.getAccess().set("HP.players." + player.getName() + ".shop", amount);
+
+        hpYaml.save(false);
     }
 
     private void debugPlayerGroupInfo(Player player) {

@@ -18,7 +18,7 @@ public class HelpHandler extends AbstractHandler{
     protected void internalHandle(CommandSender sender, String label, String[] args) {
         this.messageSender.send(sender, "&6List of commands");
         this.messageSender.send(sender, "&f/"+label+" help");
-        this.messageSender.send(sender, "&f/"+label+" add (player) (HP)");
+        this.messageSender.send(sender, "&f/"+label+" modify (add/set) (player) (type) (HP)");
         this.messageSender.send(sender, "&f/"+label+" checkAll");
         this.messageSender.send(sender, "&f/"+label+" check (name)");
         this.messageSender.send(sender, "&f/"+label+" clearAll");
@@ -29,7 +29,6 @@ public class HelpHandler extends AbstractHandler{
         this.messageSender.send(sender, "&f/"+label+" group set (group) (HP)");
         this.messageSender.send(sender, "&f/"+label+" info (player) <world>");
         this.messageSender.send(sender, "&f/"+label+" reload");
-        this.messageSender.send(sender, "&f/"+label+" set (player) (HP)");
         this.messageSender.send(sender, "&f/"+label+" shop");
         this.messageSender.send(sender, "&f/"+label+" version");
 

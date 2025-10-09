@@ -14,7 +14,7 @@ public enum Message implements MessageEnum {
     NO_PERMISSION("&cNo permission"),
     CANNOT_SEND_CONSOLE("&cThat command can only be sent by a player."),
     PLAYER_NOT_ONLINE("messages.not online", "&cThat player is not online"),
-    COMMAND_USE_HP_MODIFY("messages.modify use", "&cUse: &f/%command% %what% (player) (HP)"),
+    COMMAND_USE_HP_MODIFY("messages.modify use", "&cUse: &f/%command% modify (set/add) (player) (HP)"),
     COMMAND_USE_CONSUMABLE("messages.consumable use", "&cUse: &f/%command% consumable (give) (player) (consumable_name) &cOR &f/%command% consumable (set) (consumable_name) (add/set) (amount)"),
     COMMAND_USE_CLEAR("messages.clear use", "&cUse: &f/%command% clear (player)"),
     COMMAND_USE_CHECK("messages.check use", "&cUse: &f/%command% check (player)"),
@@ -59,10 +59,6 @@ public enum Message implements MessageEnum {
     GUI_ERROR("messages.error opening gui", "&cThere was an error while trying to open de buy hp menu, talk to an admin or check console"),
     INVALID_WORLD( "&cWorld \"&7%world%&c\" does not exist."),
     GUI_OPENING("messages.opening gui", "&fOpening buy hp menu!"),
-    YOU_SET_HP("&fYou just set the HP of &6%player% &fto &c%HP% HP"),
-    YOU_ADD_HP("&fYou just added &6%player% &c%HP% HP"),
-    SET_HP("&9%player% &fjust set your HP to &c%HP%"),
-    ADD_HP("&9%player% &fjust added you &c%HP% HP"),
     PLAYER_HP_ABOVE_CAP("&cThat player''s resulting HP would be above the HP cap. HP was not modified."),
     YOUR_HP_ABOVE_CAP("messages.HP above cap", "&cYour resulting HP would be above the HP cap. Your HP was not modified"),
     HP_AUTOMATIC_SET("&aYour &cHP &ahas been set to &c%HP%"),
@@ -90,7 +86,11 @@ public enum Message implements MessageEnum {
     GROUP_HP_UNDER_MINIMUM("&e&lWARNING:&c Group \"%group%\"'s HP (%HP%) is below the minimum (%minimum%)"),
     CANNOT_SET_GROUP_HP_UNDER_MINIMUM("&cA group's HP (%HP%) cannot be under the minimum (%minimum%)"),
     PLAYER_HP_INFO("&e%player%&7's HP info on world &e%world%&7\nFormula: \"&e%formula%&7\"\nBase HP: &a%base%&7\nGroup HP: &a%group%&7\nPermission HP: &a%permission%&7\nShop HP: &a%shop%"),
-    WORLD_HAS_NO_FORMULAS("&cWorld \"&7%world%&c\" has no formulas.")
+    WORLD_HAS_NO_FORMULAS("&cWorld \"&7%world%&c\" has no formulas."),
+    YOU_ADD_HP("&7You just added &e%player% &c%HP% HP &7to their &e%type% &7HP"),
+    YOU_SET_HP("&7You just set &e%player%&f's &e%type% &7HP to &c%HP%"),
+    YOUR_HP_ADDED("&aYou have been added &c%amount% &aHP to your &e%type% &aHP"),
+    YOUR_HP_SET("&7Your &e%type% &7HP has been set to &c%amount%")
     ;
 
     private final String path;
