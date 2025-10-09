@@ -50,6 +50,7 @@ public class Settings extends Reloadable {
     private long formulaCreateCooldownTime;
     private long formulaDeleteCooldownTime;
     private long formulaEditCooldownTime;
+    private double defaultBaseHp;
     private String addFormulaTitle;
     private String formulasForWorldTitle;
     private String formulasWorldsTitle;
@@ -96,6 +97,8 @@ public class Settings extends Reloadable {
         this.formulaCreateCooldownTime = config.getLong("config.formulas admin cooldown.create");
         this.formulaDeleteCooldownTime = config.getLong("config.formulas admin cooldown.delete");
         this.formulaEditCooldownTime = config.getLong("config.formulas admin cooldown.edit");
+
+        this.defaultBaseHp = config.getDouble("config.default base HP");
 
         this.addFormulaTitle = gui.getString("GUI.add formula.title");
         this.formulasForWorldTitle = gui.getString("GUI.formulas for world.title");
@@ -209,6 +212,10 @@ public class Settings extends Reloadable {
 
     public long getFormulaEditCooldownTime() {
         return this.formulaEditCooldownTime;
+    }
+
+    public double getDefaultBaseHp() {
+        return this.defaultBaseHp;
     }
 
     public String getAddFormulaTitle() {

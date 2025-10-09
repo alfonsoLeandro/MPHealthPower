@@ -28,7 +28,6 @@ public class FormulaManager extends Reloadable {
     private Map<String, Double> hpPerGroup;
     private double defaultVariableGlobal;
     private Map<String, List<Formula>> formulasPerWorld;
-    private double defaultBaseHp;
 
     public FormulaManager(HealthPower plugin) {
         super(plugin, Priority.HIGHEST);
@@ -40,7 +39,6 @@ public class FormulaManager extends Reloadable {
     }
 
     protected void loadSettings() {
-        FileConfiguration config = this.plugin.getConfigYaml().getAccess();
         // Load per group HP
         this.hpPerGroup = new HashMap<>();
         if (this.settings.isUseGroupsSystem()) {
@@ -51,7 +49,6 @@ public class FormulaManager extends Reloadable {
                 );
             }
         }
-        this.defaultBaseHp = config.getDouble("config.default base HP");
 
         loadFormulasAndCases();
     }
@@ -139,9 +136,9 @@ public class FormulaManager extends Reloadable {
                     return hpYaml.getDouble("HP.players." + player.getName() + ".base");
                 }
                 // return and save default
-                hpYaml.set("HP.players." + player.getName() + ".base", this.defaultBaseHp);
+                hpYaml.set("HP.players." + player.getName() + ".base", this.settings.getDefaultBaseHp());
                 this.hpYaml.save(false);
-                return this.defaultBaseHp;
+                return this.settings.getDefaultBaseHp();
             }
             case GROUP -> {
                 if (!this.settings.isUseGroupsSystem() && this.plugin.getPermissions() != null && this.plugin.getPermissions().hasGroupSupport()) {
