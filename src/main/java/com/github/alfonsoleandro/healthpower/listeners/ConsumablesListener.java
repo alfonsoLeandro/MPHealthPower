@@ -58,10 +58,12 @@ public class ConsumablesListener implements Listener {
             Player player = event.getPlayer();
 
             if (consumable.mode() == Consumable.ConsumableMode.ADD) {
-                this.hpManager.consumableOrGUIAddHP(player, consumable.amount());
+                this.hpManager.addBaseHP(player, consumable.amount());
             } else if (consumable.mode() == Consumable.ConsumableMode.SET) {
-                this.hpManager.consumableOrGUISetHP(player, consumable.amount());
+                this.hpManager.setBaseHP(player, consumable.amount());
             }
+
+            this.hpManager.checkAndCorrectHP(player);
 
             String message = consumable.message() == null ? this.messageSender.getString(Message.DEFAULT_CONSUMABLE_MSG) : consumable.message();
 

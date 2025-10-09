@@ -40,12 +40,14 @@ public class ClearHandler extends AbstractHandler {
         }
 
         FileConfiguration hp = this.plugin.getHpYaml().getAccess();
-        hp.set("HP.players." + args[1], null);
+        hp.set("HP.players." + player.getName(), null);
         this.plugin.getHpYaml().save(false);
         this.hpManager.checkAndCorrectHP(player);
 
         this.messageSender.send(player, Message.YOUR_HP_CLEARED);
-        this.messageSender.send(sender, Message.PLAYER_CLEARED,
-                "%player%", args[1]);
+        if (!sender.equals(player)) {
+            this.messageSender.send(sender, Message.PLAYER_CLEARED,
+                    "%player%", args[1]);
+        }
     }
 }
