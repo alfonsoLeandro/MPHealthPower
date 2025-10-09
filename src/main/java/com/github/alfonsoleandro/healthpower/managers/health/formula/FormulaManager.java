@@ -233,6 +233,10 @@ public class FormulaManager extends Reloadable {
         // Check which formula should apply
         Formula formula = getApplicableFormula(player, worldName);
 
+        if (this.settings.isDebug()) {
+            this.messageSender.send("&cDEBUG &fUsing formula \""+ formula.getRawFormulaString() + "\" for player \"" + player.getName() + " in world \"" + worldName + "\"");
+        }
+
         // Abstract player to playerHpData
         PlayerHpData playerHpData = getPlayerHpData(player, worldName);
 
