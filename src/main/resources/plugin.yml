@@ -27,9 +27,6 @@ permissions:
   HealthPower.add:
     description: Allows a player to add hearts to a players maximum health.
     default: op
-  HealthPower.gui:
-    description: Allows a player to open the buy health GUI.
-    default: op
   HealthPower.group.set:
     description: Allows a player to modify a groups HP directly to the HP file.
     default: op
@@ -60,6 +57,9 @@ permissions:
   HealthPower.check:
     description: Allows a player to check and correct players' HP.
     default: op
+  HealthPower.shop:
+    description: Allows a player to open the buy health GUI.
+    default: op
   HealthPower.consumable.*:
     description: Gives every consumable permission available.
     children:
@@ -72,7 +72,6 @@ permissions:
       HealthPower.version: true
       HealthPower.set: true
       HealthPower.add: true
-      HealthPower.gui: true
       HealthPower.group.set: true
       HealthPower.info: true
       HealthPower.formulas: true
@@ -82,3 +81,4 @@ permissions:
       HealthPower.consumable.*: true
       HealthPower.clear: true
       HealthPower.check: true
+      HealthPower.shop: true

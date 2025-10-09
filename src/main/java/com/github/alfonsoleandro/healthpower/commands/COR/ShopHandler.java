@@ -22,9 +22,9 @@ public class ShopHandler extends AbstractHandler {
     protected boolean meetsCondition(CommandSender sender, String[] args) {
         return (args.length == 0 &&
                 this.settings.isShopGUIEnabled() &&
-                sender.hasPermission("HealthPower.gui"))
+                sender.hasPermission("HealthPower.shop"))
                 ||
-                (args.length > 0 && args[0].equalsIgnoreCase("gui"));
+                (args.length > 0 && args[0].equalsIgnoreCase("shop"));
     }
 
     @Override
@@ -33,12 +33,12 @@ public class ShopHandler extends AbstractHandler {
             this.messageSender.send(sender, Message.CANNOT_SEND_CONSOLE);
             return;
         }
-        if (!sender.hasPermission("HealthPower.gui")) {
+        if (!sender.hasPermission("HealthPower.shop")) {
             this.messageSender.send(sender, Message.NO_PERMISSION);
             return;
         }
         if (!this.settings.isShopGUIEnabled()) {
-            this.messageSender.send(sender, Message.GUI_DISABLED);
+            this.messageSender.send(sender, Message.SHOP_DISABLED);
             return;
         }
         if (this.plugin.getEconomy() == null) {
