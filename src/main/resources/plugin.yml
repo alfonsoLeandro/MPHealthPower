@@ -21,12 +21,6 @@ permissions:
   HealthPower.version:
     description: Allows a player to check the plugins current version.
     default: op
-  HealthPower.set:
-    description: Allows a player to set some players maximum health.
-    default: op
-  HealthPower.add:
-    description: Allows a player to add hearts to a players maximum health.
-    default: op
   HealthPower.group.set:
     description: Allows a player to modify a groups HP directly to the HP file.
     default: op
@@ -38,6 +32,9 @@ permissions:
     default: op
   HealthPower.formulas.edit:
     description: Allows a player to edit the formulas specified per world.
+    default: op
+  HealthPower.modify:
+    description: Allows a player to modify a player's max HP.
     default: op
   HealthPower.tabcomplete:
     description: Allows a player to see autocomplete suggestions for all of this plugin's commands.
@@ -70,12 +67,11 @@ permissions:
     children:
       HealthPower.reload: true
       HealthPower.version: true
-      HealthPower.set: true
-      HealthPower.add: true
       HealthPower.group.set: true
       HealthPower.info: true
       HealthPower.formulas: true
       HealthPower.formulas.edit: true
+      HealthPower.modify: true
       HealthPower.tabcomplete: true
       HealthPower.cap.bypass: true
       HealthPower.consumable.*: true

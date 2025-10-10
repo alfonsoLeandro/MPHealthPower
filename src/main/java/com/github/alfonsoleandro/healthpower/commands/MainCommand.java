@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 public class MainCommand implements CommandExecutor {
 
     private final AbstractHandler COR;
-    //TODO: modify set command to allow to set each type of HP
 
     public MainCommand(HealthPower plugin) {
         this.COR = new FormulaEditCommandBlockerHandler(plugin, new ShopHandler(plugin,
