@@ -51,11 +51,15 @@ config:
   consumables enabled: true
   # Periodic HP checker, the same as running "/hp checkAll" every a given amount of time.
   periodic checker:
-      # If true, the periodic checker will check player's HP
-      enabled: false
-      # The interval between periodic checks, it should be composed of a number and a time unit
-      # Available time units: t = ticks (20 ticks =~ 1 second), s = seconds, m = minutes, h = hours, d = days, w = weeks
-      period: 5m
+    # If true, the periodic checker will check player's HP
+    enabled: false
+    # The interval between periodic checks, it should be composed of a number and a time unit
+    # Available time units: t = ticks (20 ticks =~ 1 second), s = seconds, m = minutes, h = hours, d = days, w = weeks
+    period: 5m
+  # Whether to notify a player when its HP has been corrected.
+  notify HP check: true
+  # Whether to notify a player when its HP has been manually modified.
+  notify HP modify: true
   GUI:
     # Should this feature be enabled?
     enabled: true
