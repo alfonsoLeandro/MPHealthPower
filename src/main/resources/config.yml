@@ -12,20 +12,22 @@ config:
     create: 30
     delete: 10
     edit: 10
-# Minimum amount of HP a player can have. After a formula is applied, if the resulting value is lower than this
-# number, the player's HP will set to this amount.
-## TODO: implement
-HP floor:
-  # if a world is not specified
-  global: 1
-  worlds:
-    world: 3
-    world_the_end: 2
+  # Minimum amount of HP a player can have. After a formula is applied, if the resulting value is lower than this
+  # number, the player's HP will set to this amount.
+  HP floor:
+    # if a world is not specified
+    global: 1
+    worlds:
+      world: 3
+      world_the_end: 2
   # Maximum amount of HP a player can get. When adding or setting, if enabled and the resulting HP is
   # higher than this cap and the player does not have the "HealthPower.cap.bypass" the HP will not be modified.
+  # Set to -1 to disable.
   HP cap:
-    enabled: true
-    amount: 40
+    global: 40
+    worlds:
+      world: 37
+      world_the_end: -1
   # If true will try to update the player's health bar in order to avoid client side render errors.
   # This tends to happen when a player has more than 20HP, the client will show the player as if
   # they only had 20, instead of the right amount, to avoid this inconvenience, even though it does not really affect
