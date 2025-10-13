@@ -1,7 +1,7 @@
 package com.github.alfonsoleandro.healthpower.commands.COR;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
+import com.github.alfonsoleandro.healthpower.managers.shop.HPShopManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
 import org.bukkit.command.CommandSender;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class ShopHandler extends AbstractHandler {
 
-    private final HPGUIManager hpGUIManager;
+    private final HPShopManager hpGUIManager;
     private final Settings settings;
 
     public ShopHandler(HealthPower plugin, AbstractHandler successor) {

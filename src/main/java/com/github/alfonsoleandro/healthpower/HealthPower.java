@@ -5,7 +5,7 @@ import com.github.alfonsoleandro.healthpower.listeners.*;
 import com.github.alfonsoleandro.healthpower.managers.checking.PeriodicHPChecker;
 import com.github.alfonsoleandro.healthpower.managers.consumable.ConsumableManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.cooldown.FormulaModifyManager;
-import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
+import com.github.alfonsoleandro.healthpower.managers.shop.HPShopManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.gui.FormulaGUIManager;
 import com.github.alfonsoleandro.healthpower.managers.health.formula.FormulaManager;
@@ -61,7 +61,7 @@ public final class HealthPower extends ReloaderPlugin {
     private FormulaGUIManager formulaGUIManager;
     private FormulaModifyManager formulaModifyManager;
     private ConsumableManager consumableManager;
-    private HPGUIManager hpGUIManager;
+    private HPShopManager hpGUIManager;
     private MessageSender<Message> messageSender;
     private Settings settings;
     private YamlFile configYaml;
@@ -104,7 +104,7 @@ public final class HealthPower extends ReloaderPlugin {
             this.messageSender.send("&c&lMessages have been moved from config to messages.yml. Make sure to re-personalize them!!!");
             this.messageSender.send("&c&lKeep in mind there are new messages too!");
         }
-        this.hpGUIManager = new HPGUIManager(this);
+        this.hpGUIManager = new HPShopManager(this);
         checkAndCorrectConfig();
         checkAndCorrectMessages();
         registerCommands();
@@ -437,7 +437,7 @@ public final class HealthPower extends ReloaderPlugin {
         return this.consumableManager;
     }
 
-    public HPGUIManager getHpGUIManager() {
+    public HPShopManager getHpGUIManager() {
         return this.hpGUIManager;
     }
 

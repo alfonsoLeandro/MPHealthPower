@@ -1,4 +1,4 @@
-package com.github.alfonsoleandro.healthpower.managers.gui;
+package com.github.alfonsoleandro.healthpower.managers.shop;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * @author alfonsoLeandro
  */
-public class HPGUIManager extends Reloadable {
+public class HPShopManager extends Reloadable {
 
     private final Map<String, String> formulas = new HashMap<>();
     private final HealthPower plugin;
@@ -36,9 +36,9 @@ public class HPGUIManager extends Reloadable {
     private final Economy economy;
     private String shopGUITitle;
     private int shopGUISize;
-    private HPGUIItem[] items;
+    private HPShopItem[] items;
 
-    public HPGUIManager(HealthPower plugin) {
+    public HPShopManager(HealthPower plugin) {
         super(plugin);
         this.plugin = plugin;
         this.messageSender = plugin.getMessageSender();
@@ -61,7 +61,7 @@ public class HPGUIManager extends Reloadable {
         this.shopGUISize = GUI.getValidSize(config.getInt("config.GUI.size"), GUIType.SIMPLE);
 
 
-        this.items = new HPGUIItem[this.shopGUISize];
+        this.items = new HPShopItem[this.shopGUISize];
 
         for (int i = 0; i < this.shopGUISize; i++) {
             if (config.contains("config.GUI.items." + i)) {
@@ -80,11 +80,11 @@ public class HPGUIManager extends Reloadable {
                     continue;
                 }
 
-                HPGUIItem.HPGUIItemType type;
+                HPShopItem.HPShopItemType type;
                 Material material;
 
                 try {
-                    type = HPGUIItem.HPGUIItemType.valueOf(configType.toUpperCase());
+                    type = HPShopItem.HPShopItemType.valueOf(configType.toUpperCase());
                     material = Material.valueOf(configMaterial.toUpperCase());
                 } catch (IllegalArgumentException e) {
                     this.messageSender.send(Bukkit.getConsoleSender(), Message.INVALID_GUI_ITEM,
@@ -92,7 +92,7 @@ public class HPGUIManager extends Reloadable {
                     continue;
                 }
 
-                this.items[i] = new HPGUIItem(
+                this.items[i] = new HPShopItem(
                         MPItemStacks.newItemStack(material, 1, name, lore),
                         type,
                         priceOrFormula,
@@ -117,7 +117,7 @@ public class HPGUIManager extends Reloadable {
                 shopGUI.setItem(i, MPItemStacks.replacePlaceholders(this.items[i].itemStack().clone(),
                         new HashMap<>() {{
                             put("%price%", String.valueOf(price));
-                            put("%affordable%", StringUtils.colorizeString(HPGUIManager.this.messageSender.getString(price > balance ? Message.NO : Message.YES)));
+                            put("%affordable%", StringUtils.colorizeString(HPShopManager.this.messageSender.getString(price > balance ? Message.NO : Message.YES)));
                             put("%name%", player.getName());
                             put("%balance%", String.valueOf(balance));
                             put("%HP%", String.valueOf(health));
@@ -129,14 +129,14 @@ public class HPGUIManager extends Reloadable {
         shopGUI.openGUI(player);
     }
 
-    public HPGUIItem getItem(int slot) {
+    public HPShopItem getItem(int slot) {
         if (this.items.length < slot) return null;
         return this.items[slot];
     }
 
     public double getPrice(int slot, double currentHP) {
         if (this.items.length < slot) return Double.MAX_VALUE;
-        HPGUIItem item = this.items[slot];
+        HPShopItem item = this.items[slot];
 
         if (item == null) return Double.MAX_VALUE;
 

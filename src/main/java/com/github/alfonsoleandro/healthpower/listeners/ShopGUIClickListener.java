@@ -1,8 +1,8 @@
 package com.github.alfonsoleandro.healthpower.listeners;
 
 import com.github.alfonsoleandro.healthpower.HealthPower;
-import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIItem;
-import com.github.alfonsoleandro.healthpower.managers.gui.HPGUIManager;
+import com.github.alfonsoleandro.healthpower.managers.shop.HPShopItem;
+import com.github.alfonsoleandro.healthpower.managers.shop.HPShopManager;
 import com.github.alfonsoleandro.healthpower.managers.health.HPManager;
 import com.github.alfonsoleandro.healthpower.utils.Message;
 import com.github.alfonsoleandro.healthpower.utils.Settings;
@@ -17,7 +17,7 @@ public class ShopGUIClickListener implements Listener {
 
     private final MessageSender<Message> messageSender;
     private final HPManager hpManager;
-    private final HPGUIManager hpGUIManager;
+    private final HPShopManager hpGUIManager;
     private final Economy economy;
 
     public ShopGUIClickListener(HealthPower plugin) {
@@ -40,11 +40,11 @@ public class ShopGUIClickListener implements Listener {
         event.setCancelled(true);
 
         // get gui item from raw slot, from hp manager
-        HPGUIItem item = this.hpGUIManager.getItem(slot);
+        HPShopItem item = this.hpGUIManager.getItem(slot);
 
         // get type from gui item
         // if type is info, return
-        if (item.type().equals(HPGUIItem.HPGUIItemType.INFO)) {
+        if (item.type().equals(HPShopItem.HPShopItemType.INFO)) {
             return;
         }
 
