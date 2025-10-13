@@ -3,7 +3,7 @@ config:
   # are using this plugin and other statistics, you will not see a change in performance in the slightest if you keep
   # them enabled. That said, keeping them enabled is highly appreciated <3.
   use metrics: true
-  # Should the plugin tell the console the group of a player when they join?
+  # Extra console messages to have an idea of what is happening under the carpet.
   debug: false
   # Default base HP for new players. 20 = 1 full bar
   default base HP: 20
@@ -12,7 +12,7 @@ config:
     create: 30
     delete: 10
     edit: 10
-  # Minimum amount of HP a player can have. After a formula is applied, if the resulting value is lower than this
+  # The Minimum amount of HP a player can have. After a formula is applied, if the resulting value is lower than this
   # number, the player's HP will set to this amount.
   HP floor:
     # if a world is not specified
@@ -20,7 +20,7 @@ config:
     worlds:
       world: 3
       world_the_end: 2
-  # Maximum amount of HP a player can get. When adding or setting, if enabled and the resulting HP is
+  # The Maximum amount of HP a player can get. When adding or setting, if enabled and the resulting HP is
   # higher than this cap and the player does not have the "HealthPower.cap.bypass" the HP will not be modified.
   # Set to -1 to disable.
   HP cap:
@@ -28,103 +28,31 @@ config:
     worlds:
       world: 37
       world_the_end: -1
-  # If true will try to update the player's health bar in order to avoid client side render errors.
-  # This tends to happen when a player has more than 20HP, the client will show the player as if
-  # they only had 20, instead of the right amount, to avoid this inconvenience, even though it does not really affect
-  # their real max health, the plugin will remove hearts, and then it will give them back.
+  # If true will try to update the player's health bar to avoid client side render errors.
+  # In some versions, if a player has an abnormal number of hearts, the clients would just show 20 (a full bar).
+  # This option will set the player's HP to 1, then back to the original amount, to force a render update.
   update HP on join: true
-  # Whether the plugin should check AND CORRECT a player's HP based on HP.yml.
+  # Whether the plugin should check AND CORRECT a player's HP.
   check HP on join: true
   check HP on reload: true
-  # If the above options are true, and the player was not in the file, should the groups' system be used instead?
-  # Needs a permissions plugin AND vault
+  # Should group-based HP be used in variables? Groups' HP is specified in the HP.yml file
   use groups system: true
-  # If enabled, when reloading the plugin or when a player joins, the plugin will check for players' permissions
-  # to look for permissions with a format similar to "healthpower.amount.X" where X is a given amount
-  # and will correct the player's HP to the highest X found in there. This overrides the group system
-  # and players' manually set HP.
+  # If enabled, the plugin will look for permissions with the format "healthpower.amount.X" where X is a given amount.
   use permissions system: true
   # Should custom consumable items for adding/setting HP be enabled?
   # If true, you can create your own consumable items and set them with a simple in-game command
   # with the following format:
   # /healthpower consumable add (name) (set/add) (amount)
+  # Consumables will modify the players' base health.
   consumables enabled: true
-  # Periodic HP checker, the same as running "/hp checkAll" every a given amount of time.
+  # Periodic HP checker, the same as running "/hp checkAll" every certain amount of time.
   periodic checker:
-    # If true, the periodic checker will check player's HP
+    # If true, the periodic checker will check player's HP.
     enabled: false
     # The interval between periodic checks, it should be composed of a number and a time unit
     # Available time units: t = ticks (20 ticks =~ 1 second), s = seconds, m = minutes, h = hours, d = days, w = weeks
-    period: 5m
+    period: 30s
   # Whether to notify a player when its HP has been corrected.
   notify HP check: true
   # Whether to notify a player when its HP has been manually modified.
   notify HP modify: true
-  GUI:
-    # Should this feature be enabled?
-    enabled: true
-    # The title you want for the GUI
-    title: '&c&lBuy HP'
-    size: 27
-    # Price formulas. Equations for increasing health buy price in proportion to the player's health power.
-    # To use them, set the price to %formula_INDEX%, where INDEX is the index for the formula in formulas.
-    # For example, in order to get '500+(100*%HP%)', you should use %formula_0%, for '100*%HP%' use %formula_1% and so on.
-    # You can use %HP% for the player's current health power.
-    formulas:
-      - '500+(100*%HP%)'
-      - '-100*%HP%'
-      - '%HP%^2'
-      - '(6*100)-(%HP%*100)'
-    # Items go from 0 to the size you specified -1
-    # the format needed:
-    # items:
-    #  material: the type of item
-    #  name: the name the item will have
-    #  lore: lines of lore to add to the item
-    #  type: the hp modify type
-    #  (add = add hearts, set = set hearts, remove = remove hearts, info = player info only. Will not modify HP, any other options = add)
-    #  amount: the amount of hp to add or set to (2hp = 1 heart)
-    #  price: the amount of money to be taken from the player (negative numbers = give money)
-    items:
-      8:
-        material: BOOK
-        name: '&6%name%''s info'
-        lore:
-          - '&fBalance: &a%balance%'
-          - '&fHP: &c%HP%'
-        type: info
-        amount: 0.0
-        price: 0.0
-      12:
-        material: REDSTONE
-        name: '&cRemove 1 heart'
-        lore:
-          - '&6&lClick &fon this item'
-          - '&fto remove 1 heart from your HP'
-          - '&fPrice: &e%price%'
-          - '&fAffordable: %affordable%'
-        type: remove
-        amount: 2.0
-        price: '%formula_1%'
-      13:
-        material: DIAMOND
-        name: '&fSet HP to 3 hearts'
-        lore:
-          - '&6&lClick &fon this item'
-          - '&fto set your HP to 3 hearts'
-          - '&fPrice: &e%price%'
-          - '&fAffordable: %affordable%'
-        type: set
-        amount: 6.0
-        price: '%formula_3%'
-      14:
-        material: EMERALD
-        name: '&aAdd 1 heart'
-        lore:
-          - '&6&lClick &fon this item'
-          - '&fto add 1 heart to your HP'
-          - '&fPrice: &e%price%'
-          - '&fAffordable: %affordable%'
-        type: add
-        amount: 2.0
-        price: '%formula_0%'

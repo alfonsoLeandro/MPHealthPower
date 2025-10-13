@@ -89,6 +89,7 @@
       # To use them, set the price to %formula_INDEX%, where INDEX is the index for the formula in formulas.
       # For example, in order to get '500+(100*%HP%)', you should use %formula_0%, for '100*%HP%' use %formula_1% and so on.
       # You can use %HP% for the player's current health power.
+      #TODO: use "base, shop, permission and group", instead of "%HP%"
       formulas:
         - '500+(100*%HP%)'
         - '-100*%HP%'

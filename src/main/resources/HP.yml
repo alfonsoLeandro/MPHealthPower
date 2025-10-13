@@ -1,8 +1,8 @@
-# HP values stored here
-# HP checking priorities: 1- by name (if the players name is under players, that value will be used)
-# 2- by permission (if player has any permission with the "healthpower.amount.NUMBER" format, that value will be used)
-# 3- by group (if a player's primary group is under the groups list in this file, the value for that group will be used)
-# 4- default (if none of the above apply for a player, this default value will be used).
+# SOME HP values stored here
+# base: found per player for all worlds
+# shoop: found per player for all worlds
+# group: specified below, per group name for all worlds
+# permission: is attributed to players using permissions, can be attributed per world, found in your permissions plugin
 HP:
   players: []
   groups:

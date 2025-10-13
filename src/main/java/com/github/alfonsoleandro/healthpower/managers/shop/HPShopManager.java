@@ -15,7 +15,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.mariuszgromada.math.mxparser.Expression;
 
@@ -49,30 +48,33 @@ public class HPShopManager extends Reloadable {
     }
 
     private void loadGUI() {
-        FileConfiguration config = this.plugin.getConfigYaml().getAccess();
+        ConfigurationSection shopGuiSettings = this.plugin.getGuiYaml().getAccess().getConfigurationSection("GUI.shop");
 
-        List<String> formulas = config.getStringList("config.GUI.formulas");
+        if (shopGuiSettings == null) {
+            throw new RuntimeException("GUI.shop not found");
+        }
+
+        List<String> formulas = shopGuiSettings.getStringList("formulas");
         for (int i = 0; i < formulas.size(); i++) {
             String formula = formulas.get(i);
+            // TODO: Create formula
             this.formulas.put("%formula_" + i + "%", formula);
         }
 
-        this.shopGUITitle = StringUtils.colorizeString(config.getString("config.GUI.title"));
-        this.shopGUISize = GUI.getValidSize(config.getInt("config.GUI.size"), GUIType.SIMPLE);
-
+        this.shopGUITitle = StringUtils.colorizeString(shopGuiSettings.getString("title"));
+        this.shopGUISize = GUI.getValidSize(shopGuiSettings.getInt("size"), GUIType.SIMPLE);
 
         this.items = new HPShopItem[this.shopGUISize];
 
         for (int i = 0; i < this.shopGUISize; i++) {
-            if (config.contains("config.GUI.items." + i)) {
-                ConfigurationSection section = config.getConfigurationSection("config.GUI.items." + i);
-                assert section != null;
-                String configMaterial = section.getString("material");
-                String name = section.getString("name");
-                List<String> lore = section.getStringList("lore");
-                String configType = section.getString("type");
-                String priceOrFormula = section.getString("price");
-                double amount = section.getDouble("amount");
+            ConfigurationSection itemSection = shopGuiSettings.getConfigurationSection("items." + i);
+            if (itemSection != null) {
+                String configMaterial = itemSection.getString("material");
+                String name = itemSection.getString("name");
+                List<String> lore = itemSection.getStringList("lore");
+                String configType = itemSection.getString("type");
+                String priceOrFormula = itemSection.getString("price");
+                double amount = itemSection.getDouble("amount");
 
                 if (configMaterial == null || name == null || configType == null || priceOrFormula == null || amount < 0) {
                     this.messageSender.send(Bukkit.getConsoleSender(), Message.INVALID_GUI_ITEM,

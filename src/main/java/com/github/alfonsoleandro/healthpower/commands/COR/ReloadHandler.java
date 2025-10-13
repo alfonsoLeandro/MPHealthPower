@@ -34,7 +34,7 @@ public class ReloadHandler extends AbstractHandler {
         }
         this.plugin.reload(false);
 
-        if (this.plugin.getConfig().getBoolean("config.check HP on reload")) {
+        if (this.plugin.getConfigYaml().getAccess().getBoolean("config.check HP on reload")) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 this.hpManager.checkAndCorrectHP(p);
             }
