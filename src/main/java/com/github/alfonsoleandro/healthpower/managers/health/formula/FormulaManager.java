@@ -184,12 +184,17 @@ public class FormulaManager extends Reloadable {
                 FileConfiguration hpYaml = this.hpYaml.getAccess();
                 ConfigurationSection playersSection = hpYaml.getConfigurationSection("HP.players");
                 if (playersSection != null && playersSection.contains(player.getName() + ".shop")) {
-                    return playersSection.getDouble(player.getName() + ".shop");
+                    return playersSection.contains(player.getName() + ".shop")
+                            ? playersSection.getDouble(player.getName() + ".shop") : null;
                 }
                 return null;
             }
 
         }
+    }
+
+    public PlayerHpData getPlayerHpData(Player player) {
+        return getPlayerHpData(player, player.getWorld().getName());
     }
 
     public PlayerHpData getPlayerHpData(Player player, String worldName) {
@@ -236,6 +241,19 @@ public class FormulaManager extends Reloadable {
 
         // Abstract player to playerHpData
         PlayerHpData playerHpData = getPlayerHpData(player, worldName);
+
+        // calculate value from applicable formula
+        Double defaultValue = this.defaultVariablesPerWorld.getOrDefault(worldName, this.defaultVariableGlobal);
+        return formula.calculate(playerHpData, defaultValue);
+    }
+
+    public double simulate(Player player, String worldName, PlayerHpData playerHpData) {
+        // Check which formula should apply
+        Formula formula = getApplicableFormula(player, worldName);
+
+        if (this.settings.isDebug()) {
+            this.messageSender.send("&cDEBUG &fSimulating HP end value using formula \""+ formula.getRawFormulaString() + "\" for player \"" + player.getName() + " in world \"" + worldName + "\"");
+        }
 
         // calculate value from applicable formula
         Double defaultValue = this.defaultVariablesPerWorld.getOrDefault(worldName, this.defaultVariableGlobal);
