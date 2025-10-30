@@ -44,8 +44,9 @@ public class HPManager extends Reloadable {
                 this.hpFloorPerWorld.put(worldName, hpFloorSection.getDouble(worldName));
             }
         }
-        this.hpCapPerWorld.put(Settings.GLOBAL_WORLD_SYMBOL,
-                Math.max(1, config.getDouble("config.HP cap.global")));
+        this.hpFloorPerWorld.put(Settings.GLOBAL_WORLD_SYMBOL,
+                Math.max(1, config.getDouble("config.HP floor.global")));
+
         this.hpCapPerWorld = new HashMap<>();
         ConfigurationSection hpCapSection = config.getConfigurationSection("config.HP cap.worlds");
         if (hpCapSection != null) {
@@ -124,7 +125,7 @@ public class HPManager extends Reloadable {
         FileConfiguration hpFile = hpYaml.getAccess();
         double prev = hpFile.contains("HP.players." + player.getName() + ".shop") ?
                 hpFile.getDouble("HP.players." + player.getName() + ".shop") :
-                this.settings.getDefaultBaseHp();
+                0;
         hpFile.set("HP.players." + player.getName() + ".shop", prev + amount);
 
         hpYaml.save(false);
@@ -157,6 +158,14 @@ public class HPManager extends Reloadable {
             }.runTaskLater(this.plugin, 2);
 
         }
+    }
+
+    public Double getHpCapForWorld(String worldName) {
+        return this.hpCapPerWorld.getOrDefault(worldName, this.hpCapPerWorld.get(Settings.GLOBAL_WORLD_SYMBOL));
+    }
+
+    public Double getHpFloorForWorld(String worldName) {
+        return this.hpFloorPerWorld.getOrDefault(worldName, this.hpFloorPerWorld.get(Settings.GLOBAL_WORLD_SYMBOL));
     }
 
     private void debugPlayerGroupInfo(Player player) {
