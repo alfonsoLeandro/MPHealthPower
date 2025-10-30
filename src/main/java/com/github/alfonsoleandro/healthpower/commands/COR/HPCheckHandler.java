@@ -28,7 +28,8 @@ public class HPCheckHandler extends AbstractHandler{
             return;
         }
         if (args.length < 2) {
-            this.messageSender.send(sender, "&cUse: &f/" + label + " check (player)");
+            this.messageSender.send(sender, Message.COMMAND_USE_CHECK,
+                    "%command%", label);
             return;
         }
         Player toCheck = Bukkit.getPlayer(args[1]);
