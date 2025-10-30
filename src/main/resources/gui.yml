@@ -138,7 +138,7 @@
           amount: 2.0
           message: '&fYou have sold one of your hearts to the server'
           formulas:
-            - '-100*shop'
+            - '-100*(max(1,shop))'
             - '-100' # will be used if player has no shop HP value, because of formula calculation logic
           requirements:
             base: ",30"
@@ -154,7 +154,7 @@
           type: set
           amount: 6.0
           formulas:
-            - '(6*100)-(shop*100)'
+            - '(6*100)-(max(1,shop)*100)'
           requirements:
             shop: "10,"
         12:
@@ -174,7 +174,7 @@
           amount: 2.0
           node: 'vip' # resulting in 'healthpower.shop.item.vip
           formulas:
-            - '500+(100*shop)'
+            - '500+(100*max(0,shop))'
             - '500'
           requirements:
             shop: ",30"
@@ -195,7 +195,7 @@
           amount: 2.0
           node: 'vip.plus' # resulting in 'healthpower.shop.item.vip.plus
           formulas:
-            - '400+(100*shop)'
+            - '400+(100*max(0,shop))'
             - '400'
           requirements:
             shop: ",30"
@@ -214,7 +214,7 @@
           type: add
           amount: 2.0
           formulas:
-            - '600+(100*shop)'
+            - '600+(100*max(0,shop))'
             - '600'
           requirements:
             shop: ",30"
