@@ -57,6 +57,9 @@ permissions:
   HealthPower.shop:
     description: Allows a player to open the buy health GUI.
     default: op
+  healthpower.shop.item.*:
+    description: Grants a player access to use any shop item.
+    default: op
   HealthPower.consumable.*:
     description: Gives every consumable permission available.
     children:
@@ -78,3 +81,4 @@ permissions:
       HealthPower.clear: true
       HealthPower.check: true
       HealthPower.shop: true
+      HealthPower.shop.item.*: true
