@@ -99,10 +99,10 @@ public class Formula {
      * @return The final value of HP for a player calculated using this Formula and the player's values.
      */
     public Double calculate(PlayerHpData playerHpData, Double defaultIfNotPresent) {
-        Argument base = this.arguments.get("b");
-        Argument shop = this.arguments.get("s");
-        Argument permission = this.arguments.get("p");
-        Argument group = this.arguments.get("g");
+        Argument base = this.arguments.get("base");
+        Argument shop = this.arguments.get("shop");
+        Argument permission = this.arguments.get("permission");
+        Argument group = this.arguments.get("group");
         base.setArgumentValue(Objects.requireNonNullElse(playerHpData.baseHp(), defaultIfNotPresent));
         shop.setArgumentValue(Objects.requireNonNullElse(playerHpData.shopHp(), defaultIfNotPresent));
         permission.setArgumentValue(Objects.requireNonNullElse(playerHpData.permissionHp(), defaultIfNotPresent));
