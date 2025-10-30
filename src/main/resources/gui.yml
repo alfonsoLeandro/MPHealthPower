@@ -84,17 +84,9 @@
       enabled: true
       # The title you want for the GUI
       title: '&c&lBuy HP'
+      # The default value for formula variables when a variable is not present.
+      default formula value: 0
       size: 27
-      # Price formulas. Equations for increasing health buy price on proportion to the player's health power.
-      # To use them, set the price to %formula_INDEX%, where INDEX is the index for the formula in formulas.
-      # For example, in order to get '500+(100*%HP%)', you should use %formula_0%, for '100*%HP%' use %formula_1% and so on.
-      # You can use %HP% for the player's current health power.
-      #TODO: use "base, shop, permission and group", instead of "%HP%"
-      formulas:
-        - '500+(100*%HP%)'
-        - '-100*%HP%'
-        - '%HP%^2'
-        - '(6*100)-(%HP%*100)'
       # Items go from 0 to the size you specified -1
       # the format needed:
       # items:
@@ -104,18 +96,36 @@
       #  type: the hp modify type
       #  (add = add hearts, set = set hearts, remove = remove hearts, info = player info only. Will not modify HP, any other options = add)
       #  amount: the amount of hp to add or set to (2hp = 1 heart)
+      #  node: The permission node associated with the item. OPTIONAL
       #  price: the amount of money to be taken from the player (negative numbers = give money)
+      #  formulas: A list of expressions to be used for calculating a price, instead of using the price.
+      #  requirements: A list of requirements per HP type, OPTIONAL.
+      #     Available requirements are each type of HP (base, shop, permission, group)
+      # Valid placeholders for name and lore are:
+      #   - %price% - the price to buy or sell the item
+      #   - %affordable% - whether the player has enough money to buy an item (check yes & no messages in messages file)
+      #   - %name% - the player's name
+      #   - %balance% - the player's current balance
+      #   - %base_hp% - the player's current base hp value
+      #   - %shop_hp% - the player's current shop hp value
+      #   - %group_hp% - the player's current group hp value
+      #   - %permission_hp% - the player's current permission hp value
+      #   - %has_permission% - whether the player has the required permission to buy an item (check yes & no messages in messages file)
+      #   - %meets_requirements% - whether the player meets the HP requirements to buy an item (check yes & no messages in messages file)
       items:
         8:
           material: BOOK
           name: '&6%name%''s info'
           lore:
             - '&fBalance: &a%balance%'
-            - '&fHP: &c%HP%'
+            - '&fBase HP: &c%base_hp%'
+            - '&fGroup HP: &c%group_hp%'
+            - '&fPermission HP: &c%permission_hp%'
+            - '&fShop HP: &c%shop_hp%'
           type: info
           amount: 0.0
           price: 0.0
-        12:
+        10:
           material: REDSTONE
           name: '&cRemove 1 heart'
           lore:
@@ -123,28 +133,88 @@
             - '&fto remove 1 heart from your HP'
             - '&fPrice: &e%price%'
             - '&fAffordable: %affordable%'
+            - '&fMeets requirements: &a%meets_requirements%'
           type: remove
           amount: 2.0
-          price: '%formula_1%'
-        13:
+          message: '&fYou have sold one of your hearts to the server'
+          formulas:
+            - '-100*shop'
+            - '-100' # will be used if player has no shop HP value, because of formula calculation logic
+          requirements:
+            base: ",30"
+        11:
           material: DIAMOND
           name: '&fSet HP to 3 hearts'
           lore:
             - '&6&lClick &fon this item'
-            - '&fto set your HP to 3 hearts'
+            - '&fto set your shop HP to 3 hearts'
             - '&fPrice: &e%price%'
             - '&fAffordable: %affordable%'
+            - '&fMeets requirements: &a%meets_requirements%'
           type: set
           amount: 6.0
-          price: '%formula_3%'
-        14:
+          formulas:
+            - '(6*100)-(shop*100)'
+          requirements:
+            shop: "10,"
+        12:
           material: EMERALD
           name: '&aAdd 1 heart'
           lore:
             - '&6&lClick &fon this item'
             - '&fto add 1 heart to your HP'
+            - '&7&oOnly for VIPs'
+            - '&7Up to 15 extra hearts, you'
+            - '&7currently have &c%shop_hp%&7 extra hearts'
             - '&fPrice: &e%price%'
             - '&fAffordable: %affordable%'
+            - '&fMeets requirements: &a%meets_requirements%'
+            - '&fHas permission: &a%has_permission%'
           type: add
           amount: 2.0
-          price: '%formula_0%'
+          node: 'vip' # resulting in 'healthpower.shop.item.vip
+          formulas:
+            - '500+(100*shop)'
+            - '500'
+          requirements:
+            shop: ",30"
+        13:
+          material: DIAMOND
+          name: '&aAdd 1 heart'
+          lore:
+            - '&6&lClick &fon this item'
+            - '&fto add 1 heart to your HP'
+            - '&7&oOnly for VIP+s'
+            - '&7Up to 15 extra hearts, you'
+            - '&7currently have &c%shop_hp%&7 extra hearts'
+            - '&fPrice: &e%price%'
+            - '&fAffordable: %affordable%'
+            - '&fMeets requirements: &a%meets_requirements%'
+            - '&fHas permission: &a%has_permission%'
+          type: add
+          amount: 2.0
+          node: 'vip.plus' # resulting in 'healthpower.shop.item.vip.plus
+          formulas:
+            - '400+(100*shop)'
+            - '400'
+          requirements:
+            shop: ",30"
+        14:
+          material: COAL
+          name: '&aAdd 1 heart'
+          lore:
+            - '&6&lClick &fon this item'
+            - '&fto add 1 heart to your HP'
+            - '&7Up to 15 extra hearts, you'
+            - '&7currently have &c%shop_hp%&7 extra hearts'
+            - '&fPrice: &e%price%'
+            - '&fAffordable: %affordable%'
+            - '&fMeets requirements: &a%meets_requirements%'
+            - '&fHas permission: &a%has_permission%'
+          type: add
+          amount: 2.0
+          formulas:
+            - '600+(100*shop)'
+            - '600'
+          requirements:
+            shop: ",30"
