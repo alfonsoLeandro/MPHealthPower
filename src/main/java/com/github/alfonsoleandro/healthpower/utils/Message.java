@@ -18,7 +18,7 @@ public enum Message implements MessageEnum {
     COMMAND_USE_CONSUMABLE("messages.consumable use", "&cUse: &f/%command% consumable (give) (player) (consumable_name) &cOR &f/%command% consumable (set) (consumable_name) (add/set) (amount)"),
     COMMAND_USE_CLEAR("messages.clear use", "&cUse: &f/%command% clear (player)"),
     COMMAND_USE_CHECK("messages.check use", "&cUse: &f/%command% check (player)"),
-    COMMAND_USE_GROUP_SET("messages.group set use", "&cUse: &f/%command% group set (group) (HP)" ),
+    COMMAND_USE_GROUP_SET("messages.group set use", "&cUse: &f/%command% group set (group) (HP)"),
     COMMAND_USE_INFO("messages.info use", "&cUse: &f/%command% info (player) <world>"),
     COMMAND_USE_FORMULAS("messages.formulas use", "&cUse: &f/%command% formulas <world>"),
     INVALID_CONSUMABLE("&cInvalid consumable %name%. No \"set\" or \"add\" value found."),
@@ -38,7 +38,7 @@ public enum Message implements MessageEnum {
     FORMULA_CANNOT_SAVE("&cPlease enter a valid formula value before saving."),
     FORMULA_CANNOT_SAVE_INVALID("&cCould not save Formula: invalid formula"),
     FORMULA_CANNOT_SAVE_INVALID_ORDER("&cCould not save Formula: invalid order"),
-    FORMULA_CONFIRM_DELETE( "&fAre you sure you want to &c&ldelete &fformula \"&e%formula%&f\" in world \"&e%world%&f\"? Type &a&lYES &fbefore &e%seconds% seconds &fto confirm."),
+    FORMULA_CONFIRM_DELETE("&fAre you sure you want to &c&ldelete &fformula \"&e%formula%&f\" in world \"&e%world%&f\"? Type &a&lYES &fbefore &e%seconds% seconds &fto confirm."),
     FORMULA_DELETED("&aFormula \"&e%formula%&a\" for world \"&e%world%&a\" successfully deleted."),
     FORMULA_DELETE_UNKNOWN_MESSAGE("&cMessage not recognized. &fType &a&lYes &fto confirm formula deletion."),
     FORMULA_DELETE_ERROR("&cThe formula could not be deleted. Please try again."),
@@ -65,11 +65,7 @@ public enum Message implements MessageEnum {
     CONSUMABLES_DISABLED( "&cConsumables are disabled in this server!"),
     NOT_ENOUGH_MONEY("messages.no money", "&cYou do not have enough money. You need &f%price%&c, and you have &f%balance%"),
     NOT_ENOUGH_HP("&cYou do not have &f%hp% &cspare hp"),
-    GUI_ADD_HP("&c%value% HP &fhave been &aadded &fto your total health (%HP%)"),
-    GUI_SET_HP("&fYour HP is now &c%HP%"),
     CANNOT_SET_HP_UNDER_0("messages.hp cannot be 0", "&cHP cannot be 0 or lower than 0"),
-    GUI_REMOVE_HP("&c%value% HP &fhave been &cremoved &ffrom your total health (%HP%)"),
-    CLEAR_USE("messages.hp clear use", "&cUse: &f/%command% clear (player)"),
     PLAYER_CLEARED("messages.hp cleared", "&fHP of player %player% cleared!"),
     YOUR_HP_CLEARED("&cYour HP has been cleared by an admin."),
     PLAYERS_CLEARED("messages.hp cleared all", "&fEvery player''s HP has been cleared from the file!"),
@@ -90,7 +86,10 @@ public enum Message implements MessageEnum {
     YOU_ADD_HP("&7You just added &e%player% &c%HP% HP &7to their &e%type% &7HP"),
     YOU_SET_HP("&7You just set &e%player%&f's &e%type% &7HP to &c%HP%"),
     YOUR_HP_ADDED("&aYou have been added &c%amount% &aHP to your &e%type% &aHP"),
-    YOUR_HP_SET("&7Your &e%type% &7HP has been set to &c%amount%")
+    YOUR_HP_SET("&7Your &e%type% &7HP has been set to &c%amount%"),
+    SHOP_ADD_HP("&c%amount% &fHP has been added to your shop HP"),
+    SHOP_SET_HP("&fYour shop HP has been set to %amount%"),
+    SHOP_REMOVE_HP("&c%amount% &fHP has been removed from your HP")
     ;
 
     private final String path;

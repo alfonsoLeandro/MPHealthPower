@@ -29,7 +29,7 @@ public class ClearHandler extends AbstractHandler {
             return;
         }
         if (args.length < 2) {
-            this.messageSender.send(sender, Message.CLEAR_USE,
+            this.messageSender.send(sender, Message.COMMAND_USE_CLEAR,
                     "%command%", label);
             return;
         }
