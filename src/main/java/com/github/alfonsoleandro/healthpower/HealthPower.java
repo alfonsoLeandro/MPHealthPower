@@ -322,6 +322,9 @@ public final class HealthPower extends ReloaderPlugin {
                 possibilities.add("group set " + group + " 20");
             }
         }
+        if (this.settings.isShopGUIEnabled()) {
+            possibilities.add("shop");
+        }
 
         Objects.requireNonNull(getCommand("HealthPower"))
                 .setTabCompleter(new MPTabCompleter(possibilities, "HealthPower.tabcomplete"));
