@@ -39,14 +39,19 @@ public class ShopGUIClickListener implements Listener {
         if (!event.getGui().getGuiTags().equals(Settings.SHOP_GUI_TAG)) {
             return;
         }
+        event.setCancelled(true);
+
         int slot = event.getRawSlot();
         if (slot >= event.getGui().getSize() || slot < 0) {
             return;
         }
-        event.setCancelled(true);
 
         // get gui item from raw slot, from hp manager
         HPShopItem item = this.hpShopManager.getItem(slot);
+
+        if (item == null) {
+            return;
+        }
 
         // get type from gui item
         // if type is info, return
