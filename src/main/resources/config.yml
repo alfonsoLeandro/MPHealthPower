@@ -12,6 +12,9 @@ config:
     create: 30
     delete: 10
     edit: 10
+  # Whether to check if resulting HP would be over cap or below floor when a player buys or sells
+  # HP using the shop.
+  check limits for shop: true
   # The Minimum amount of HP a player can have. After a formula is applied, if the resulting value is lower than this
   # number, the player's HP will set to this amount.
   HP floor:

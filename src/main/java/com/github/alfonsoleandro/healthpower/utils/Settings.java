@@ -42,6 +42,7 @@ public class Settings extends Reloadable {
     private boolean debug;
     private boolean periodicCheckerEnabled;
     private long periodicCheckerPeriod;
+    private boolean checkLimitsForShop;
     private boolean notifyHPCheck;
     private boolean notifyHPModify;
     private boolean shopGUIEnabled;
@@ -89,6 +90,7 @@ public class Settings extends Reloadable {
         this.periodicCheckerEnabled = config.getBoolean("config.periodic checker.enabled");
         String timeString = config.getString("config.periodic checker.period");
         this.periodicCheckerPeriod = TimeUtils.getTicks(timeString != null ? timeString : "5m");
+        this.checkLimitsForShop = config.getBoolean("config.check limits for shop");
         this.notifyHPCheck = config.getBoolean("config.notify HP check");
         this.notifyHPModify = config.getBoolean("config.notify HP modify");
         this.shopGUIEnabled = gui.getBoolean("GUI.shop.enabled");
@@ -182,6 +184,10 @@ public class Settings extends Reloadable {
 
     public long getPeriodicCheckerPeriod() {
         return this.periodicCheckerPeriod;
+    }
+
+    public boolean isCheckLimitsForShop() {
+        return this.checkLimitsForShop;
     }
 
     public boolean isNotifyHPCheck() {
