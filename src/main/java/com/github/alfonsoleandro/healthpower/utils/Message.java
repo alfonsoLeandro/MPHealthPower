@@ -50,19 +50,23 @@ public enum Message implements MessageEnum {
     FORMULA_ORDER_SET("&aFormula order successfully set. New order is &e%order%&a."),
     FORMULA_SAVED("&aNew formula \"&e%formula%&a\" for world \"&e%world%&a\" in order \"&e%order%&a\" successfully saved."),
     FORMULA_VALID("&cDebug:&a Formula \"&7%formula%&a\" for world \"&7%world%&a\" is valid"),
+    FORMULA_VALID_SHOP("&cDebug:&a Formula \"&7%formula%&a\" for shop item in slot \"&7%slot%&a\" is valid"),
     FORMULA_VALUE_SET("&aFormula value successfully set. New value is \"&e%formula%&a\""),
     FORMULA_INVALID("&cFormula \"&7%formula%&c\" for world \"&7%world%&c\" is invalid! Please check your config"),
+    FORMULA_INVALID_SHOP("&cFormula \"&7%formula%&c\" for shop item in slot \"&7%slot%&c\" is invalid! Please check your gui file"),
     FORMULAS_FOR_WORLD("&fFormulas for world \"&e%world%&f\":"),
     FORMULA_LIST_ELEMENT("&f&e%order%&f- \"&a%formula%&f\""),
     FORMULA_LIST_GLOBAL("&a&lGlobal"),
     FORMULA_LIST_GLOBAL_WORLD_NAME("&aGlobal"),
     GUI_ERROR("messages.error opening gui", "&cThere was an error while trying to open de buy hp menu, talk to an admin or check console"),
-    INVALID_WORLD( "&cWorld \"&7%world%&c\" does not exist."),
+    INVALID_GUI_ITEM_PRICE("&cGUI item in slot \"&7%slot%&c\" has no price or a valid formula. Item will not be added to the shop"),
+    INVALID_WORLD("&cWorld \"&7%world%&c\" does not exist."),
     GUI_OPENING("messages.opening gui", "&fOpening buy hp menu!"),
     PLAYER_HP_ABOVE_CAP("&cThat player''s resulting HP would be above the HP cap. HP was not modified."),
     YOUR_HP_ABOVE_CAP("messages.HP above cap", "&cYour resulting HP would be above the HP cap. Your HP was not modified"),
+    YOUR_HP_BELOW_FLOOR("messages.HP below floor", "&cYour resulting HP would be below the HP floor. Your HP was not modified"),
     HP_AUTOMATIC_SET("&aYour &cHP &ahas been set to &c%HP%"),
-    CONSUMABLES_DISABLED( "&cConsumables are disabled in this server!"),
+    CONSUMABLES_DISABLED("&cConsumables are disabled in this server!"),
     NOT_ENOUGH_MONEY("messages.no money", "&cYou do not have enough money. You need &f%price%&c, and you have &f%balance%"),
     NOT_ENOUGH_HP("&cYou do not have &f%hp% &cspare hp"),
     CANNOT_SET_HP_UNDER_0("messages.hp cannot be 0", "&cHP cannot be 0 or lower than 0"),
@@ -74,17 +78,20 @@ public enum Message implements MessageEnum {
     INV_FULL("messages.your inventory is full", "&cYour inventory is full."),
     PLAYER_INV_FULL("messages.player inventory is full", "&c%player%'s inventory is full."),
     DEFAULT_CONSUMABLE_MSG("messages.default consumable message", "&fYour HP is now %HP%"),
-    INVALID_GUI_ITEM( "&cInvalid item for GUI in slot %slot%. Please check your configuration file."),
+    INVALID_GUI_ITEM("&cInvalid item for GUI item in slot %slot%. Please check your configuration file."),
     PERMISSIONS_SYSTEM_DISABLED("&cThe permissions system is disabled in config. Enable \"&ause permissions system&c\" in config to enable this feature."),
     SHOP_DISABLED("&cThe HP shop is disabled in this server"),
+    SHOP_ITEM_INVALID_REQUIREMENT("&cInvalid requirement for GUI item in slot %slot% for hp type \"&a%type%&c\", received value \"&f%received%&c\"."),
+    SHOP_ITEM_NO_PERMISSION("&cYou have no permission to access this item."),
+    SHOP_ITEM_REQUIREMENTS_NOT_MET("&cYou do not meet the requirements for this item."),
     GROUP_NOT_FOUND("&cNo group with the name \"&f%group%&c\" found."),
     GROUP_HP_SET("&aGroup HP set to &c%HP% &afor group &f%group%. HP reload recommended."),
     GROUP_HP_UNDER_MINIMUM("&e&lWARNING:&c Group \"%group%\"'s HP (%HP%) is below the minimum (%minimum%)"),
     CANNOT_SET_GROUP_HP_UNDER_MINIMUM("&cA group's HP (%HP%) cannot be under the minimum (%minimum%)"),
     PLAYER_HP_INFO("&e%player%&7's HP info on world &e%world%&7\nFormula: \"&e%formula%&7\"\nBase HP: &a%base%&7\nGroup HP: &a%group%&7\nPermission HP: &a%permission%&7\nShop HP: &a%shop%"),
     WORLD_HAS_NO_FORMULAS("&cWorld \"&7%world%&c\" has no formulas."),
-    YOU_ADD_HP("&7You just added &e%player% &c%HP% HP &7to their &e%type% &7HP"),
-    YOU_SET_HP("&7You just set &e%player%&f's &e%type% &7HP to &c%HP%"),
+    YOU_ADD_HP("&7You just added &e%player% &c%amount% HP &7to their &e%type% &7HP"),
+    YOU_SET_HP("&7You just set &e%player%&f's &e%type% &7HP to &c%amount%"),
     YOUR_HP_ADDED("&aYou have been added &c%amount% &aHP to your &e%type% &aHP"),
     YOUR_HP_SET("&7Your &e%type% &7HP has been set to &c%amount%"),
     SHOP_ADD_HP("&c%amount% &fHP has been added to your shop HP"),
@@ -95,12 +102,12 @@ public enum Message implements MessageEnum {
     private final String path;
     private final String dflt;
 
-    Message(String path, String dflt){
+    Message(String path, String dflt) {
         this.path = path;
         this.dflt = dflt;
     }
 
-    Message(String dflt){
+    Message(String dflt) {
         this(null, dflt);
     }
 
@@ -109,7 +116,7 @@ public enum Message implements MessageEnum {
     @Override
     public String getPath() {
         return this.path == null ?
-                "messages."+this.toString().toLowerCase(Locale.ROOT).replace("_", " ")
+                "messages." + this.toString().toLowerCase(Locale.ROOT).replace("_", " ")
                 :
                 this.path;
     }
