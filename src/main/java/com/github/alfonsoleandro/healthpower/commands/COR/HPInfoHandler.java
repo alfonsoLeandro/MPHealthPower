@@ -31,17 +31,22 @@ public class HPInfoHandler extends AbstractHandler {
             return;
         }
 
-        if (args.length <= 1) {
-            this.messageSender.send(sender, Message.COMMAND_USE_INFO,
-                    "%command%", label);
-            return;
+        Player toCheck;
+        if (args.length == 1) {
+            if (sender instanceof Player) {
+                toCheck = (Player) sender;
+            } else {
+                this.messageSender.send(sender, Message.CANNOT_SEND_CONSOLE);
+                return;
+            }
+        } else {
+            toCheck = Bukkit.getPlayer(args[1]);
+            if (toCheck == null || !toCheck.isOnline()) {
+                this.messageSender.send(sender, Message.PLAYER_NOT_ONLINE);
+                return;
+            }
         }
 
-        Player toCheck = Bukkit.getPlayer(args[1]);
-        if (toCheck == null || !toCheck.isOnline()) {
-            this.messageSender.send(sender, Message.PLAYER_NOT_ONLINE);
-            return;
-        }
 
         World world;
         if (args.length == 3) {
