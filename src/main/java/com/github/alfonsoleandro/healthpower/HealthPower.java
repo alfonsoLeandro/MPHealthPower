@@ -26,6 +26,7 @@ import org.bukkit.Material;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -40,7 +41,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,14 +81,14 @@ public final class HealthPower extends ReloaderPlugin {
         registerFiles();
         this.messageSender = new MessageSender<>(this, Message.values(), this.messagesYaml, "prefix");
         this.settings = new Settings(this);
-        this.hpManager = new HPManager(this);
         this.formulaManager = new FormulaManager(this);
+        this.hpManager = new HPManager(this);
         this.formulaGUIManager = new FormulaGUIManager(this);
         this.formulaModifyManager = new FormulaModifyManager(this);
         new PeriodicHPChecker(this);
         this.consumableManager = new ConsumableManager(this);
         this.messageSender.send("&aEnabled&f. Version: &e" + this.version);
-        this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().get(0));
+        this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().getFirst());
         this.messageSender.send("&fJoin my discord server at &chttps://bit.ly/MPDiscordSv");
         this.messageSender.send("Please consider subscribing to my yt channel: &c" + this.pdfFile.getWebsite());
         if (setupEconomy()) {
@@ -112,12 +113,13 @@ public final class HealthPower extends ReloaderPlugin {
         registerLuckPermsEvents();
         updateChecker();
         startMetrics();
+        checkAndCorrectAllPlayersHp();
     }
 
     @Override
     public void onDisable() {
         this.messageSender.send("&cDisabled&f. Version: &e" + this.version);
-        this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().get(0));
+        this.messageSender.send("&fThank you for using my plugin! &c" + this.pdfFile.getName() + "&f By " + this.pdfFile.getAuthors().getFirst());
         this.messageSender.send("&fJoin my discord server at &chttps://bit.ly/MPDiscordSv");
         this.messageSender.send("Please consider subscribing to my yt channel: &c" + this.pdfFile.getWebsite());
     }
@@ -143,6 +145,12 @@ public final class HealthPower extends ReloaderPlugin {
             this.messageSender.send("&aMetrics enabled! Thank you for keeping them enabled!");
         } else {
             this.messageSender.send("&cMetrics disabled :(. Please consider enabling metrics in config.");
+        }
+    }
+
+    private void checkAndCorrectAllPlayersHp() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            this.hpManager.checkAndCorrectHP(player);
         }
     }
 
@@ -184,8 +192,9 @@ public final class HealthPower extends ReloaderPlugin {
      */
     private void updateChecker() {
         try {
-            HttpURLConnection con = (HttpURLConnection) new URL(
-                    "https://api.spigotmc.org/legacy/update.php?resource=78260").openConnection();
+            HttpURLConnection con = (HttpURLConnection) new URI(
+                    "https://api.spigotmc.org/legacy/update.php?resource=78260")
+                    .toURL().openConnection();
             final int timed_out = 1250;
             con.setConnectTimeout(timed_out);
             con.setReadTimeout(timed_out);
@@ -358,6 +367,7 @@ public final class HealthPower extends ReloaderPlugin {
         boolean shouldSave = false;
         for (Message message : Message.values()) {
             if (!messagesEndFile.contains(message.getPath())) {
+                Bukkit.broadcastMessage("Message no contenido: " + message.name() + " path: " +  message.getPath());
                 shouldSave = true;
                 messages.set(message.getPath(), message.getDefault());
             }
@@ -379,7 +389,7 @@ public final class HealthPower extends ReloaderPlugin {
         pm.registerEvents(new FormulasGUIListener(this), this);
         pm.registerEvents(new NavigableGUIClickListener(), this);
         pm.registerEvents(new PlayerJoinListener(this), this);
-        pm.registerEvents(new PlayerTeleportListener(this), this);
+        pm.registerEvents(new PlayerChangeWorldListener(this), this);
         pm.registerEvents(new ShopGUIClickListener(this), this);
     }
 
@@ -407,14 +417,6 @@ public final class HealthPower extends ReloaderPlugin {
         }
         mainCommand.setExecutor(new MainCommand(this));
         setTabCompleter();
-    }
-
-    public Integer getServerMajorVersion() {
-        return this.serverMajorVersion;
-    }
-
-    public Integer getServerMinorVersion() {
-        return this.serverMinorVersion;
     }
 
     public HPManager getHpManager() {
