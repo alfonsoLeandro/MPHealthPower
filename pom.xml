@@ -102,7 +102,7 @@
         <dependency>
             <groupId>org.mariuszgromada.math</groupId>
             <artifactId>MathParser.org-mXparser</artifactId>
-            <version>5.2.1</version>
+            <version>6.1.0</version>
         </dependency>
     </dependencies>
 </project>
